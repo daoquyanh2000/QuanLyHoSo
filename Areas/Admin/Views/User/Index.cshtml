@@ -1,0 +1,220 @@
+﻿@model QuanLyLogin.Models.NhanVien
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+<main>
+    <!-- nav button start -->
+    <section>
+        <div class="container-fluid">
+            <div class="btn-group my-3 " role="group" aria-label="Basic mixed styles example">
+                <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal"
+                        data-bs-target="#staticBackdrop">
+                    <span>
+                        <i class="bi bi-plus-circle-fill"></i>
+                    </span>
+                    <span>Thêm người dùng mới</span>
+                </button>
+                <button type="button" class="btn btn-outline-secondary">
+                    <input type="file" id="file-upload" class="btn btn-outline-secondary" accept="document/*">
+                    <label for="file-upload" class="custom-file-upload ">
+                        <span>
+                            <i class="bi bi-paperclip"></i>
+                        </span>
+                        <span>Thêm từ biểu mẫu</span>
+                    </label>
+                </button>
+                <a href="#" class="btn btn-outline-secondary">
+                    <span>
+                        <i class="bi bi-cloud-arrow-down"></i>
+                    </span>
+                    <span>Tập tin mẫu</span>
+                </a>
+                <button type="button" class="btn btn-outline-secondary">
+                    <span>
+                        <i class="bi bi-trash3-fill"></i>
+                    </span>
+                    <span>Xóa</span>
+                </button>
+            </div>
+        </div>
+    </section>
+    <!-- nav button end  -->
+    <!-- table start -->
+    <div class="table-responsive container-fluid">
+        <table class="table table-striped table-light table-bordered display w-100" id="users">
+            <thead class="">
+                <tr>
+                    <th>ID</th>
+                    <th>Tên người dùng</th>
+                    <th>Tên tài khoản</th>
+                    <th>Kiểu người dùng</th>
+                    @*                    <th>Ngày tham gia</th>*@
+                    <th>Chức năng</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in ViewBag.listUser)
+                {
+                    <tr>
+                        <td>@item.ID</td>
+                        <td>@item.HoTen</td>
+                        <td>@item.Username</td>
+                        <td>@item.Quyen</td>
+                        <td>
+                            <a href="#">Xem </a>|
+                            <a href="#">Sửa </a>|
+                            <a href="#">Xóa </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <!-- table end -->
+    <!-- content start  -->
+    <!-- content end  -->
+</main>
+
+<!-- modal start -->
+<section>
+    <div class="modal fade " id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+         aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg ">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title " id="exampleModalLabel">Thông tin tài khoản</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <form action="admin/user/index" method="post">
+                            <div class="row my-2">
+                                <div class="col-12 fw-bold fst-italic">
+                                    (*) Thông tin bắt buộc
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label for="inputName" class="form-label">Họ và tên (*)</label>
+                                        <input class="form-control" id="inputName" type="text" placeholder="">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputUserName" class="form-label">Tên đăng nhập (*)</label>
+                                        <input class="form-control" id="inputUserName" type="text" placeholder="">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputPassword" class="form-label">Mật khẩu (*)</label>
+                                        <input class="form-control" id="inputPassword" type="text" placeholder="">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputPhone" class="form-label">Số điện thoại (*)</label>
+                                        <input class="form-control" id="inputPhone" type="text" placeholder="">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputEmail" class="form-label">Email (*)</label>
+                                        <input class="form-control" id="inputEmail" type="text" placeholder="">
+                                    </div>
+                                </div>
+                                <div class="col-lg-6  ">
+                                    <div class="form-group">
+                                        <label for="roleInput" class="form-label">Kiểu người dùng (*)</label>
+                                        <select class="form-select" aria-label="Kiểu người dùng" id="roleInput">
+                                            <option value="1">One</option>
+                                            <option value="2">Two</option>
+                                            <option value="3">Three</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="ActiveInput" class="form-label">Trạng thái (*)</label>
+                                        <select class="form-select" aria-label="Trạng thái" id="ActiveInput">
+                                            <option value="1">Có</option>
+                                            <option value="2">Không</option>
+                                        </select>
+                                    </div>
+                                    <div class="text-center">
+                                        <label for="modal_file-upload  text-center form-label" class=" fst-italic">
+                                            Choose a file
+                                            <i class="icon fa fa-camera border px-2 py-2" id="imgTemp"
+                                               style="font-size: 200px; display: block;"></i>
+                                            <div class="d-flex justify-content-center">
+                                                <img id="output" src="" alt="" class="w-100 border px-2 py-2">
+                                                <input type="file" id="inputImage" class="custom-file-upload" accept="image/*"
+                                                       onchange=" loadFile(event)" />
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="dropdown-divider my-4">
+                            </div>
+                            <div class="row my-2">
+                                <div class="col-12 fw-bold fst-italic">
+                                    Thông tin người dùng
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <div class="row">
+                                            <div class="col-lg-6">
+                                                <div class="form-group">
+                                                    <label class="form-label ">Giới tính</label>
+                                                    <select class="form-select " aria-label="Giới tính">
+                                                        <option value="1">Nam</option>
+                                                        <option value="2">Nữ</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <div class="form-group">
+                                                    <label for="inputDate" class="form-label">Ngày sinh</label>
+                                                    <input class="form-control" id="inputDate" type="date" placeholder="">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputAddress" class="form-label">Đại chỉ</label>
+                                        <input class="form-control" id="inputAddress" type="text" placeholder="">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="Inputbirthplace" class="form-label">Quê quán</label>
+                                        <input class="form-control" id="Inputbirthplace" type="text" placeholder="">
+                                    </div>
+
+                                </div>
+                                <div class="col-lg-6">
+
+                                    <div class="form-group">
+                                        <label for="exampleFormControlTextarea1" class="form-label">Tiểu sử</label>
+                                        <textarea class="form-control" id="exampleFormControlTextarea1" rows="5"></textarea>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="form-group">
+                                                <label for="inputCompany" class="form-label">Công ty</label>
+                                                <input class="form-control" id="inputCompany" type="text" placeholder="">
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="form-group">
+                                                <label for="InputRole" class="form-label">Chức vụ</label>
+                                                <input class="form-control" id="InputRole" type="text" placeholder="">
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- modal end -->

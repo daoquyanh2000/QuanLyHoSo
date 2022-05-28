@@ -1,0 +1,60 @@
+﻿@{
+    ViewBag.title = "";
+
+}
+@model QuanLyLogin.Models.NhanVien
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- jquery -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
+            integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <!-- bootstrap -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <link href="~/Assets/Admin/css/login.css" rel="stylesheet" />
+    <title>Document</title>
+</head>
+
+<body class="bg-info bg-gradient">
+    <div class="container-fluid d-flex justify-content-center flex-column login-container">
+        <div class="row justify-content-center ">
+            <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12 p-3 mx-4 shadow rounded border bg-white">
+                @using (Html.BeginForm())
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+                    <h2>Please Login </h2>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Username, new { @class = "form-label" })
+                        @Html.TextBoxFor(model => model.Username, new { @class = "form-control", @placeholder = "username" })
+                        <div class="invalid-feedback">
+                            @Html.ValidationMessageFor(m => m.Username, "", new { @class = "text-danger" })
+                        </div>
+
+
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Password, new { @class = "form-label" })
+                        @Html.PasswordFor(model => model.Password, new { @class = "form-control", @placeholder = "password" })
+                        <div class="invalid-feedback">
+                            @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+
+                        </div>
+
+                    </div>
+
+                    <button class="btn btn-success btn-block " type="submit">Login</button>
+
+                }
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
