@@ -21,7 +21,7 @@ namespace QuanLyLogin.Areas.Admin.Controllers
         [HttpPost]
         public ActionResult Index(NhanVien model)
         {
-            
+
             return View();
         }
 

@@ -88,7 +88,8 @@
                 </div>
                 <div class="modal-body">
                     <div class="container">
-                        <form action="admin/user/index" method="post">
+                        @using (Html.BeginForm("index","user",FormMethod.Post, new { @id = "userForm" }))
+                        {
                             <div class="row my-2">
                                 <div class="col-12 fw-bold fst-italic">
                                     (*) Thông tin bắt buộc
@@ -117,16 +118,16 @@
                                 </div>
                                 <div class="col-lg-6  ">
                                     <div class="form-group">
-                                        <label for="roleInput" class="form-label">Kiểu người dùng (*)</label>
-                                        <select class="form-select" aria-label="Kiểu người dùng" id="roleInput">
+                                        <label for="inputRole" class="form-label">Kiểu người dùng (*)</label>
+                                        <select class="form-select" aria-label="Kiểu người dùng" id="inputRole">
                                             <option value="1">One</option>
                                             <option value="2">Two</option>
                                             <option value="3">Three</option>
                                         </select>
                                     </div>
                                     <div class="form-group">
-                                        <label for="ActiveInput" class="form-label">Trạng thái (*)</label>
-                                        <select class="form-select" aria-label="Trạng thái" id="ActiveInput">
+                                        <label for="activeInput" class="form-label">Trạng thái (*)</label>
+                                        <select class="form-select" aria-label="Trạng thái" id="inputActive">
                                             <option value="1">Có</option>
                                             <option value="2">Không</option>
                                         </select>
@@ -157,7 +158,7 @@
                                             <div class="col-lg-6">
                                                 <div class="form-group">
                                                     <label class="form-label ">Giới tính</label>
-                                                    <select class="form-select " aria-label="Giới tính">
+                                                    <select class="form-select " id="inputGender" aria-label="Giới tính">
                                                         <option value="1">Nam</option>
                                                         <option value="2">Nữ</option>
                                                     </select>
@@ -173,20 +174,20 @@
 
                                     </div>
                                     <div class="form-group">
-                                        <label for="inputAddress" class="form-label">Đại chỉ</label>
+                                        <label for="inputAddress" class="form-label">Địa chỉ</label>
                                         <input class="form-control" id="inputAddress" type="text" placeholder="">
                                     </div>
                                     <div class="form-group">
-                                        <label for="Inputbirthplace" class="form-label">Quê quán</label>
-                                        <input class="form-control" id="Inputbirthplace" type="text" placeholder="">
+                                        <label for="inputBirthPlace" class="form-label">Quê quán</label>
+                                        <input class="form-control" id="inputBirthPlace" type="text" placeholder="">
                                     </div>
 
                                 </div>
                                 <div class="col-lg-6">
 
                                     <div class="form-group">
-                                        <label for="exampleFormControlTextarea1" class="form-label">Tiểu sử</label>
-                                        <textarea class="form-control" id="exampleFormControlTextarea1" rows="5"></textarea>
+                                        <label for="inputIntro" class="form-label">Tiểu sử</label>
+                                        <textarea class="form-control" id="inputIntro" rows="5"></textarea>
                                     </div>
                                     <div class="row">
                                         <div class="col-lg-6">
@@ -197,8 +198,8 @@
                                         </div>
                                         <div class="col-lg-6">
                                             <div class="form-group">
-                                                <label for="InputRole" class="form-label">Chức vụ</label>
-                                                <input class="form-control" id="InputRole" type="text" placeholder="">
+                                                <label for="InputCompanyRole" class="form-label">Chức vụ</label>
+                                                <input class="form-control" id="InputCompanyRole" type="text" placeholder="">
                                             </div>
                                         </div>
                                     </div>
@@ -206,12 +207,12 @@
 
                                 </div>
                             </div>
-                        </form>
+                        }
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                    <button type="submit" class="btn btn-primary" form="userForm">Tạo người dùng</button>
                 </div>
             </div>
         </div>
