@@ -125,6 +125,7 @@
     <Compile Include="Areas\Admin\Controllers\LoginController.cs" />
     <Compile Include="Areas\Admin\Controllers\UserController.cs" />
     <Compile Include="Controllers\DashboardController.cs" />
+    <Compile Include="Dao\ConnectString.cs" />
     <Compile Include="Dao\DaoAdmin\LoginDao.cs" />
     <Compile Include="Dao\DaoAdmin\UserDao.cs" />
     <Compile Include="Global.asax.cs">

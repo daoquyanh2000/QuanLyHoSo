@@ -1,6 +1,8 @@
-﻿using QuanLyLogin.Models;
+﻿using QuanLyHoSo.Dao;
+using QuanLyLogin.Models;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
@@ -10,10 +12,9 @@ namespace QuanLyLogin.Dao.DaoAdmin
 {
     public class LoginDao
     {
-        string ConnectionString = "server=TEU-LAPTOP\\TEU; database=QuanLyHoSo;integrated security=true";
         public int ValidateLogin(NhanVien model)
         {
-            using (SqlConnection con = new SqlConnection(ConnectionString))
+            using (SqlConnection con = new SqlConnection(ConnectString.Setup()))
             {
                 con.Open();
                 string stringQuery = "SELECT count(*) FROM [User] where Username =@Username and Password = @Password";
@@ -21,8 +22,7 @@ namespace QuanLyLogin.Dao.DaoAdmin
                 cmd.Parameters.AddWithValue("@Username", model.Username);
                 cmd.Parameters.AddWithValue("@Password", model.Password);
                 object result = cmd.ExecuteScalar();
-
-            return Convert.ToInt32(result);
+                return Convert.ToInt32(result);
             }
         }
     }
