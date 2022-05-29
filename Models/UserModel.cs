@@ -6,8 +6,16 @@ using System.Web;
 
 namespace QuanLyLogin.Models
 {
-    public class NhanVien : DataNhanVien
+    public class NhanVien 
+
     {
+        public long ID { get; set; }
+        [Display(Name = "Tên tài khoản")]
+        [Required(ErrorMessage = "Vui lòng nhập tên tài khoản")]
+        public string UserName { get; set; }
+        public byte? Quyen { get; set; }
+        public string HoTen { get; set; }
+
         [Display(Name = "Mật khẩu")]
         [Required(ErrorMessage = "Vui lòng nhập mật khẩu")]
         public string Password { get; set; }
@@ -29,6 +37,7 @@ namespace QuanLyLogin.Models
 
         public string TieuSu { get; set; }
         public long? NguoiTao { get; set; }
+        public Nullable<DateTime> NgayTao { get; set; }
 
         public DateTime? NgaySua { get; set; }
 
@@ -36,15 +45,6 @@ namespace QuanLyLogin.Models
 
 
     }
-    public class DataNhanVien
-    {
-        public long ID { get; set; }
-        [Display(Name = "Tên tài khoản")]
-        [Required(ErrorMessage = "Vui lòng nhập tên tài khoản")]
-        public string Username { get; set; }
-        public byte? Quyen { get; set; }
-        public string HoTen { get; set; }
-        public Nullable<DateTime> NgayTao { get; set; }
+    public class DataNhanVien : NhanVien { }
 
-    }
 }

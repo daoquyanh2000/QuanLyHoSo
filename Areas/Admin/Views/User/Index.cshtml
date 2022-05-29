@@ -59,7 +59,7 @@
                     <tr>
                         <td>@item.ID</td>
                         <td>@item.HoTen</td>
-                        <td>@item.Username</td>
+                        <td>@item.UserName</td>
                         <td>@item.Quyen</td>
                         <td>
                             <a href="#">Xem </a>|
@@ -88,58 +88,61 @@
                 </div>
                 <div class="modal-body">
                     <div class="container">
-                        @using (Html.BeginForm("index","user",FormMethod.Post, new { @id = "userForm" }))
-                        {
+                        <form action="index" method="post" id="userForm">
                             <div class="row my-2">
                                 <div class="col-12 fw-bold fst-italic">
                                     (*) Thông tin bắt buộc
                                 </div>
                                 <div class="col-lg-6">
                                     <div class="form-group">
-                                        <label for="inputName" class="form-label">Họ và tên (*)</label>
-                                        <input class="form-control" id="inputName" type="text" placeholder="">
+                                        <label for="HoTen" class="form-label">Họ và tên (*)</label>
+                                        <input class="form-control" id="HoTen" type="text" placeholder="">
+
                                     </div>
                                     <div class="form-group">
-                                        <label for="inputUserName" class="form-label">Tên đăng nhập (*)</label>
-                                        <input class="form-control" id="inputUserName" type="text" placeholder="">
+                                        <label for="Username" class="form-label">Tên đăng nhập (*)</label>
+                                        <input class="form-control" id="Username" type="text" placeholder="">
+
                                     </div>
                                     <div class="form-group">
-                                        <label for="inputPassword" class="form-label">Mật khẩu (*)</label>
-                                        <input class="form-control" id="inputPassword" type="text" placeholder="">
+                                        <label for="Password" class="form-label">Mật khẩu (*)</label>
+                                        <input class="form-control" id="Password" type="text" placeholder="">
+
+
                                     </div>
                                     <div class="form-group">
-                                        <label for="inputPhone" class="form-label">Số điện thoại (*)</label>
-                                        <input class="form-control" id="inputPhone" type="text" placeholder="">
+                                        <label for="SDT" class="form-label">Số điện thoại (*)</label>
+                                        <input class="form-control" id="SDT" type="text" placeholder="">
                                     </div>
                                     <div class="form-group">
-                                        <label for="inputEmail" class="form-label">Email (*)</label>
-                                        <input class="form-control" id="inputEmail" type="text" placeholder="">
+                                        <label for="Email" class="form-label">Email (*)</label>
+                                        <input class="form-control" id="Email" type="text" placeholder="">
                                     </div>
                                 </div>
                                 <div class="col-lg-6  ">
                                     <div class="form-group">
-                                        <label for="inputRole" class="form-label">Kiểu người dùng (*)</label>
-                                        <select class="form-select" aria-label="Kiểu người dùng" id="inputRole">
+                                        <label for="Quyen" class="form-label">Kiểu người dùng (*)</label>
+                                        <select class="form-select" aria-label="Kiểu người dùng" id="Quyen">
                                             <option value="1">One</option>
                                             <option value="2">Two</option>
                                             <option value="3">Three</option>
                                         </select>
                                     </div>
                                     <div class="form-group">
-                                        <label for="activeInput" class="form-label">Trạng thái (*)</label>
-                                        <select class="form-select" aria-label="Trạng thái" id="inputActive">
+                                        <label for="TrangThai" class="form-label">Trạng thái (*)</label>
+                                        <select class="form-select" aria-label="Trạng thái" id="TrangThai">
                                             <option value="1">Có</option>
                                             <option value="2">Không</option>
                                         </select>
                                     </div>
                                     <div class="text-center">
-                                        <label for="modal_file-upload  text-center form-label" class=" fst-italic">
+                                        <label for="AnhDaiDien" class=" fst-italic text-center form-label">
                                             Choose a file
                                             <i class="icon fa fa-camera border px-2 py-2" id="imgTemp"
                                                style="font-size: 200px; display: block;"></i>
                                             <div class="d-flex justify-content-center">
                                                 <img id="output" src="" alt="" class="w-100 border px-2 py-2">
-                                                <input type="file" id="inputImage" class="custom-file-upload" accept="image/*"
+                                                <input type="file" id="AnhDaiDien" class="custom-file-upload" accept="image/*"
                                                        onchange=" loadFile(event)" />
                                             </div>
                                         </label>
@@ -157,8 +160,8 @@
                                         <div class="row">
                                             <div class="col-lg-6">
                                                 <div class="form-group">
-                                                    <label class="form-label ">Giới tính</label>
-                                                    <select class="form-select " id="inputGender" aria-label="Giới tính">
+                                                    <label class="form-label " id="GioiTinh">Giới tính</label>
+                                                    <select class="form-select " id="GioiTinh" aria-label="Giới tính">
                                                         <option value="1">Nam</option>
                                                         <option value="2">Nữ</option>
                                                     </select>
@@ -166,48 +169,46 @@
                                             </div>
                                             <div class="col-lg-6">
                                                 <div class="form-group">
-                                                    <label for="inputDate" class="form-label">Ngày sinh</label>
-                                                    <input class="form-control" id="inputDate" type="date" placeholder="">
+                                                    <label for="NgaySinh" class="form-label">Ngày sinh</label>
+                                                    <input class="form-control" id="NgaySinh" type="date" placeholder="">
                                                 </div>
                                             </div>
                                         </div>
 
                                     </div>
                                     <div class="form-group">
-                                        <label for="inputAddress" class="form-label">Địa chỉ</label>
-                                        <input class="form-control" id="inputAddress" type="text" placeholder="">
+                                        <label for="DiaChi" class="form-label">Địa chỉ</label>
+                                        <input class="form-control" id="DiaChi" type="text" placeholder="">
                                     </div>
                                     <div class="form-group">
-                                        <label for="inputBirthPlace" class="form-label">Quê quán</label>
-                                        <input class="form-control" id="inputBirthPlace" type="text" placeholder="">
+                                        <label for="QueQuan" class="form-label">Quê quán</label>
+                                        <input class="form-control" id="QueQuan" type="text" placeholder="">
                                     </div>
 
                                 </div>
                                 <div class="col-lg-6">
 
                                     <div class="form-group">
-                                        <label for="inputIntro" class="form-label">Tiểu sử</label>
-                                        <textarea class="form-control" id="inputIntro" rows="5"></textarea>
+                                        <label for="TieuSu" class="form-label">Tiểu sử</label>
+                                        <textarea class="form-control" id="TieuSu" rows="5"></textarea>
                                     </div>
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="form-group">
-                                                <label for="inputCompany" class="form-label">Công ty</label>
-                                                <input class="form-control" id="inputCompany" type="text" placeholder="">
+                                                <label for="CongTy" class="form-label">Công ty</label>
+                                                <input class="form-control" id="CongTy" type="text" placeholder="">
                                             </div>
                                         </div>
                                         <div class="col-lg-6">
                                             <div class="form-group">
-                                                <label for="InputCompanyRole" class="form-label">Chức vụ</label>
-                                                <input class="form-control" id="InputCompanyRole" type="text" placeholder="">
+                                                <label for="ChucVu" class="form-label">Chức vụ</label>
+                                                <input class="form-control" id="ChucVu" type="text" placeholder="">
                                             </div>
                                         </div>
                                     </div>
-
-
                                 </div>
                             </div>
-                        }
+                        </form>
                     </div>
                 </div>
                 <div class="modal-footer">

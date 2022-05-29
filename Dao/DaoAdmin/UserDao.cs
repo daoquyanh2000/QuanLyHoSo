@@ -27,7 +27,7 @@ namespace QuanLyLogin.Dao.DaoAdmin
 
                     data.ID = Convert.ToInt64(dr["ID"]);
                     data.HoTen = dr["HoTen"].ToString();
-                    data.Username = dr["Username"].ToString();
+                    data.UserName = dr["UserName"].ToString();
                     data.Quyen = Convert.ToByte(dr["Quyen"]);
                     listUser.Add(data);
                 }

@@ -18,11 +18,13 @@ namespace QuanLyLogin.Areas.Admin.Controllers
             ViewBag.listUser = listUser;
             return View();
         }
-        [HttpPost]
-        public ActionResult Index(NhanVien model)
+        public JsonResult Create()
         {
-
-            return View();
+            return Json(new
+            {
+                status = true,
+                msg="hello"
+            });
         }
 
     }

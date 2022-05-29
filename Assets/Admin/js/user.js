@@ -1,18 +1,30 @@
-//get all the data from modal
-var inputName=$("#inputName").val()
-var inputUserName = $("#inputUserName").val()
-var inputPassword = $("#inputPassword").val()
-var inputPhone = $("#inputPhone").val()
-var inputRole = $("#inputRole").val()
-var inputActive = $("#inputActive").val()
-var inputImage = $("#inputImage").val()
-var inputGender = $("#inputGender").val()
-var inputDate = $("#inputDate").val()
-var inputAddress = $("#inputAddress").val()
-var inputIntro = $("#inputIntro").val()
-var inputCompany = $("#inputCompany").val()
-var InputCompanyRole = $("#InputCompanyRole").val()
+/*
+var HoTen = $("#HoTen").val();
+var Username = $("#Username").val();
+var Password = $("#Password").val();
+var SDT = $("#SDT").val();
+var Email = $("#Email").val();
+var Quyen = $("#Quyen").val();
+var TrangThai = $("#TrangThai").val();
+var AnhDaiDien = $("#AnhDaiDien").val()
+var GioiTinh = $("#GioiTinh").val();
+var NgaySinh = $("#NgaySinh").val();
+var DiaChi = $("#DiaChi").val();
+var QueQuan = $("#QueQuan").val();
+var TieuSu = $("#TieuSu").val();
+var CongTy = $("#CongTy").val();
+var ChucVu = $("#ChucVu").val();*/
 
+function createUser() {
+	$.ajax({
+		url: 'user/create',
+		type: 'post',
+		dataType: 'json',
+		success: function (res) {
+			console.log(res);
+        }
+    })
+}
 
 $(document).ready(function () {
 	
@@ -31,7 +43,3 @@ var loadFile = function (event) {
 };
 
 
-
-function newUser() {
-
-}
