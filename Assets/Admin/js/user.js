@@ -1,34 +1,48 @@
-/*
-var HoTen = $("#HoTen").val();
-var Username = $("#Username").val();
-var Password = $("#Password").val();
-var SDT = $("#SDT").val();
-var Email = $("#Email").val();
-var Quyen = $("#Quyen").val();
-var TrangThai = $("#TrangThai").val();
-var AnhDaiDien = $("#AnhDaiDien").val()
-var GioiTinh = $("#GioiTinh").val();
-var NgaySinh = $("#NgaySinh").val();
-var DiaChi = $("#DiaChi").val();
-var QueQuan = $("#QueQuan").val();
-var TieuSu = $("#TieuSu").val();
-var CongTy = $("#CongTy").val();
-var ChucVu = $("#ChucVu").val();*/
+﻿
 
-function createUser() {
+
+function CreateUser() {
+	var UserData = {
+		HoTen: $("#HoTen").val(),
+		Username: $("#Username").val(),
+		Password: $("#Password").val(),
+		SDT: $("#SDT").val(),
+		Email: $("#Email").val(),
+		Quyen: $("#Quyen").val(),
+		TrangThai: $("#TrangThai").val(),
+		AnhDaiDien: $("#AnhDaiDien").val(),
+		GioiTinh: $("#GioiTinh ").val(),
+		NgaySinh: $("#NgaySinh").val(),
+		DiaChi: $("#DiaChi").val(),
+		QueQuan: $("#QueQuan").val(),
+		TieuSu: $("#TieuSu").val(),
+		CongTy: $("#CongTy").val(),
+		ChucVu: $("#ChucVu").val(),
+
+	}
 	$.ajax({
-		url: 'user/create',
-		type: 'post',
-		dataType: 'json',
+		url: "/Admin/User/Index",
+		type: "POST",
+		dataType: "json",
+		data: { jsonObj: JSON.stringify(UserData) },
 		success: function (res) {
-			console.log(res);
-        }
-    })
+			let html = `<tr>
+			<td>${res.ID}</td>
+			<td>${res.HoTen}</td>
+			<td>${res.UserName}</td>
+			<td>${res.Quyen}</td>
+			<td>
+				<a href="#">Xem </a>|
+				<a href="#">Sửa </a>|
+				<a href="#">Xóa </a>
+			</td>
+		</tr>`
+			$(".modal").modal('hide');
+			$("#table-body").append(html);
+		}
+	})
 }
 
-$(document).ready(function () {
-	
-});
 
 //xu ly anh trong khi them thanh vien
 $('#output').hide();
@@ -41,5 +55,7 @@ var loadFile = function (event) {
 	$('#imgTemp').hide();
 	$('#output').show();
 };
+
+
 
 

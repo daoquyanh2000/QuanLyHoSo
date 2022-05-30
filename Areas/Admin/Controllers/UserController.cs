@@ -1,10 +1,8 @@
 ﻿using QuanLyLogin.Dao.DaoAdmin;
 using QuanLyLogin.Models;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
+using System.Web.Script.Serialization;
 
 namespace QuanLyLogin.Areas.Admin.Controllers
 {
@@ -18,13 +16,13 @@ namespace QuanLyLogin.Areas.Admin.Controllers
             ViewBag.listUser = listUser;
             return View();
         }
-        public JsonResult Create()
+        [HttpPost]
+        public JsonResult Index(string jsonObj)
         {
-            return Json(new
-            {
-                status = true,
-                msg="hello"
-            });
+            JavaScriptSerializer js = new JavaScriptSerializer();
+            NhanVien nv = js.Deserialize<NhanVien>(jsonObj);
+            UserDao.CreateNewUser(nv);
+            return Json(nv);
         }
 
     }

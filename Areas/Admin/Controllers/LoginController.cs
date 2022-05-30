@@ -30,7 +30,7 @@ namespace QuanLyLogin.Areas.Admin.Controllers
 
                 if (result > 0)
                 {
-                    Session["UserName"] = model.UserName;
+                    Session["UserNameNV"] = model.UserName;
                     Session["IDNV"] = model.ID;
                     return RedirectToAction("Index", "Home");
                 }

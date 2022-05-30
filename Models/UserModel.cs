@@ -9,11 +9,11 @@ namespace QuanLyLogin.Models
     public class NhanVien 
 
     {
-        public long ID { get; set; }
+        public long? ID { get; set; }
         [Display(Name = "Tên tài khoản")]
         [Required(ErrorMessage = "Vui lòng nhập tên tài khoản")]
         public string UserName { get; set; }
-        public byte? Quyen { get; set; }
+        public byte Quyen { get; set; }
         public string HoTen { get; set; }
 
         [Display(Name = "Mật khẩu")]
@@ -21,13 +21,13 @@ namespace QuanLyLogin.Models
         public string Password { get; set; }
         public int TrangThai { get; set; }
 
-        public string NgaySinh { get; set; }
+        public DateTime? NgaySinh { get; set; }
 
         public string AnhDaiDien { get; set; }
 
-        public int SDT { get; set; }
+        public string SDT { get; set; }
         public string Email { get; set; }
-        public bool GioiTinh { get; set; }
+        public bool? GioiTinh { get; set; }
         public string DiaChi { get; set; }
         public string QueQuan { get; set; }
 
@@ -37,7 +37,7 @@ namespace QuanLyLogin.Models
 
         public string TieuSu { get; set; }
         public long? NguoiTao { get; set; }
-        public Nullable<DateTime> NgayTao { get; set; }
+        public DateTime? NgayTao { get; set; }
 
         public DateTime? NgaySua { get; set; }
 

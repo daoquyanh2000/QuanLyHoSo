@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
+
 namespace QuanLyLogin.Areas.Admin.Controllers
 {
     public class HomeController : Controller
@@ -15,7 +16,6 @@ namespace QuanLyLogin.Areas.Admin.Controllers
             {
                 return RedirectToAction("Index", "Login");
             }
-            ViewBag.UserName = Session["UserNameNV"];
             return View();
         }
     }

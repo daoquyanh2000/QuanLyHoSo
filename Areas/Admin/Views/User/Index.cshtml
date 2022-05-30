@@ -3,6 +3,7 @@
     ViewBag.Title = "Index";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
+
 <main>
     <!-- nav button start -->
     <section>
@@ -53,7 +54,7 @@
                     <th>Chức năng</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="table-body">
                 @foreach (var item in ViewBag.listUser)
                 {
                     <tr>
@@ -160,10 +161,10 @@
                                         <div class="row">
                                             <div class="col-lg-6">
                                                 <div class="form-group">
-                                                    <label class="form-label " id="GioiTinh">Giới tính</label>
+                                                    <label class="form-label " for="GioiTinh">Giới tính</label>
                                                     <select class="form-select " id="GioiTinh" aria-label="Giới tính">
-                                                        <option value="1">Nam</option>
-                                                        <option value="2">Nữ</option>
+                                                        <option value="true">Nam</option>
+                                                        <option value="false">Nữ</option>
                                                     </select>
                                                 </div>
                                             </div>
@@ -213,7 +214,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                    <button type="submit" class="btn btn-primary" form="userForm">Tạo người dùng</button>
+                    <button type="button" onclick="CreateUser()" class="btn btn-primary" form="userForm">Tạo người dùng</button>
                 </div>
             </div>
         </div>
