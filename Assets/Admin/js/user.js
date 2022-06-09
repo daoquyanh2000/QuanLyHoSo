@@ -1,61 +1,225 @@
-﻿
+﻿$(function () {
+    ////khi bam nut tao user moi
+    $('button[data-bs-toggle="modal"]').click(function () {
+        EnableForm();
+        $("#HiddenID").val(0);
+        $("#userImg").hide();
+        $("#imgTemp").show();
+    })
+    //
+    //xu ly anh trong khi them thanh vien
+    $('#userImg').hide();
 
+    var input = document.getElementById("searchInput");
+
+    // Execute a function when the user presses a key on the keyboard
+    input.addEventListener("keypress", function (event) {
+        // If the user presses the "Enter" key on the keyboard
+        if (event.key === "Enter") {
+            // Cancel the default action, if needed
+            event.preventDefault();
+            // Trigger the button element with a click
+            document.getElementById("searchBtn").click();
+        }
+    });
+})
 
 function CreateUser() {
-	var UserData = {
-		HoTen: $("#HoTen").val(),
-		Username: $("#Username").val(),
-		Password: $("#Password").val(),
-		SDT: $("#SDT").val(),
-		Email: $("#Email").val(),
-		Quyen: $("#Quyen").val(),
-		TrangThai: $("#TrangThai").val(),
-		AnhDaiDien: $("#AnhDaiDien").val(),
-		GioiTinh: $("#GioiTinh ").val(),
-		NgaySinh: $("#NgaySinh").val(),
-		DiaChi: $("#DiaChi").val(),
-		QueQuan: $("#QueQuan").val(),
-		TieuSu: $("#TieuSu").val(),
-		CongTy: $("#CongTy").val(),
-		ChucVu: $("#ChucVu").val(),
-
-	}
-	$.ajax({
-		url: "/Admin/User/Index",
-		type: "POST",
-		dataType: "json",
-		data: { jsonObj: JSON.stringify(UserData) },
-		success: function (res) {
-			let html = `<tr>
-			<td>${res.ID}</td>
-			<td>${res.HoTen}</td>
-			<td>${res.UserName}</td>
-			<td>${res.Quyen}</td>
-			<td>
-				<a href="#">Xem </a>|
-				<a href="#">Sửa </a>|
-				<a href="#">Xóa </a>
-			</td>
-		</tr>`
-			$(".modal").modal('hide');
-			$("#table-body").append(html);
-		}
-	})
+    var formData = new FormData($('form#userForm')[0]);
+    var userID = $("#HiddenID").val();
+    formData.append("ID", userID);
+    formData.append("AnhDaiDien", "");
+    $.ajax({
+        url: "/admin/user/save",
+        data: formData,
+        cache: false,
+        contentType: false,
+        processData: false,
+        type: 'post',
+        dataType: 'json',
+        success: function (res) {
+            $('.modal').modal('toggle');
+            $.toast({
+                heading: res.heading,
+                icon: res.icon,
+                text: res.message,
+                position: 'top-right',
+                stack: false,
+                hideAfter: 3000,
+            })
+            SearchUser();
+        }
+    })
 }
 
+function reformatDateString(mydate) {
+    var date = new Date(mydate);
+    return dateString = new Date(date.getTime() - (date.getTimezoneOffset() * 60000))
+        .toISOString()
+        .split("T")[0];
+}
+function GetData(ID, event) {
+    event.preventDefault();
+    $.ajax({
+        url: "/admin/user/View",
+        dataType: "json",
+        data: { ID: ID },
+        type: "get",
+        success: function (res) {
+            $("#HiddenID").val(res.data.ID);
+            $("#HoTen").val(res.data.HoTen);
+            $("#UserName").val(res.data.UserName);
+            $("#Password").val(res.data.Password);
+            $("#Quyen").val(res.data.Quyen);
+            $("#TrangThai").val(res.data.TrangThai);
+            $("#NgaySinh").val(reformatDateString(res.data.NgaySinh));
+            $("#SDT").val(res.data.SDT);
+            $("#Email").val(res.data.Email);
+            $("#GioiTinh").val(res.data.GioiTinh);
+            $("#DiaChi").val(res.data.DiaChi);
+            $("#QueQuan").val(res.data.QueQuan);
+            $("#CongTy").val(res.data.CongTy);
+            $("#ChucVu").val(res.data.ChucVu);
+            $("#TieuSu").val(res.data.TieuSu);
+            $('.modal').modal('toggle');
+            if (res.data.AnhDaiDien != "") {
+                $("#imgTemp").hide();
+                $("#userImg").show();
+                $("#userImg").attr("src", res.data.AnhDaiDien);
+            } else {
+                $("#imgTemp").show();
+                $("#userImg").hide();
+            }
+        }
+    })
+}
+function DisableForm() {
+    $('#userForm :input').each(function () {
+        $(this).attr("disabled", true);
+    });
+    $(`button[onclick="CreateUser()"]`).attr("disabled", true);
+}
+function ViewUser(ID, event) {
+    var IsViewClicked = true;
+    GetData(ID, event);
+    DisableForm();
+}
 
-//xu ly anh trong khi them thanh vien
-$('#output').hide();
+function DeleteUser(ID, event) {
+    var tr = document.querySelector(`tr[data-id="${ID}"]`)
+    if (confirm("Bạn có chắc chắn xóa người dùng này không?")) {
+        event.preventDefault();
+        tr.remove();
+        $.ajax({
+            url: "/admin/user/delete",
+            data: { ID: ID },
+            type: 'get',
+            dataType: 'json',
+            success: function (res) {
+                $.toast({
+                    heading: res.heading,
+                    icon: res.icon,
+                    text: res.message,
+                    position: 'top-right',
+                    stack: 10,
+                    hideAfter: 3000,
+                    showHideTransition: 'slide',
+                })
+            }
+        })
+    }
+}
+function UpdateUser(ID, event) {
+    GetData(ID, event);
+    EnableForm();
+}
+
+function EnableForm() {
+    $('#userForm :input').each(function () {
+        $(this).val("");
+        $(this).attr("disabled", false);
+        $(`button[onclick="CreateUser()"]`).attr("disabled", false);
+    });
+}
+
+function ChangeState(ID) {
+    var checkboxID = $(`#button-${ID}`)
+    var nextState = checkboxID.prop('checked')
+    if (nextState == true)
+        var setState = 1;
+    else setState = 0;
+
+    if (confirm("Bạn có muốn thay đổi trạng thái không?")) {
+        event.preventDefault();
+        /*        tr.remove();*/
+        $.ajax({
+            url: "/admin/user/Change",
+            data: { ID: ID, state: setState },
+            type: "get",
+            dataType: "json",
+            success: function (res) {
+                SearchUser();
+                $.toast({
+                    heading: res.heading,
+                    icon: res.icon,
+                    text: res.message,
+                    position: 'top-right',
+                    stack: 10,
+                    hideAfter: 3000,
+                    showHideTransition: 'slide',
+                })
+            }
+        })
+    }
+    else {
+        (nextState == true) ? checkboxID.prop('checked', false) : checkboxID.prop('checked', true)
+    }
+}
+
+function UpExcel() {
+    var fileUpload = $("#excelUpload").get(0);
+    var files = fileUpload.files;
+    var fileData = new FormData();
+    for (var i = 0; i < files.length; i++) {
+        fileData.append(files[i].name, files[i]);
+    }
+    $.ajax({
+        url: '/admin/user/Excel',
+        type: "POST",
+        contentType: false,
+        processData: false,
+        data: fileData,
+        success: function (res) {
+            $.toast({
+                heading: res.heading,
+                icon: res.icon,
+                text: res.message,
+                position: 'top-right',
+                stack: 10,
+                hideAfter: 3000,
+                showHideTransition: 'slide',
+            })
+            SearchUser();
+        }
+    });
+}
+function SearchUser() {
+    let value = $("#searchInput").val();
+    $.ajax({
+        url: "/admin/user/search?keyword=" + value,
+        type: "get",
+        success: function (res) {
+            var table = $("#tableContainer");
+            table.html(res);
+        }
+    })
+}
 var loadFile = function (event) {
-	var output = document.getElementById('output');
-	output.src = URL.createObjectURL(event.target.files[0]);
-	output.onload = function () {
-		URL.revokeObjectURL(output.src); // free memory
-	};
-	$('#imgTemp').hide();
-	$('#output').show();
+    var userImg = document.getElementById('userImg');
+    userImg.src = URL.createObjectURL(event.target.files[0]);
+    userImg.onload = function () {
+        URL.revokeObjectURL(userImg.src); // free memory
+    };
+    $('#imgTemp').hide();
+    $('#userImg').show();
 };
-
-
-
-

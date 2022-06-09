@@ -2,7 +2,7 @@
     ViewBag.title = "";
 
 }
-@model QuanLyLogin.Models.NhanVien
+@model QuanLyHoSo.Models.NhanVien
 <html lang="en">
 
 <head>
@@ -16,7 +16,9 @@
     <!-- bootstrap -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-
+    <!-- jquery toast -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-toast-plugin/1.3.2/jquery.toast.min.js" integrity="sha512-zlWWyZq71UMApAjih4WkaRpikgY9Bz1oXIW5G0fED4vk14JjGlQ1UmkGM392jEULP8jbNMiwLWdM8Z87Hu88Fw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-toast-plugin/1.3.2/jquery.toast.min.css" integrity="sha512-wJgJNTBBkLit7ymC6vvzM1EcSWeM9mmOu+1USHaRBbHkm6W9EgM0HY27+UtUaprntaYQJF75rc8gjxllKs5OIQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link href="~/Assets/Admin/css/login.css" rel="stylesheet" />
     <title>Document</title>
 </head>
@@ -25,30 +27,23 @@
     <div class="container-fluid d-flex justify-content-center flex-column login-container">
         <div class="row justify-content-center ">
             <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12 p-3 mx-4 shadow rounded border bg-white">
-                @using (Html.BeginForm())
+                @using (Html.BeginForm("Index", "Login", FormMethod.Post, new { @id = "loginForm" }))
                 {
                     @Html.AntiForgeryToken()
-                    @Html.ValidationSummary(false, "", new { @class = "text-danger" })
-                    <h2>Please Login </h2>
+                    <h2>Quản trị viên </h2>
                     <div class="form-group">
-                        @Html.LabelFor(model => model.UserName, new { @class = "form-label" })
+                        @Html.LabelFor(model => model.UserName, "Tên Tài Khoản", new { @class = "form-label" })
                         @Html.TextBoxFor(model => model.UserName, new { @class = "form-control", @placeholder = "username" })
-
-
-
                     </div>
                     <div class="form-group">
-                        @Html.LabelFor(model => model.Password, new { @class = "form-label" })
+                        @Html.LabelFor(model => model.Password, "Mật khẩu", new { @class = "form-label" })
                         @Html.PasswordFor(model => model.Password, new { @class = "form-control", @placeholder = "password" })
-
                     </div>
-
-                    <button class="btn btn-success btn-block " type="submit">Login</button>
-
+                    <button class="btn btn-success btn-block " type="button" onclick="Login()">Đăng Nhập</button>
                 }
             </div>
         </div>
     </div>
 </body>
-
 </html>
+<script src="~/Assets/Admin/js/login.js"></script>

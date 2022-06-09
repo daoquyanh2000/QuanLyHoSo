@@ -1,5 +1,4 @@
-﻿@model QuanLyLogin.Models.NhanVien
-@{
+﻿@{
     ViewBag.Title = "Index";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
@@ -8,71 +7,55 @@
     <!-- nav button start -->
     <section>
         <div class="container-fluid">
-            <div class="btn-group my-3 " role="group" aria-label="Basic mixed styles example">
-                <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal"
-                        data-bs-target="#staticBackdrop">
-                    <span>
-                        <i class="bi bi-plus-circle-fill"></i>
-                    </span>
-                    <span>Thêm người dùng mới</span>
-                </button>
-                <button type="button" class="btn btn-outline-secondary">
-                    <input type="file" id="file-upload" class="btn btn-outline-secondary" accept="document/*">
-                    <label for="file-upload" class="custom-file-upload ">
+
+            <div class="btn-toolbar justify-content-between py-3" role="toolbar" aria-label="Toolbar with button groups">
+                <div class="btn-group" role="group" aria-label="First group">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" id="modal-on"
+                            data-bs-target="#staticBackdrop">
                         <span>
-                            <i class="bi bi-paperclip"></i>
+                            <i class="bi bi-plus-circle-fill"></i>
                         </span>
-                        <span>Thêm từ biểu mẫu</span>
-                    </label>
-                </button>
-                <a href="#" class="btn btn-outline-secondary">
-                    <span>
-                        <i class="bi bi-cloud-arrow-down"></i>
-                    </span>
-                    <span>Tập tin mẫu</span>
-                </a>
-                <button type="button" class="btn btn-outline-secondary">
-                    <span>
-                        <i class="bi bi-trash3-fill"></i>
-                    </span>
-                    <span>Xóa</span>
-                </button>
+                        <span>Thêm người dùng mới</span>
+                    </button>
+
+                    <button type="button" class="btn btn-outline-secondary">
+                        <input type="file" id="excelUpload" onchange=" UpExcel()" name="excelUpload" accept="*/image" class="custom-file-upload" />
+                        <label for="excelUpload" class="custom-file-upload ">
+                            <span>
+                                <i class="bi bi-paperclip"></i>
+                            </span>
+                            <span>Thêm từ biểu mẫu</span>
+                        </label>
+                    </button>
+
+                    <a href="https://1drv.ms/x/s!AmdgZJaagePn6g0JxvKDvxZek5Rc?e=pl4l6x" class="btn btn-outline-secondary" target="_blank">
+                        <span>
+                            <i class="bi bi-cloud-arrow-down"></i>
+                        </span>
+                        <span>Tập tin mẫu</span>
+                    </a>
+                </div>
+                <div class="input-group">
+                    <input type="text" name="name" value="" class="rounded border-1" id="searchInput" />
+                    <button for="searchInput" id="searchBtn" class="btn btn-outline-secondary" onclick="SearchUser(event)">
+                        <span>
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </span>
+                        <span>Tìm kiếm</span>
+                    </button>
+                </div>
             </div>
         </div>
     </section>
     <!-- nav button end  -->
-    <!-- table start -->
-    <div class="table-responsive container-fluid">
-        <table class="table table-striped table-light table-bordered display w-100" id="users">
-            <thead class="">
-                <tr>
-                    <th>ID</th>
-                    <th>Tên người dùng</th>
-                    <th>Tên tài khoản</th>
-                    <th>Kiểu người dùng</th>
-                    @*                    <th>Ngày tham gia</th>*@
-                    <th>Chức năng</th>
-                </tr>
-            </thead>
-            <tbody id="table-body">
-                @foreach (var item in ViewBag.listUser)
-                {
-                    <tr>
-                        <td>@item.ID</td>
-                        <td>@item.HoTen</td>
-                        <td>@item.UserName</td>
-                        <td>@item.Quyen</td>
-                        <td>
-                            <a href="#">Xem </a>|
-                            <a href="#">Sửa </a>|
-                            <a href="#">Xóa </a>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+    <div id="tableContainer">
+        <!-- table start -->
+        @{
+            Html.RenderAction("Search", "User", new { page = 1 });
+        }
+        <!-- table end -->
     </div>
-    <!-- table end -->
+
     <!-- content start  -->
     <!-- content end  -->
 </main>
@@ -89,62 +72,56 @@
                 </div>
                 <div class="modal-body">
                     <div class="container">
-                        <form action="index" method="post" id="userForm">
+                        <form action="/Admin/User/Create" id="userForm" method="post">
                             <div class="row my-2">
                                 <div class="col-12 fw-bold fst-italic">
                                     (*) Thông tin bắt buộc
                                 </div>
                                 <div class="col-lg-6">
                                     <div class="form-group">
-                                        <label for="HoTen" class="form-label">Họ và tên (*)</label>
-                                        <input class="form-control" id="HoTen" type="text" placeholder="">
-
+                                        <label class="form-label" for="HoTen">Họ và tên (*)</label>
+                                        <input class="form-control" id="HoTen" name="HoTen" type="text" value="">
                                     </div>
                                     <div class="form-group">
-                                        <label for="Username" class="form-label">Tên đăng nhập (*)</label>
-                                        <input class="form-control" id="Username" type="text" placeholder="">
-
+                                        <label class="form-label" for="UserName">Tên tài khoản (*)</label>
+                                        <input class="form-control" data-val="true" data-val-required="Vui lòng nhập tên tài khoản" id="UserName" name="UserName" type="text" value="">
                                     </div>
                                     <div class="form-group">
-                                        <label for="Password" class="form-label">Mật khẩu (*)</label>
-                                        <input class="form-control" id="Password" type="text" placeholder="">
-
-
+                                        <label class="form-label" for="Password">Password (*)</label>
+                                        <input class="form-control" id="Password" name="Password" type="text" value="">
                                     </div>
                                     <div class="form-group">
-                                        <label for="SDT" class="form-label">Số điện thoại (*)</label>
-                                        <input class="form-control" id="SDT" type="text" placeholder="">
+                                        <label class="form-label" for="SDT">Số điện thoại (*)</label>
+                                        <input class="form-control" id="SDT" name="SDT" type="text" value="">
                                     </div>
                                     <div class="form-group">
-                                        <label for="Email" class="form-label">Email (*)</label>
-                                        <input class="form-control" id="Email" type="text" placeholder="">
+                                        <label class="form-label" for="Email">Email (*)</label>
+                                        <input class="form-control" id="Email" name="Email" type="text" value="">
                                     </div>
                                 </div>
                                 <div class="col-lg-6  ">
                                     <div class="form-group">
-                                        <label for="Quyen" class="form-label">Kiểu người dùng (*)</label>
-                                        <select class="form-select" aria-label="Kiểu người dùng" id="Quyen">
-                                            <option value="1">One</option>
-                                            <option value="2">Two</option>
-                                            <option value="3">Three</option>
+                                        <label class="form-label" for="Quyen">Kiểu người dùng (*)</label>
+                                        <select class="form-select" data-val="true" data-val-number="The field Quyen must be a number." data-val-required="The Quyen field is required." id="Quyen" name="Quyen">
+                                            <option value="1">Kiểu đẹp trai</option>
+                                            <option value="2">Kiểu xấu </option>
+                                            <option value="3">kiểu nhiều tiền</option>
                                         </select>
                                     </div>
                                     <div class="form-group">
-                                        <label for="TrangThai" class="form-label">Trạng thái (*)</label>
-                                        <select class="form-select" aria-label="Trạng thái" id="TrangThai">
-                                            <option value="1">Có</option>
-                                            <option value="2">Không</option>
+                                        <label class="form-label" for="TrangThai">Trạng thái (*)</label>
+                                        <select class="form-select" data-val="true" data-val-number="The field TrangThai must be a number." data-val-required="The TrangThai field is required." id="TrangThai" name="TrangThai">
+                                            <option value="0">Khóa</option>
+                                            <option value="1">Mở</option>
                                         </select>
                                     </div>
                                     <div class="text-center">
                                         <label for="AnhDaiDien" class=" fst-italic text-center form-label">
-                                            Choose a file
-                                            <i class="icon fa fa-camera border px-2 py-2" id="imgTemp"
-                                               style="font-size: 200px; display: block;"></i>
+                                            Ảnh đại diện
+                                            <i class="icon fa fa-camera border px-2 py-2" id="imgTemp" style="font-size: 200px; display: block;"></i>
                                             <div class="d-flex justify-content-center">
-                                                <img id="output" src="" alt="" class="w-100 border px-2 py-2">
-                                                <input type="file" id="AnhDaiDien" class="custom-file-upload" accept="image/*"
-                                                       onchange=" loadFile(event)" />
+                                                <img id="userImg" src="" alt="" class="w-100 border px-2 py-2" style="display: none;">
+                                                <input type="file" id="AnhDaiDien" onchange=" loadFile(event)" name="AnhDaiDien" accept="*/image" class="custom-file-upload">
                                             </div>
                                         </label>
                                     </div>
@@ -161,49 +138,47 @@
                                         <div class="row">
                                             <div class="col-lg-6">
                                                 <div class="form-group">
-                                                    <label class="form-label " for="GioiTinh">Giới tính</label>
-                                                    <select class="form-select " id="GioiTinh" aria-label="Giới tính">
-                                                        <option value="true">Nam</option>
-                                                        <option value="false">Nữ</option>
+                                                    <label class="form-label" for="GioiTinh">Giới tính</label>
+                                                    <select class="form-select" data-val="true" data-val-number="The field GioiTinh must be a number." id="GioiTinh" name="GioiTinh">
+                                                        <option value="0">Nam</option>
+                                                        <option value="1">Nữ</option>
                                                     </select>
                                                 </div>
                                             </div>
                                             <div class="col-lg-6">
                                                 <div class="form-group">
-                                                    <label for="NgaySinh" class="form-label">Ngày sinh</label>
-                                                    <input class="form-control" id="NgaySinh" type="date" placeholder="">
+                                                    <label class="form-label" for="NgaySinh">Ngày sinh</label>
+                                                    <input class="form-control" id="NgaySinh" name="NgaySinh" type="date" value="">
                                                 </div>
                                             </div>
                                         </div>
-
                                     </div>
                                     <div class="form-group">
-                                        <label for="DiaChi" class="form-label">Địa chỉ</label>
-                                        <input class="form-control" id="DiaChi" type="text" placeholder="">
+                                        <label class="form-label" for="DiaChi">Địa chỉ</label>
+                                        <input class="form-control" id="DiaChi" name="DiaChi" type="text" value="">
                                     </div>
                                     <div class="form-group">
-                                        <label for="QueQuan" class="form-label">Quê quán</label>
-                                        <input class="form-control" id="QueQuan" type="text" placeholder="">
+                                        <label class="form-label" for="QueQuan">Quê quán</label>
+                                        <input class="form-control" id="QueQuan" name="QueQuan" type="text" value="">
                                     </div>
-
                                 </div>
                                 <div class="col-lg-6">
 
                                     <div class="form-group">
-                                        <label for="TieuSu" class="form-label">Tiểu sử</label>
-                                        <textarea class="form-control" id="TieuSu" rows="5"></textarea>
+                                        <label class="form-label" for="TieuSu">Tiểu sử</label>
+                                        <textarea class="form-control" cols="20" id="TieuSu" name="TieuSu" rows="5"></textarea>
                                     </div>
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="form-group">
-                                                <label for="CongTy" class="form-label">Công ty</label>
-                                                <input class="form-control" id="CongTy" type="text" placeholder="">
+                                                <label class="form-label" for="CongTy">Công ty</label>
+                                                <input class="form-control" id="CongTy" name="CongTy" type="text" value="">
                                             </div>
                                         </div>
                                         <div class="col-lg-6">
                                             <div class="form-group">
-                                                <label for="ChucVu" class="form-label">Chức vụ</label>
-                                                <input class="form-control" id="ChucVu" type="text" placeholder="">
+                                                <label class="form-label" for="ChucVu">Chức vụ</label>
+                                                <input class="form-control" id="ChucVu" name="ChucVu" type="text" value="">
                                             </div>
                                         </div>
                                     </div>
@@ -211,13 +186,15 @@
                             </div>
                         </form>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                    <button type="button" onclick="CreateUser()" class="btn btn-primary" form="userForm">Tạo người dùng</button>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                        <button type="button" onclick="CreateUser()" class="btn btn-primary">Lưu người dùng</button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </section>
 <!-- modal end -->
+
+<script src="~/Assets/Admin/js/user.js"></script>

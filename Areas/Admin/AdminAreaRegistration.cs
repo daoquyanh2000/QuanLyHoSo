@@ -1,6 +1,6 @@
 ﻿using System.Web.Mvc;
 
-namespace QuanLyLogin.Areas.Admin
+namespace QuanLyHoSo.Areas.Admin
 {
     public class AdminAreaRegistration : AreaRegistration 
     {

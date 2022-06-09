@@ -1,13 +1,12 @@
-﻿using QuanLyLogin.Dao.DaoAdmin;
-using QuanLyLogin.Models;
-using System.Data.SqlClient;
+﻿using QuanLyHoSo.Dao;
+using QuanLyHoSo.Dao.DaoAdmin;
+using QuanLyHoSo.Models;
 using System.Web.Mvc;
-namespace QuanLyLogin.Areas.Admin.Controllers
-{
 
+namespace QuanLyHoSo.Areas.Admin.Controllers
+{
     public class LoginController : Controller
     {
-
         // GET: Admin/Login
         [HttpGet]
         public ActionResult Index()
@@ -18,35 +17,56 @@ namespace QuanLyLogin.Areas.Admin.Controllers
             }
             return View();
         }
+
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Index(NhanVien model)
+        public JsonResult Index(FormCollection fc)
         {
             //kiem tra nguoi dung bam submit chua
-            if (ModelState.IsValid)
+            NhanVien UserLogin = new NhanVien();
+            UserLogin.UserName = fc["UserName"].ToString();
+            UserLogin.Password = Stuff.MD5Hash(fc["Password"].ToString());
+            NhanVien User = LoginDao.GetUserByUserNamePassword(UserLogin);
+            if (User.ID > 0)
             {
-                LoginDao dao = new LoginDao();
-                var result = dao.ValidateLogin(model);
-
-                if (result > 0)
+                if (User.TrangThai == 1)
                 {
-                    Session["UserNameNV"] = model.UserName;
-                    Session["IDNV"] = model.ID;
-                    return RedirectToAction("Index", "Home");
+                    Session["HoTenNV"] = User.HoTen;
+                    Session["UserNameNV"] = User.UserName;
+                    Session["IDNV"] = User.ID;
+                    Session["QuyenNV"] = User.Quyen;
+                    return Json(new
+                    {
+                        status = true,
+                        icon ="success",
+                        heading = "Thành công",
+                        message = "Đăng nhập thành công!"
+                    }, JsonRequestBehavior.AllowGet); 
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty,"Sai thông tin tài khoản");
+                    return Json(new
+                    {
+                        heading = "Có lỗi",
+                        icon = "warning",
+                        message = "Tài khoản đăng nhập đã bị khóa!"
+                    }, JsonRequestBehavior.AllowGet);
                 }
             }
-
-            return View();
+            else
+            {
+                return Json(new
+                {
+                    heading = "Có lỗi",
+                    icon = "error",
+                    message = "Tài khoản không tồn tại hoặc sai thông tin đăng nhập!"
+                }, JsonRequestBehavior.AllowGet);
+            }
         }
+
         public ActionResult LogOut()
         {
             Session.Clear();
             return RedirectToAction("Index", "Login");
         }
-
     }
 }

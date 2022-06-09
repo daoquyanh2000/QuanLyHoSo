@@ -1,0 +1,118 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<main>
+    <!-- nav button start -->
+    <section>
+        <div class="container-fluid">
+            <div class="btn-toolbar justify-content-between py-3" role="toolbar" aria-label="Toolbar with button groups">
+                <div class="btn-group" role="group" aria-label="First group">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" id="modal-on"
+                            data-bs-target="#staticBackdrop">
+                        <span>
+                            <i class="bi bi-plus-circle-fill"></i>
+                        </span>
+                        <span>Thêm người dùng mới</span>
+                    </button>
+
+                    <button type="button" class="btn btn-outline-secondary">
+                        <input type="file" id="excelUpload" onchange=" UpExcel()" name="excelUpload" accept="*/image" class="custom-file-upload" />
+                        <label for="excelUpload" class="custom-file-upload ">
+                            <span>
+                                <i class="bi bi-paperclip"></i>
+                            </span>
+                            <span>Thêm từ biểu mẫu</span>
+                        </label>
+                    </button>
+
+                    <a href="https://1drv.ms/x/s!AmdgZJaagePn6g0JxvKDvxZek5Rc?e=pl4l6x" class="btn btn-outline-secondary" target="_blank">
+                        <span>
+                            <i class="bi bi-cloud-arrow-down"></i>
+                        </span>
+                        <span>Tập tin mẫu</span>
+                    </a>
+                </div>
+                <div class="input-group">
+                    <input type="text" name="name" value="" class="rounded border-1" id="searchInput" />
+                    <button for="searchInput" id="searchBtn" class="btn btn-outline-secondary" onclick="SearchUser(event)">
+                        <span>
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </span>
+                        <span>Tìm kiếm</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- nav button end  -->
+    <div id="tableContainer">
+        <!-- table start -->
+        @{
+            Html.RenderAction("Search", "Role", new { page = 1 });
+        }
+        <!-- table end -->
+    </div>
+
+    <!-- content start  -->
+    <!-- content end  -->
+</main>
+<!-- modal start -->
+<section>
+    <div class="modal fade " id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+         aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-md ">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-center" id="exampleModalLabel">Thông tin kiểu người dùng</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <form action="/Admin/User/Create" id="userForm" method="post">
+                            <div class="row my-2">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label for="kieuNguoiDung" class="form-label">Kiểu người dùng (*)</label>
+                                        <input class="form-control"  id="kieuNguoiDung" name="kieuNguoiDung" type="text" placeholder="">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="moTa" class="form-label">Mô tả</label>
+                                        <textarea class="form-control"  id="moTa" name="moTa" cols="5" rows="5"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-12">
+                                <div class="dropdown-divider my-4">
+                                </div>
+                                <div class="col-12 fw-bold fst-italic">
+                                    Vai trò
+                                </div>
+                                <div class="form-group">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="chucNang1" name="chucNang1"
+                                               value="1">
+                                        <label class="form-check-label" for="chucNang1">Quản trị viên</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox"  id="chucNang2" name="chucNang2"
+                                               value="2">
+                                        <label class="form-check-label" for="chucNang2">Người dùng</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Lưu</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- modal end -->
+
+<script src="~/Assets/Admin/js/role.js"></script>

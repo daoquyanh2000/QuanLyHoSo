@@ -4,7 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
-namespace QuanLyLogin.Controllers
+namespace QuanLyHoSo.Controllers
 {
     public class DashboardController : Controller
     {
