@@ -10,7 +10,7 @@ namespace QuanLyHoSo.Dao
     {
         public  static string Setup()
         {
-            return ConfigurationManager.ConnectionStrings["laptop"].ConnectionString;
+            return ConfigurationManager.ConnectionStrings["pc"].ConnectionString;
         }
     }
 }

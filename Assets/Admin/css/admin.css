@@ -6,7 +6,7 @@
 main {
     margin-top: var(--topNavbarHeight);
     font-size: 16px;
-    min-height: 571px;
+    min-height: 624px;
 }
 
 .sidebar-nav {
@@ -57,4 +57,8 @@ input[type="file"] {
         visibility: visible !important;
         top: var(--topNavbarHeight);
     }
+}
+
+label.error{
+    color:red;
 }

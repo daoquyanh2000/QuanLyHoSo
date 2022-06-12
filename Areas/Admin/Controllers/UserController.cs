@@ -147,8 +147,8 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
         [HttpPost]
         public JsonResult Excel()
         {
-            string PathExcel = "C:\\Users\\teu-laptop\\source\\repos\\QuanLyHoSo\\Assets\\Excel\\User\\excelQuanLyHoSo.xlsx";
-
+            string PathExcel = "C:\\Users\\teu-pc\\source\\repos\\daoquyanh2000\\QuanLyHoSo\\Assets\\Excel\\User\\excelQuanLyHoSo.xlsx";
+            /* string PathExcel = "C:\\Users\\teu-pc\\source\\repos\\QuanLyHoSo\\Assets\\Excel\\User\\excelQuanLyHoSo.xlsx";*/
             if (Request.Files.Count > 0)
             {
                 HttpFileCollectionBase files = Request.Files;

@@ -1,4 +1,4 @@
-﻿<form action="/Admin/User/Create" id="userForm" method="post">
+﻿<form action="/Admin/User/save" id="userForm" method="post">
     <div class="row my-2">
         <div class="col-12 fw-bold fst-italic">
             (*) Thông tin bắt buộc
@@ -32,7 +32,7 @@
             </div>
             <div class="form-group">
                 <label class="form-label" for="TrangThai">Trạng thái (*)</label>
-                <select class="form-select" data-val="true" data-val-number="The field TrangThai must be a number." data-val-required="The TrangThai field is required." id="TrangThai" name="TrangThai">
+                <select class="form-select"  id="TrangThai" name="TrangThai">
                     <option value="0">Khóa</option>
                     <option value="1">Mở</option>
                 </select>

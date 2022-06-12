@@ -23,35 +23,113 @@
         }
     });
     // form validation
-    
+    $("#userForm").validate({
+        onfocusout: false,
+        onkeyup: false,
+        onclick: false,
+        rules: {
+            "HoTen": {
+                required: true,
+                maxlength: 20,
+                minlength: 6,
+            },
+            "UserName": {
+                required: true,
+                maxlength: 20,
+                minlength: 6,
+            },
+            "Password": {
+                required: true,
+                maxlength: 20,
+                minlength: 6,
+            },
+            "SDT": {
+                required: true,
+                minlength: 8,
+                maxlength: 10,
+            },
+            "Email": {
+                required: true,
+                minlength: 8,
+                maxlength: 30,
+            },
+            "Quyen": {
+                required: true,
+            },
+            "TrangThai": {
+                required: true,
+            },
+        },
+        messages: {
+            "HoTen": {
+                required: "Bắt buộc nhập họ tên",
+                maxlength: "Hãy nhập tối đa 20 ký tự",
+                minlength: "Hãy nhập ít nhất 6 ký tự"
+            },
+            "UserName": {
+                required: "Bắt buộc nhập tên tài khoản",
+                maxlength: "Hãy nhập tối đa 20 ký tự",
+                minlength: "Hãy nhập ít nhất 6 ký tự"
+            },
+            "Password": {
+                required: "Bắt buộc nhập password",
+                maxlength: "Hãy nhập tối đa 20 ký tự",
+                minlength: "Hãy nhập ít nhất 6 ký tự"
+            },
+            "SDT": {
+                required: "Bắt buộc nhập số điện thoại",
+                maxlength: "Hãy nhập tối đa 10 ký tự",
+                minlength: "Hãy nhập ít nhất 8 ký tự"
+            },
+            "Email": {
+                required: "Bắt buộc nhập email",
+                minlength: "Hãy nhập ít nhất 6 ký tự",
+                maxlength: "Hãy nhập tối đa 30 ký tự",
+            },
+            "Quyen": {
+                required: "Bắt buộc nhập kiểu người dùng",
+            },
+            "TrangThai": {
+                required: "Bắt buộc nhập trạng thái",
+            },
+        },
+        submitHandler: function () {
+            CreateUser();
+        }
+    });
+    //create user
+
 })
 
 function CreateUser() {
-    var formData = new FormData($('form#userForm')[0]);
-    var userID = $("#HiddenID").val();
-    formData.append("ID", userID);
-    // formData.append("AnhDaiDien", "");
-    $.ajax({
-        url: "/admin/user/save",
-        data: formData,
-        cache: false,
-        contentType: false,
-        processData: false,
-        type: 'post',
-        dataType: 'json',
-        success: function (res) {
-            $('.modal').modal('toggle');
-            $.toast({
-                heading: res.heading,
-                icon: res.icon,
-                text: res.message,
-                position: 'top-right',
-                stack: false,
-                hideAfter: 3000,
-            })
-            SearchUser();
-        }
-    })
+    {
+        var formData = new FormData($('form#userForm')[0]);
+        var userID = $("#HiddenID").val();
+        formData.append("ID", userID);
+        // formData.append("AnhDaiDien", "");
+        $.ajax({
+            url: "/admin/user/save",
+            data: formData,
+            cache: false,
+            contentType: false,
+            processData: false,
+            type: 'post',
+            dataType: 'json',
+            success: function (res) {
+                $('.modal').modal('toggle');
+                $.toast({
+                    heading: res.heading,
+                    icon: res.icon,
+                    text: res.message,
+                    position: 'top-right',
+                    stack: false,
+                    hideAfter: 3000,
+                })
+                SearchUser();
+            }
+        })
+    }
+       
 }
 
 function reformatDateString(mydate) {
@@ -99,10 +177,11 @@ function DisableForm() {
     $('#userForm :input').each(function () {
         $(this).attr("disabled", true);
     });
-    $(`button[onclick="CreateUser()"]`).attr("disabled", true);
+    $(`button[type="submit"]`).attr("disabled", true);
 }
 function ViewUser(ID, event) {
     $("#hiddenAction").val(0);
+
     GetData(ID, event);
     DisableForm();
 }
@@ -141,7 +220,7 @@ function EnableForm() {
     $('#userForm :input').each(function () {
         $(this).val("");
         $(this).attr("disabled", false);
-        $(`button[onclick="CreateUser()"]`).attr("disabled", false);
+        $(`button[type="submit"]`).attr("disabled", false);
     });
 }
 
