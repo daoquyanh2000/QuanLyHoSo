@@ -37,10 +37,10 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
                     return Json(new
                     {
                         status = true,
-                        icon ="success",
+                        icon = "success",
                         heading = "Thành công",
                         message = "Đăng nhập thành công!"
-                    }, JsonRequestBehavior.AllowGet); 
+                    }, JsonRequestBehavior.AllowGet);
                 }
                 else
                 {

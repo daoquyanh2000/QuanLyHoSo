@@ -42,8 +42,6 @@ input[type="file"] {
 }
 
 @media (min-width:1023px) {
-
-
     main,
     footer {
         margin-top: var(--topNavbarHeight);

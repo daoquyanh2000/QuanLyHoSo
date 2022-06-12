@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-
-namespace QuanLyHoSo.Models
+﻿namespace QuanLyHoSo.Models
 {
     public class KieuNhanVien
     {
         public long ID { get; set; }
-        public string TenQuyen { get; set; }
-        public string KieuQuyen { get; set; }
-        public string Mota { get; set; }
+        public string TenKieu { get; set; }
+        public string ChuThich { get; set; }
         public byte TrangThai { get; set; }
         public string NguoiTao { get; set; }
         public string NgayTao { get; set; }

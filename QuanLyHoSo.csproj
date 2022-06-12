@@ -164,8 +164,10 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\KieuNhanVien_Quyen.cs" />
     <Compile Include="Models\NhanVien.cs" />
     <Compile Include="Models\KieuNhanVien.cs" />
+    <Compile Include="Models\Quyen.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -218,6 +220,7 @@
     <Content Include="Areas\Admin\Views\Storage\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Role\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Role\_RoleTable.cshtml" />
+    <Content Include="Areas\Admin\Views\User\Modal.cshtml" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />

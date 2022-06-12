@@ -16,15 +16,22 @@
             document.getElementById("searchBtn").click();
         }
     });
+    //xu ly checkbox kieu nhan vien
 })
 
 function CreateUser() {
     var formData = new FormData($('form#userForm')[0]);
     var userID = $("#HiddenID").val();
     formData.append("ID", userID);
-    formData.append("AnhDaiDien", "");
+    let checkedID = [];
+    let checked = $("form input:checked");
+    $.each(checked, function () {
+        let tmp = $(this).attr("data-id")
+        checkedID.push(tmp);
+    })
+    formData.append("checkedID", checkedID);
     $.ajax({
-        url: "/admin/user/save",
+        url: "/admin/role/save",
         data: formData,
         cache: false,
         contentType: false,
@@ -46,44 +53,23 @@ function CreateUser() {
     })
 }
 
-function reformatDateString(mydate) {
-    var date = new Date(mydate);
-    return dateString = new Date(date.getTime() - (date.getTimezoneOffset() * 60000))
-        .toISOString()
-        .split("T")[0];
-}
 function GetData(ID, event) {
     event.preventDefault();
     $.ajax({
-        url: "/admin/user/View",
+        url: "/admin/role/View",
         dataType: "json",
         data: { ID: ID },
         type: "get",
         success: function (res) {
             $("#HiddenID").val(res.data.ID);
-            $("#HoTen").val(res.data.HoTen);
-            $("#UserName").val(res.data.UserName);
-            $("#Password").val(res.data.Password);
-            $("#Quyen").val(res.data.Quyen);
+            $("#TenKieu").val(res.data.TenKieu);
             $("#TrangThai").val(res.data.TrangThai);
-            $("#NgaySinh").val(reformatDateString(res.data.NgaySinh));
-            $("#SDT").val(res.data.SDT);
-            $("#Email").val(res.data.Email);
-            $("#GioiTinh").val(res.data.GioiTinh);
-            $("#DiaChi").val(res.data.DiaChi);
-            $("#QueQuan").val(res.data.QueQuan);
-            $("#CongTy").val(res.data.CongTy);
-            $("#ChucVu").val(res.data.ChucVu);
-            $("#TieuSu").val(res.data.TieuSu);
+            $("#ChuThich").val(res.data.ChuThich);
+            $(res.checkbox).each(function (index, value) {
+                $(`#button_${value}`).prop('checked', true);
+            })
+            console.log(res.checkbox)
             $('.modal').modal('toggle');
-            if (res.data.AnhDaiDien != "") {
-                $("#imgTemp").hide();
-                $("#userImg").show();
-                $("#userImg").attr("src", res.data.AnhDaiDien);
-            } else {
-                $("#imgTemp").show();
-                $("#userImg").hide();
-            }
         }
     })
 }
@@ -94,7 +80,6 @@ function DisableForm() {
     $(`button[onclick="CreateUser()"]`).attr("disabled", true);
 }
 function ViewUser(ID, event) {
-    var IsViewClicked = true;
     GetData(ID, event);
     DisableForm();
 }
@@ -105,7 +90,7 @@ function DeleteUser(ID, event) {
         event.preventDefault();
         tr.remove();
         $.ajax({
-            url: "/admin/user/delete",
+            url: "/admin/role/delete",
             data: { ID: ID },
             type: 'get',
             dataType: 'json',
@@ -147,7 +132,7 @@ function ChangeState(ID) {
         event.preventDefault();
         /*        tr.remove();*/
         $.ajax({
-            url: "/admin/user/Change",
+            url: "/admin/role/Change",
             data: { ID: ID, state: setState },
             type: "get",
             dataType: "json",
@@ -197,10 +182,11 @@ function UpExcel() {
         }
     });
 }
+
 function SearchUser() {
     let value = $("#searchInput").val();
     $.ajax({
-        url: "/admin/user/search?keyword=" + value,
+        url: "/admin/role/search?keyword=" + value,
         type: "get",
         success: function (res) {
             var table = $("#tableContainer");
@@ -208,12 +194,3 @@ function SearchUser() {
         }
     })
 }
-var loadFile = function (event) {
-    var userImg = document.getElementById('userImg');
-    userImg.src = URL.createObjectURL(event.target.files[0]);
-    userImg.onload = function () {
-        URL.revokeObjectURL(userImg.src); // free memory
-    };
-    $('#imgTemp').hide();
-    $('#userImg').show();
-};

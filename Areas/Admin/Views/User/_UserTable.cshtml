@@ -1,6 +1,6 @@
 ﻿@using PagedList;
 @using PagedList.Mvc;
-@model IPagedList<QuanLyHoSo.Models.NhanVien>
+@model IPagedList<QuanLyHoSo.Models.DataNhanVien>
 <!-- table start -->
 <div class="table-responsive container-fluid">
     <table class="table table-striped table-light table-bordered display w-100 " id="users">
@@ -20,12 +20,13 @@
 
         <tbody id="table-body">
             <input type="number" name="hidden" value="0" style="display:none" id="HiddenID" />
+            <input type="number" name="hidden" value="0" style="display:none" id="hiddenAction" />
             @foreach (var item in Model)
             {
                 <tr data-id="@item.ID">
                     <td>@item.UserName</td>
                     <td>@item.HoTen</td>
-                    <td>@item.Quyen</td>
+                    <td>@item.TenQuyen</td>
 
                     @if (@item.TrangThai == 1)
                     {

@@ -22,13 +22,15 @@
             document.getElementById("searchBtn").click();
         }
     });
+    // form validation
+    
 })
 
 function CreateUser() {
     var formData = new FormData($('form#userForm')[0]);
     var userID = $("#HiddenID").val();
     formData.append("ID", userID);
-    formData.append("AnhDaiDien", "");
+    // formData.append("AnhDaiDien", "");
     $.ajax({
         url: "/admin/user/save",
         data: formData,
@@ -100,7 +102,7 @@ function DisableForm() {
     $(`button[onclick="CreateUser()"]`).attr("disabled", true);
 }
 function ViewUser(ID, event) {
-    var IsViewClicked = true;
+    $("#hiddenAction").val(0);
     GetData(ID, event);
     DisableForm();
 }
@@ -130,6 +132,7 @@ function DeleteUser(ID, event) {
     }
 }
 function UpdateUser(ID, event) {
+    $("#hiddenAction").val(0);
     GetData(ID, event);
     EnableForm();
 }

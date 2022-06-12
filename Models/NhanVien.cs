@@ -39,5 +39,7 @@ namespace QuanLyHoSo.Models
     }
 
     public class DataNhanVien : NhanVien
-    { }
+    {
+        public string TenQuyen { get; set; }
+    }
 }

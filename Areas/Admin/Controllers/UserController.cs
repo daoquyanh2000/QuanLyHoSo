@@ -22,16 +22,29 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
         public PartialViewResult Search(string keyword, int? page)
         {
             int pageNumber = (page ?? 1);
-            int pageSizeNumber = 8;
+            int pageSizeNumber = 4;
             if (keyword == null) keyword = "";
             var results = from nv in UserDao.GetAllUser()
                           where nv.HoTen.Contains(keyword)
+                          orderby nv.ID descending
                           select nv;
             ViewBag.search = keyword;
             var model = results.ToPagedList(pageNumber, pageSizeNumber);
             return PartialView("_UserTable", model);
         }
 
+        public PartialViewResult Modal()
+        {
+            ViewBag.listKnv = from k in RoleDao.GetKieuNhanViens()
+                                    orderby k.ID descending
+                                    where k.TrangThai == 1
+                                    select new SelectListItem
+                                    {
+                                        Text = k.TenKieu,
+                                        Value = k.ID.ToString()
+                                    };
+            return PartialView("Modal");
+        }
         [HttpPost]
         public JsonResult Save(FormCollection fc)
         {
@@ -71,7 +84,8 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
                 }
                 else
                 {
-                    User.AnhDaiDien = fc["AnhDaiDien"].ToString();
+                    User.AnhDaiDien = "";
+                    /*User.AnhDaiDien = "";*/
                 }
             }
             if (User.ID == 0)
@@ -133,7 +147,6 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
         [HttpPost]
         public JsonResult Excel()
         {
-            string pathFile = string.Empty;
             string PathExcel = "C:\\Users\\teu-laptop\\source\\repos\\QuanLyHoSo\\Assets\\Excel\\User\\excelQuanLyHoSo.xlsx";
 
             if (Request.Files.Count > 0)
@@ -147,12 +160,12 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
                     //tao folder
                     Directory.CreateDirectory(Server.MapPath(pathFolder));
                     // tao duong dan path
-                    pathFile = Path.Combine(Server.MapPath(pathFolder), fileName);
+                    string pathFile = Path.Combine(Server.MapPath(pathFolder), fileName);
                     file.SaveAs(pathFile);
                 }
             }
             DataTable dt = Stuff.ExcelToDataTable(PathExcel, Session["UserNameNV"].ToString());
-            int tk = Stuff.DataTableToDb(dt,"NhanVien");
+            int tk = Stuff.DataTableToDb(dt, "NhanVien");
             return Json(new
             {
                 heading = "Thành công",

@@ -1,9 +1,11 @@
-﻿using OfficeOpenXml;
+﻿using Dapper;
+using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
@@ -114,20 +116,21 @@ namespace QuanLyHoSo.Dao
             return strBuilder.ToString();
         }
 
-        public static int DataTableToDb(DataTable dt,string TenBang)
+        public static int DataTableToDb(DataTable dt, string TenBang)
         {
             using (SqlConnection con = new SqlConnection(ConnectString.Setup()))
             {
                 con.Open();
-                //create object of SqlBulkCopy which help to insert  
+                //create object of SqlBulkCopy which help to insert
                 SqlBulkCopy objbulk = new SqlBulkCopy(con);
                 objbulk.DestinationTableName = TenBang;
-                //assign Destination table name  
-                //insert bulk Records into DataBase.  
+                //assign Destination table name
+                //insert bulk Records into DataBase.
                 objbulk.WriteToServer(dt);
                 return dt.Rows.Count;
             }
         }
+
         public static DataTable DbToDataTable(string TenBang)
         {
             DataTable dt = new DataTable();
@@ -136,6 +139,26 @@ namespace QuanLyHoSo.Dao
             SqlDataAdapter da = new SqlDataAdapter($"select * from {TenBang}", con);
             da.Fill(dt);
             return dt;
+        }
+
+        public static void ExecuteSql(string query, object param = null)
+        {
+            using (SqlConnection con = new SqlConnection(ConnectString.Setup()))
+            {
+                con.Open();
+
+                con.Execute(query, param);
+            }
+        }
+
+        public static List<T> GetList<T>(string query, object param = null)
+        {
+            using (SqlConnection con = new SqlConnection(ConnectString.Setup()))
+            {
+                con.Open();
+                var list = con.Query<T>(query, param).ToList();
+                return list;
+            }
         }
     }
 }

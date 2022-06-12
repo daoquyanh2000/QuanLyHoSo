@@ -6,7 +6,6 @@
         <thead>
             <tr>
                 <th>Tên kiểu người dùng</th>
-                <th>Kiểu người dùng</th>
                 <th>Trạng thái</th>
                 <th>Ngày tạo</th>
                 <th>Người tạo</th>
@@ -20,9 +19,7 @@
             @foreach (var item in Model)
             {
                 <tr data-id="@item.ID">
-                    <td>@item.TenQuyen</td>
-                    <td>@item.KieuQuyen</td>
-
+                    <td>@item.TenKieu</td>
                     @if (@item.TrangThai == 1)
                     {
                         <td>
@@ -48,8 +45,7 @@
                         <div class="btn-group btn-group-sm" role="group" aria-label="Basic mixed styles example">
                             <button type="button" class="btn btn-outline-secondary" onclick="ViewUser(@item.ID,event)">
                                 <span>Xem</span>
-                            </butt
-                                on>
+                            </button>
                             <button type="button" class="btn btn-outline-secondary" onclick="UpdateUser(@item.ID,event)">
                                 <span>Sửa</span>
                             </button>

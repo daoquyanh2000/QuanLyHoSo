@@ -1,11 +1,7 @@
-﻿
-using QuanLyHoSo.Dao;
-using QuanLyHoSo.Models;
+﻿using QuanLyHoSo.Models;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
 
 namespace QuanLyHoSo.Dao.DaoAdmin
 {
@@ -42,7 +38,7 @@ namespace QuanLyHoSo.Dao.DaoAdmin
                     User.AnhDaiDien = dr["AnhDaiDien"].ToString();
                     User.SDT = dr["SDT"].ToString();
                     User.Email = dr["Email"].ToString();
-                    User.GioiTinh = Convert.ToByte(dr["GioiTinh"] ?? "0") ;
+                    User.GioiTinh = Convert.ToByte(dr["GioiTinh"] ?? "0");
                     User.DiaChi = dr["DiaChi"].ToString();
                     User.QueQuan = dr["QueQuan"].ToString();
                     User.CongTy = dr["CongTy"].ToString();
@@ -53,46 +49,64 @@ namespace QuanLyHoSo.Dao.DaoAdmin
             return User;
         }
 
-        public static List<NhanVien> GetAllUser()
-        {
-            List<NhanVien> listUser = new List<NhanVien>();
-            using (SqlConnection con = new SqlConnection(ConnectString.Setup()))
-            {
-                con.Open();
-                string stringQuery = "select * FROM [NhanVien] WHERE TrangTHai !=10 ORDER BY [ID] DESC";
-                SqlCommand cmd = new SqlCommand(stringQuery, con);
-                var dr = cmd.ExecuteReader();
-                while (dr.Read())
+        /*        public static List<NhanVien> GetAllUser()
                 {
-                    NhanVien data = new NhanVien();
+                    List<NhanVien> listUser = new List<NhanVien>();
+                    using (SqlConnection con = new SqlConnection(ConnectString.Setup()))
+                    {
+                        con.Open();
+                        string stringQuery = "select * FROM [NhanVien] WHERE TrangTHai !=10 ORDER BY [ID] DESC";
+                        SqlCommand cmd = new SqlCommand(stringQuery, con);
+                        var dr = cmd.ExecuteReader();
+                        while (dr.Read())
+                        {
+                            NhanVien data = new NhanVien();
 
-                    data.ID = Convert.ToInt64(dr["ID"]);
-                    data.UserName = dr["UserName"].ToString();
-                    data.HoTen = dr["HoTen"].ToString();
-                    data.Quyen = Convert.ToByte(dr["Quyen"]);
-                    data.TrangThai = Convert.ToByte(dr["TrangThai"]);
-                    data.NgayTao = Convert.ToString(dr["NgayTao"]);
-                    data.NguoiTao = Convert.ToString(dr["NguoiTao"]);
-                    data.NgaySua = Convert.ToString(dr["NgaySua"]);
-                    data.NguoiSua = Convert.ToString(dr["NguoiSua"]);
-                    listUser.Add(data);
-                }
-            }
-            return listUser;
+                            data.ID = Convert.ToInt64(dr["ID"]);
+                            data.UserName = dr["UserName"].ToString();
+                            data.HoTen = dr["HoTen"].ToString();
+                            data.Quyen = Convert.ToByte(dr["Quyen"]);
+                            data.TrangThai = Convert.ToByte(dr["TrangThai"]);
+                            data.NgayTao = Convert.ToString(dr["NgayTao"]);
+                            data.NguoiTao = Convert.ToString(dr["NguoiTao"]);
+                            data.NgaySua = Convert.ToString(dr["NgaySua"]);
+                            data.NguoiSua = Convert.ToString(dr["NguoiSua"]);
+                            listUser.Add(data);
+                        }
+                    }
+                    return listUser;
+                }*/
+
+        public static List<DataNhanVien> GetAllUser()
+        {
+            string query = "select n.*, k.TenKieu as TenQuyen from NhanVien n inner join KieuNhanVien as k on n.Quyen = k.ID";
+            return Stuff.GetList<DataNhanVien>(query);
         }
 
         public static void CreateNewUser(NhanVien newUser, string UserNameNV)
         {
-            using (SqlConnection con = new SqlConnection(ConnectString.Setup()))
+            string query = $"INSERT INTO [NhanVien]([UserName],[Password],[TrangThai],[Quyen],[HoTen],[SDT],[Email],[NgaySinh],[AnhDaiDien],[GioiTinh],[DiaChi],[QueQuan],[CongTy],[ChucVu],[TieuSu],[NguoiTao],[NgayTao])" +
+$"VALUES(@UserName,@Password,@TrangThai,@Quyen,@HoTen,@SDT,@Email,@NgaySinh,@AnhDaiDien,@GioiTinh,@DiaChi,@QueQuan,@CongTy,@ChucVu,@TieuSu,@NguoiTao,GETDATE())";
+            object param = new
             {
-                con.Open();
-                string a = $"INSERT INTO [NhanVien]([UserName],[Password],[TrangThai],[Quyen],[HoTen],[SDT],[Email],[NgaySinh],[AnhDaiDien],[GioiTinh],[DiaChi],[QueQuan],[CongTy],[ChucVu],[TieuSu],[NguoiTao],[NgayTao])" +
-        $"VALUES('{newUser.UserName }','{newUser.Password }','{newUser.TrangThai }','{newUser.Quyen }','{newUser.HoTen }','{newUser.SDT }','{newUser.Email }'" +
-        $",'{newUser.NgaySinh }','{newUser.AnhDaiDien }','{newUser.GioiTinh }','{newUser.DiaChi }','{newUser.QueQuan }','{newUser.CongTy }','{newUser.ChucVu }','{newUser.TieuSu }','{UserNameNV }',GETDATE())";
-
-                SqlCommand cmd = new SqlCommand(a, con);
-                cmd.ExecuteNonQuery();
-            }
+                UserName = newUser.UserName,
+                Password = newUser.Password,
+                TrangThai = newUser.TrangThai,
+                Quyen = newUser.Quyen,
+                HoTen = newUser.HoTen,
+                SDT = newUser.SDT,
+                Email = newUser.Email,
+                NgaySinh = newUser.NgaySinh,
+                AnhDaiDien = newUser.AnhDaiDien,
+                GioiTinh = newUser.GioiTinh,
+                DiaChi = newUser.DiaChi,
+                QueQuan = newUser.QueQuan,
+                CongTy = newUser.CongTy,
+                ChucVu = newUser.ChucVu,
+                TieuSu = newUser.TieuSu,
+                NguoiTao = UserNameNV,
+            };
+            Stuff.ExecuteSql(query, param);
         }
 
         public static void DeleteUserByID(long ID, string UserNameNV)
@@ -119,25 +133,44 @@ namespace QuanLyHoSo.Dao.DaoAdmin
 
         public static void UpdateUser(NhanVien newUser, long userID, string UserNameNV)
         {
-            using (SqlConnection con = new SqlConnection(ConnectString.Setup()))
+            string query = "UPDATE [dbo].[NhanVien] SET [UserName] = @UserName," +
+                "[Password] = @Password," +
+                "[TrangThai] = @TrangThai," +
+                "[Quyen] = @Quyen," +
+                "[HoTen] = @HoTen," +
+                "[SDT] = @SDT," +
+                "[Email] =@Email ," +
+                "[NgaySinh] = @NgaySinh ," +
+                "[AnhDaiDien] = @AnhDaiDien," +
+                "[GioiTinh] = @GioiTinh," +
+                "[DiaChi] = @DiaChi," +
+                "[QueQuan] = @QueQuan," +
+                "[CongTy] = @CongTy," +
+                "[ChucVu] = @ChucVu," +
+                "[TieuSu] = @TieuSu," +
+                "[NgaySua] = GETDATE()," +
+                "[NguoiSua] = @NguoiSua WHERE ID=@ID";
+            object param = new
             {
-                con.Open();
-                string stringQuery = $"UPDATE [NhanVien] Set [HoTen]='{newUser.HoTen}'," +
-                    $"[UserName]='{newUser.UserName}',[Password]='{newUser.Password}'," +
-                    $"[TrangThai]='{newUser.TrangThai}',[Quyen]='{newUser.Quyen}'," +
-                    $"[SDT]='{newUser.SDT}',[Email]='{newUser.Email}'," +
-
-                    $"[NgaySinh]='{newUser.NgaySinh}',[GioiTinh]='{newUser.GioiTinh}'," +
-                    $"[AnhDaiDien]='{newUser.AnhDaiDien}',[TieuSu]='{newUser.TieuSu}'," +
-                    $"[DiaChi]='{newUser.DiaChi}',[QueQuan]='{newUser.QueQuan}'," +
-                    $"[ChucVu]='{newUser.ChucVu}',[CongTy]='{newUser.CongTy}', " +
-                    $"[NguoiSua]='{UserNameNV}',[NgaySua]=GETDATE() " +
-                    $" WHERE [ID]={userID}";
-
-                SqlCommand cmd = new SqlCommand(stringQuery, con);
-                cmd.ExecuteNonQuery();
-            }
+                UserName = newUser.UserName,
+                Password = newUser.Password,
+                TrangThai = newUser.TrangThai,
+                Quyen = newUser.Quyen,
+                HoTen = newUser.HoTen,
+                SDT = newUser.SDT,
+                Email = newUser.Email,
+                NgaySinh = newUser.NgaySinh,
+                AnhDaiDien = newUser.AnhDaiDien,
+                GioiTinh = newUser.GioiTinh,
+                DiaChi = newUser.DiaChi,
+                QueQuan = newUser.QueQuan,
+                CongTy = newUser.CongTy,
+                ChucVu = newUser.ChucVu,
+                TieuSu = newUser.TieuSu,
+                NguoiSua = UserNameNV,
+                ID = userID
+            };
+            Stuff.ExecuteSql(query, param);
         }
-
     }
 }
