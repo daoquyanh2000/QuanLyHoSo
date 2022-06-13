@@ -22,11 +22,10 @@
             document.getElementById("searchBtn").click();
         }
     });
+    //hide error message when keydown
+    
     // form validation
     $("#userForm").validate({
-        onfocusout: false,
-        onkeyup: false,
-        onclick: false,
         rules: {
             "HoTen": {
                 required: true,
@@ -45,13 +44,11 @@
             },
             "SDT": {
                 required: true,
-                minlength: 8,
-                maxlength: 10,
+                phoneUS: true,
             },
             "Email": {
                 required: true,
-                minlength: 8,
-                maxlength: 30,
+                email:true,
             },
             "Quyen": {
                 required: true,
@@ -83,8 +80,7 @@
             },
             "Email": {
                 required: "Bắt buộc nhập email",
-                minlength: "Hãy nhập ít nhất 6 ký tự",
-                maxlength: "Hãy nhập tối đa 30 ký tự",
+                email: "Hãy nhập đúng định dạng email"
             },
             "Quyen": {
                 required: "Bắt buộc nhập kiểu người dùng",
@@ -97,7 +93,11 @@
             CreateUser();
         }
     });
-    //create user
+    jQuery.validator.addMethod("phoneUS", function (phone_number, element) {
+        phone_number = phone_number.replace(/\s+/g, "");
+        return this.optional(element) || phone_number.length == 10 && 
+            phone_number.match(/[0-9\-\(\)\s]+/);
+    }, "Hãy nhập đúng định dạng điện thoại");
 
 })
 

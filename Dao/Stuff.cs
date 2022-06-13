@@ -17,10 +17,11 @@ namespace QuanLyHoSo.Dao
         public static DataTable ExcelToDataTable(string path, string UserNameNV)
         {
             DataTable dt = new DataTable();
-                ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
 
             using (ExcelPackage package = new ExcelPackage(new FileInfo(path)))
             {
+                ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
                 ExcelWorksheet worksheet = package.Workbook.Worksheets[0];
                 worksheet.Cells[1, 17].Value = "NgayTao";
                 worksheet.Cells[1, 18].Value = "NguoiTao";

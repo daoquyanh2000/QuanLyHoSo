@@ -17,6 +17,37 @@
         }
     });
     //xu ly checkbox kieu nhan vien
+
+    // form validation
+    $("#userForm").validate({
+        onfocusout: false,
+        onkeyup: false,
+        onclick: false,
+        rules: {
+            "TenKieu": {
+                required: true,
+                maxlength: 20,
+                minlength: 3,
+            },
+            "TrangThai": {
+                required: true,
+            },
+        },
+        messages: {
+            "TenKieu": {
+                required: "Bắt buộc nhập kiểu người dùng",
+                maxlength: "Hãy nhập tối đa 20 ký tự",
+                minlength: "Hãy nhập ít nhất 3 ký tự"
+            },
+            "TrangThai": {
+                required: "Bắt buộc nhập trạng thái",
+            },
+        },
+        submitHandler: function () {
+            CreateUser();
+        }
+    });
+    //create user
 })
 
 function CreateUser() {
@@ -77,7 +108,7 @@ function DisableForm() {
     $('#userForm :input').each(function () {
         $(this).attr("disabled", true);
     });
-    $(`button[onclick="CreateUser()"]`).attr("disabled", true);
+    $(`button[type="submit"]`).attr("disabled", true);
 }
 function ViewUser(ID, event) {
     GetData(ID, event);
@@ -117,7 +148,8 @@ function EnableForm() {
     $('#userForm :input').each(function () {
         $(this).val("");
         $(this).attr("disabled", false);
-        $(`button[onclick="CreateUser()"]`).attr("disabled", false);
+        $(`button[type="submit"]`).attr("disabled", false);
+
     });
 }
 

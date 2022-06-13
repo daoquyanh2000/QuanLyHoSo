@@ -2,6 +2,7 @@
 using QuanLyHoSo.Dao.DaoAdmin;
 using QuanLyHoSo.Models;
 using System.Web.Mvc;
+using System.Web.Security;
 
 namespace QuanLyHoSo.Areas.Admin.Controllers
 {
@@ -11,7 +12,7 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
         [HttpGet]
         public ActionResult Index()
         {
-            if (Session["UserNameNV"] != null)
+            if(User.Identity.IsAuthenticated)
             {
                 return RedirectToAction("Index", "Home");
             }
@@ -34,6 +35,7 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
                     Session["UserNameNV"] = User.UserName;
                     Session["IDNV"] = User.ID;
                     Session["QuyenNV"] = User.Quyen;
+                    FormsAuthentication.SetAuthCookie(User.UserName, false);
                     return Json(new
                     {
                         status = true,
@@ -66,6 +68,7 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
         public ActionResult LogOut()
         {
             Session.Clear();
+            FormsAuthentication.SignOut();
             return RedirectToAction("Index", "Login");
         }
     }

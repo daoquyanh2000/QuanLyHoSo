@@ -44,22 +44,26 @@
 
                 <!-- toggler canvas end -->
                 <a class="navbar-brand fw-bold text-uppercase" href="home">Trang Chủ</a>
-                <div class=" dropdown ">
-                    <a class="nav-link dropdown-toggle text-secondary " href="#" id="navbarDropdown" role="button"
-                       data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="bi bi-person-circle"></i>
-                        @Session["HoTenNV"]
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark my-2">
-                        <li>
-                            <a href="" class="dropdown-item py-2">Thông tin tài khoản</a>
-                        </li>
-                        <li>
-                            <a href="login/logout" class="dropdown-item py-2">Đăng xuất</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
+
+                    <div class=" dropdown ">
+                        <a class="nav-link dropdown-toggle text-secondary " href="#" id="navbarDropdown" role="button"
+                           data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-person-circle"></i>
+                            @if (User.Identity.IsAuthenticated)
+                            {
+                                @User.Identity.Name
+                             }
+                            </a>
+                        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark my-2">
+                            <li>
+                                <a href="" class="dropdown-item py-2">Thông tin tài khoản</a>
+                            </li>
+                            <li>
+                                <a href="/admin/login/logout" class="dropdown-item py-2">Đăng xuất</a>
+                            </li>
+                        </ul>
+                    </div>
+             </div>
         </nav>
         <!-- navbar end -->
     </header>

@@ -7,7 +7,7 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
         // GET: Admin/Home
         public ActionResult Index()
         {
-            if (Session["UserNameNV"] == null)
+            if(!User.Identity.IsAuthenticated)
             {
                 return RedirectToAction("Index", "Login");
             }
