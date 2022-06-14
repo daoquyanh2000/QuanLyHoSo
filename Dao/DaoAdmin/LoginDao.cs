@@ -1,5 +1,4 @@
-﻿using QuanLyHoSo.Dao;
-using QuanLyHoSo.Models;
+﻿using QuanLyHoSo.Models;
 using System;
 using System.Data.SqlClient;
 

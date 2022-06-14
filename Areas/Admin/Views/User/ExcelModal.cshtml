@@ -1,0 +1,106 @@
+﻿@model IEnumerable<QuanLyHoSo.Models.ExcelNhanVien>
+
+<table class="table">
+    <tr>
+        <th>
+            Tên tài khoản
+        </th>
+        <th>
+            Kiểu người dùng
+        </th>
+        <th>
+            Họ tên
+        </th>
+        <th>
+            Mật khẩu
+        </th>
+        <th>
+            Trạng thái
+        </th>
+        <th>
+            Số điện thoại
+        </th>
+        <th>
+            Email
+        </th>
+        <th>
+            Ngày sinh
+        </th>
+        <th>
+            Giới tính
+        </th>
+        <th>
+            Địa chỉ
+        </th>
+        <th>
+            Quê quán
+        </th>
+        <th>
+            Công ty
+        </th>
+        <th>
+            Chức vụ
+        </th>
+        <th>
+            Tiểu sử
+        </th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.UserName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Quyen)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.HoTen)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Password)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TrangThai)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SDT)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Email)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NgaySinh)
+            </td>
+            @if (item.GioiTinh == "1")
+            {
+                <td>
+                    Nam
+                </td>
+            }
+            else
+            {
+                <td>
+                    Nữ
+                </td>
+            }
+
+            <td>
+                @Html.DisplayFor(modelItem => item.DiaChi)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.QueQuan)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CongTy)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ChucVu)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TieuSu)
+            </td>
+        </tr>
+    }
+</table>

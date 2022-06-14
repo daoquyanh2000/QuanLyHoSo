@@ -12,7 +12,7 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
         [HttpGet]
         public ActionResult Index()
         {
-            if(User.Identity.IsAuthenticated)
+            if(User.Identity.IsAuthenticated && Session["UserNameNV"] !=null)
             {
                 return RedirectToAction("Index", "Home");
             }

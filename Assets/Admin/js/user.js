@@ -23,7 +23,7 @@
         }
     });
     //hide error message when keydown
-    
+
     // form validation
     $("#userForm").validate({
         rules: {
@@ -48,7 +48,7 @@
             },
             "Email": {
                 required: true,
-                email:true,
+                email: true,
             },
             "Quyen": {
                 required: true,
@@ -95,10 +95,9 @@
     });
     jQuery.validator.addMethod("phoneUS", function (phone_number, element) {
         phone_number = phone_number.replace(/\s+/g, "");
-        return this.optional(element) || phone_number.length == 10 && 
+        return this.optional(element) || phone_number.length == 10 &&
             phone_number.match(/[0-9\-\(\)\s]+/);
     }, "Hãy nhập đúng định dạng điện thoại");
-
 })
 
 function CreateUser() {
@@ -129,7 +128,6 @@ function CreateUser() {
             }
         })
     }
-       
 }
 
 function reformatDateString(mydate) {
@@ -146,6 +144,8 @@ function GetData(ID, event) {
         data: { ID: ID },
         type: "get",
         success: function (res) {
+            var hello = res.data;
+            console.log(hello)
             $("#HiddenID").val(res.data.ID);
             $("#HoTen").val(res.data.HoTen);
             $("#UserName").val(res.data.UserName);
@@ -284,6 +284,24 @@ function UpExcel() {
             SearchUser();
         }
     });
+}
+
+function ModalExcel() {
+    var fileUpload = $("#excelUpload").get(0);
+    var files = fileUpload.files;
+    var fileData = new FormData();
+    for (var i = 0; i < files.length; i++) {
+        fileData.append(files[i].name, files[i]);
+    }
+    $.ajax({
+        url: "/admin/user/ExcelModal",
+        type: "post",
+        success: function (res) {
+            var table = $("#excelContainer");
+            table.html(res);
+            $("#ExcelModal").modal('toggle');
+        }
+    })
 }
 function SearchUser() {
     let value = $("#searchInput").val();

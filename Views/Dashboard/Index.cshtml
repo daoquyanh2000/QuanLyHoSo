@@ -1,78 +1,118 @@
-﻿@*@model QuanLyLogin.Models.NhanVien
-@using (Html.BeginForm("Create", "User", FormMethod.Post, new { @id = "userForm" }))
-{
-    @Html.ValidationSummary()
-    <div class="row my-2">
-        <div class="col-12 fw-bold fst-italic">
-            (*) Thông tin bắt buộc
-        </div>
-        <div class="col-lg-6">
-            <div class="form-group">
-                @Html.LabelFor(x => x.HoTen)
-                @Html.TextBoxFor(x => x.HoTen)
+﻿@model IEnumerable<QuanLyHoSo.Models.ExcelNhanVien>
 
-                @Html.ValidationMessageFor(x => x.HoTen, "", new { @class = "text-danger" })
-            </div>
-            <div class="form-group">
-                @Html.LabelFor(x => x.UserName)
-                @Html.TextBoxFor(x => x.UserName)
-                @Html.ValidationMessageFor(x => x.UserName, "", new { @class = "text-danger" })
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
 
-            </div>
-            <div class="form-group">
-                @Html.LabelFor(x => x.Password)
-                @Html.TextBoxFor(x => x.Password)
-                @Html.ValidationMessageFor(x => x.Password, "", new { @class = "text-danger" })
+<h2>Index</h2>
 
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.UserName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Quyen)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.HoTen)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Password)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.TrangThai)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.SDT)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Email)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.NgaySinh)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.AnhDaiDien)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.GioiTinh)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DiaChi)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.QueQuan)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CongTy)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ChucVu)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.TieuSu)
+        </th>
+        <th></th>
+    </tr>
 
-            </div>
-            <div class="form-group">
-                @Html.LabelFor(x => x.SDT)
-                @Html.TextBoxFor(x => x.SDT)
-                @Html.ValidationMessageFor(x => x.SDT, "", new { @class = "text-danger" })
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.UserName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Quyen)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.HoTen)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Password)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.TrangThai)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.SDT)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Email)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.NgaySinh)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.AnhDaiDien)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.GioiTinh)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.DiaChi)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.QueQuan)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.CongTy)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ChucVu)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.TieuSu)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+            @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+            @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+        </td>
+    </tr>
+}
 
-            </div>
-            <div class="form-group">
-                @Html.LabelFor(x => x.Email)
-                @Html.TextBoxFor(x => x.Email)
-                @Html.ValidationMessageFor(x => x.Email, "", new { @class = "text-danger" })
-
-            </div>
-        </div>
-        <div class="col-lg-6  ">
-            <div class="form-group">
-                <label for="Quyen" class="form-label">Kiểu người dùng (*)</label>
-                <select class="form-select" aria-label="Kiểu người dùng" id="Quyen">
-                    <option value="1">One</option>
-                    <option value="2">Two</option>
-                    <option value="3">Three</option>
-                </select>
-                @Html.ValidationMessageFor(x => x.Quyen, "", new { @class = "text-danger" })
-
-            </div>
-            <div class="form-group">
-                <label for="TrangThai" class="form-label">Trạng thái (*)</label>
-                <select class="form-select" aria-label="Trạng thái" id="TrangThai">
-                    <option value="1">Có</option>
-                    <option value="0">Không</option>
-                </select>
-                @Html.ValidationMessageFor(x => x.TrangThai, "", new { @class = "text-danger" })
-
-            </div>
-            <div class="text-center">
-                <label for="AnhDaiDien" class=" fst-italic text-center form-label">
-                    Choose a file
-                    <i class="icon fa fa-camera border px-2 py-2" id="imgTemp"
-                       style="font-size: 200px; display: block;"></i>
-                    <div class="d-flex justify-content-center">
-                        <img id="output" src="" alt="" class="w-100 border px-2 py-2">
-                        <input type="file" id="AnhDaiDien" class="custom-file-upload" accept="image/*"
-                               onchange=" loadFile(event)" />
-                    </div>
-                </label>
-            </div>
-        </div>
-    </div>
-    <div class="dropdown-divider my-4">
-        }
-*@
+</table>

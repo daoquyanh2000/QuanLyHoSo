@@ -1,8 +1,6 @@
 ﻿using QuanLyHoSo.Dao.DaoAdmin;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Security;
 
 namespace QuanLyHoSo.App_Start
@@ -45,8 +43,8 @@ namespace QuanLyHoSo.App_Start
                           on knv.ID equals knv_q.IDKieuNhanVien
                           join q in RoleDao.GetQuyen()
                           on knv_q.IDQuyen equals q.ID
-                          where nv.UserName == username && 
-                          knv.TrangThai ==1
+                          where nv.UserName == username &&
+                          knv.TrangThai == 1
                           select q.MaQuyen;
             return account.ToArray();
         }

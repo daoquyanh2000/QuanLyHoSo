@@ -149,7 +149,6 @@ function EnableForm() {
         $(this).val("");
         $(this).attr("disabled", false);
         $(`button[type="submit"]`).attr("disabled", false);
-
     });
 }
 

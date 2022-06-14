@@ -20,7 +20,7 @@
                     </button>
 
                     <button type="button" class="btn btn-outline-secondary">
-                        <input type="file" id="excelUpload" onchange=" UpExcel()" name="excelUpload" accept="*/image" class="custom-file-upload" />
+                        <input type="file" id="excelUpload" onchange=" ModalExcel()" name="excelUpload" accept="*/image" class="custom-file-upload" />
                         <label for="excelUpload" class="custom-file-upload ">
                             <span>
                                 <i class="bi bi-paperclip"></i>
@@ -29,7 +29,7 @@
                         </label>
                     </button>
 
-                    <a href="https://1drv.ms/x/s!AmdgZJaagePn6g0JxvKDvxZek5Rc?e=pl4l6x" class="btn btn-outline-secondary" target="_blank">
+                    <a href="~/Assets/Excel/User/User.xlsx" class="btn btn-outline-secondary" target="_blank">
                         <span>
                             <i class="bi bi-cloud-arrow-down"></i>
                         </span>
@@ -75,13 +75,36 @@
                 <div class="modal-body">
                     <div class="container">
                         @{
-                            Html.RenderAction("Modal","User");
+                            Html.RenderAction("Modal", "User");
                         }
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                        <button type="submit" form="userForm"  class="btn btn-primary">Lưu người dùng</button>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                    <button type="submit" form="userForm" class="btn btn-primary">Lưu người dùng</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- modal end -->
+<!-- modal start -->
+<section>
+    <div class="modal fade " id="ExcelModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+         aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg ">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title " id="exampleModalLabel">Thông tin tài khoản</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="container" id="excelContainer">
                     </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                    <button type="submit" form="userForm" class="btn btn-primary">Lưu người dùng</button>
                 </div>
             </div>
         </div>

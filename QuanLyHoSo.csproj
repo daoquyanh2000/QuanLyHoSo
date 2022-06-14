@@ -50,6 +50,9 @@
     <Reference Include="Dapper, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>packages\Dapper.2.0.123\lib\net461\Dapper.dll</HintPath>
     </Reference>
+    <Reference Include="Dapper.Contrib, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\Dapper.Contrib.2.0.78\lib\net461\Dapper.Contrib.dll</HintPath>
+    </Reference>
     <Reference Include="EPPlus, Version=6.0.5.0, Culture=neutral, PublicKeyToken=ea159fdaa78159a1, processorArchitecture=MSIL">
       <HintPath>packages\EPPlus.6.0.5\lib\net462\EPPlus.dll</HintPath>
     </Reference>
@@ -175,6 +178,7 @@
     <Content Include="Assets\Admin\js\login.js" />
     <Content Include="Assets\Admin\js\role.js" />
     <Content Include="Assets\Admin\js\user.js" />
+    <Content Include="Assets\Excel\User\CVSP22G04B18DCDT003HP04Q01d.jpg" />
     <Content Include="Assets\Images\Avatars\User\bai2_3.png" />
     <Content Include="Content\bootstrap-grid.css" />
     <Content Include="Content\bootstrap-grid.min.css" />
@@ -192,7 +196,7 @@
     <Content Include="Areas\Admin\Views\User\Index.cshtml" />
     <Content Include="Areas\Admin\Views\web.config" />
     <Content Include="Areas\Admin\Views\_ViewStart.cshtml" />
-    <Content Include="Areas\Admin\Views\User\_UserTable.cshtml" />
+    <Content Include="Areas\Admin\Views\User\UserTable.cshtml" />
     <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.bundle.min.js" />
     <Content Include="Scripts\bootstrap.js" />
@@ -220,6 +224,10 @@
     <Content Include="Areas\Admin\Views\Role\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Role\_RoleTable.cshtml" />
     <Content Include="Areas\Admin\Views\User\Modal.cshtml" />
+    <Content Include="Assets\Excel\User\excelQuanLyHoSo.xlsx" />
+    <Content Include="Assets\Excel\User\htn.drawio" />
+    <Content Include="Assets\Excel\User\User.xlsx" />
+    <Content Include="Areas\Admin\Views\User\ExcelModal.cshtml" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />

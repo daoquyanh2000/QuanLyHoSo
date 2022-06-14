@@ -1,9 +1,13 @@
-﻿using PagedList;
+﻿using Dapper.Contrib.Extensions;
+using OfficeOpenXml;
+using PagedList;
 using QuanLyHoSo.Dao;
 using QuanLyHoSo.Dao.DaoAdmin;
 using QuanLyHoSo.Models;
 using System;
+using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Web;
@@ -11,7 +15,7 @@ using System.Web.Mvc;
 
 namespace QuanLyHoSo.Areas.Admin.Controllers
 {
-    [Authorize(Roles ="NhanVien")]
+    [Authorize(Roles = "NhanVien")]
     public class UserController : Controller
     {
         // GET: Admin/User
@@ -26,26 +30,27 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
             int pageSizeNumber = 4;
             if (keyword == null) keyword = "";
             var results = from nv in UserDao.GetAllUser()
-                          where nv.HoTen.Contains(keyword)
+                          where nv.UserName.Contains(keyword)
                           orderby nv.ID descending
                           select nv;
             ViewBag.search = keyword;
             var model = results.ToPagedList(pageNumber, pageSizeNumber);
-            return PartialView("_UserTable", model);
+            return PartialView("UserTable", model);
         }
 
         public PartialViewResult Modal()
         {
             ViewBag.listKnv = from k in RoleDao.GetKieuNhanViens()
-                                    orderby k.ID descending
-                                    where k.TrangThai == 1
-                                    select new SelectListItem
-                                    {
-                                        Text = k.TenKieu,
-                                        Value = k.ID.ToString()
-                                    };
+                              orderby k.ID descending
+                              where k.TrangThai == 1
+                              select new SelectListItem
+                              {
+                                  Text = k.TenKieu,
+                                  Value = k.ID.ToString()
+                              };
             return PartialView("Modal");
         }
+
         [HttpPost]
         public JsonResult Save(FormCollection fc)
         {
@@ -61,7 +66,7 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
             User.Email = fc["Email"].ToString();
             User.NgaySinh = fc["NgaySinh"].ToString();
 
-            User.GioiTinh = Convert.ToByte(fc["GioiTinh"]);
+            User.GioiTinh = fc["GioiTinh"].ToString();
             User.DiaChi = fc["DiaChi"].ToString();
             User.QueQuan = fc["QueQuan"].ToString();
             User.ChucVu = fc["ChucVu"].ToString();
@@ -126,10 +131,9 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
         [HttpGet]
         public JsonResult View(long ID)
         {
-            NhanVien user = UserDao.GetUserByID(ID);
             return Json(new
             {
-                data = user,
+                data = UserDao.GetUserByID(ID).First(),
             }, JsonRequestBehavior.AllowGet);
         }
 
@@ -149,14 +153,14 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
         public JsonResult Excel()
         {
             /*string PathExcel = "C:\\Users\\teu-pc\\source\\repos\\daoquyanh2000\\QuanLyHoSo\\Assets\\Excel\\User\\excelQuanLyHoSo.xlsx";*/
-            string PathExcel = "C:\\Users\\teu-laptop\\source\\repos\\QuanLyHoSo\\Assets\\Excel\\User\\excelQuanLyHoSo.xlsx";
+            string PathExcel = "C:\\Users\\teu-laptop\\source\\repos\\QuanLyHoSo\\Assets\\Excel\\User\\User.xlsx";
             if (Request.Files.Count > 0)
             {
                 HttpFileCollectionBase files = Request.Files;
                 for (int i = 0; i < files.Count; i++)
                 {
                     HttpPostedFileBase file = files[i];
-                    string fileName = file.FileName;
+                    string fileName = "User.xlsx";
                     string pathFolder = "/Assets/Excel/User";
                     //tao folder
                     Directory.CreateDirectory(Server.MapPath(pathFolder));
@@ -173,6 +177,36 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
                 status = "success",
                 message = $"Tạo {tk} tài khoản thành công!"
             }, JsonRequestBehavior.AllowGet);
+        }
+
+        public PartialViewResult ExcelModal()
+        {
+            List<ExcelNhanVien> account = new List<ExcelNhanVien>();
+            string PathExcel = "C:\\Users\\teu-laptop\\source\\repos\\QuanLyHoSo\\Assets\\Excel\\User\\User.xlsx";
+
+            if (Request.Files.Count > 0)
+            {
+                HttpFileCollectionBase files = Request.Files;
+                for (int i = 0; i < files.Count; i++)
+                {
+                    HttpPostedFileBase file = files[i];
+                    string fileName = "User.xlsx";
+                    string pathFolder = "/Assets/Excel/User";
+                    //tao folder
+                    Directory.CreateDirectory(Server.MapPath(pathFolder));
+                    // tao duong dan path
+                    string pathFile = Path.Combine(Server.MapPath(pathFolder), fileName);
+                    file.SaveAs(pathFile);
+                }
+            }
+            using (ExcelPackage package = new ExcelPackage(new FileInfo(PathExcel)))
+            {
+                ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+                var sheet = package.Workbook.Worksheets["data"];
+                account = Stuff.GetListExcel<ExcelNhanVien>(sheet);
+            };
+            return PartialView(account);
+            
         }
     }
 }

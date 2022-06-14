@@ -17,36 +17,14 @@ namespace QuanLyHoSo.Dao.DaoAdmin
             }
         }
 
-        public static NhanVien GetUserByID(long ID)
+        public static List<NhanVien> GetUserByID(long ID)
         {
-            NhanVien User = new NhanVien();
-            using (SqlConnection con = new SqlConnection(ConnectString.Setup()))
+            string stringQuery = $"select * FROM [NhanVien] WHERE ID =@ID and TrangThai != 10";
+            var param = new
             {
-                con.Open();
-                string stringQuery = $"select * FROM [NhanVien] WHERE ID ={ID} and TrangThai != 10";
-                SqlCommand cmd = new SqlCommand(stringQuery, con);
-                var dr = cmd.ExecuteReader();
-                while (dr.Read())
-                {
-                    User.ID = Convert.ToInt64(dr["ID"]);
-                    User.HoTen = dr["HoTen"].ToString();
-                    User.UserName = dr["UserName"].ToString();
-                    User.Password = dr["Password"].ToString();
-                    User.Quyen = Convert.ToByte(dr["Quyen"]);
-                    User.TrangThai = Convert.ToByte(dr["TrangThai"]);
-                    User.NgaySinh = dr["NgaySinh"].ToString();
-                    User.AnhDaiDien = dr["AnhDaiDien"].ToString();
-                    User.SDT = dr["SDT"].ToString();
-                    User.Email = dr["Email"].ToString();
-                    User.GioiTinh = Convert.ToByte(dr["GioiTinh"] ?? "0");
-                    User.DiaChi = dr["DiaChi"].ToString();
-                    User.QueQuan = dr["QueQuan"].ToString();
-                    User.CongTy = dr["CongTy"].ToString();
-                    User.ChucVu = dr["ChucVu"].ToString();
-                    User.TieuSu = dr["TieuSu"].ToString();
-                }
-            }
-            return User;
+                ID = ID
+            };
+            return Stuff.GetList<NhanVien>(stringQuery, param);
         }
 
         /*        public static List<NhanVien> GetAllUser()
