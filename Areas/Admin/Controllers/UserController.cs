@@ -65,8 +65,7 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
             User.SDT = fc["SDT"].ToString();
             User.Email = fc["Email"].ToString();
             User.NgaySinh = fc["NgaySinh"].ToString();
-
-            User.GioiTinh = fc["GioiTinh"].ToString();
+            User.GioiTinh = Convert.ToByte(fc["GioiTinh"]);
             User.DiaChi = fc["DiaChi"].ToString();
             User.QueQuan = fc["QueQuan"].ToString();
             User.ChucVu = fc["ChucVu"].ToString();
@@ -181,8 +180,9 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
 
         public PartialViewResult ExcelModal()
         {
-            List<ExcelNhanVien> account = new List<ExcelNhanVien>();
-            string PathExcel = "C:\\Users\\teu-laptop\\source\\repos\\QuanLyHoSo\\Assets\\Excel\\User\\User.xlsx";
+
+            string PathExcel = "C:\\Users\\teu-pc\\source\\repos\\daoquyanh2000\\QuanLyHoSo\\Assets\\Excel\\User\\User.xlsx";
+
 
             if (Request.Files.Count > 0)
             {
@@ -203,9 +203,12 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
             {
                 ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
                 var sheet = package.Workbook.Worksheets["data"];
-                account = Stuff.GetListExcel<ExcelNhanVien>(sheet);
+
+
+                ViewBag.listAccount = Stuff.GetListExcel<ExcelNhanVien>(sheet);
+                ViewBag.listKnd = RoleDao.GetKieuNhanViens();
+                return PartialView();
             };
-            return PartialView(account);
             
         }
     }

@@ -1,18 +1,41 @@
-﻿@model IEnumerable<QuanLyHoSo.Models.ExcelNhanVien>
-
-<table class="table">
+﻿@using System.Linq
+@{ 
+    var account =
+    from nv in (List<QuanLyHoSo.Models.ExcelNhanVien>)ViewBag.listAccount
+    join k in (List<QuanLyHoSo.Models.KieuNhanVien>)ViewBag.listKnd
+    on nv.Quyen equals k.ID
+    select new
+    {
+        nv.HoTen,
+        nv.UserName,
+        nv.Password,
+        nv.TrangThai,
+        nv.SDT,
+        nv.Email,
+        nv.NgaySinh,
+        nv.AnhDaiDien,
+        nv.GioiTinh,
+        nv.DiaChi,
+        nv.QueQuan,
+        nv.CongTy,
+        nv.ChucVu,
+        nv.TieuSu,
+        k.TenKieu
+    };
+}
+<table class="table table-striped table-light table-bordered DisplayName w-100 table-hover">
     <tr>
-        <th>
-            Tên tài khoản
-        </th>
-        <th>
-            Kiểu người dùng
-        </th>
         <th>
             Họ tên
         </th>
         <th>
+            Tên tài khoản
+        </th>
+        <th>
             Mật khẩu
+        </th>
+        <th>
+            Kiểu người dùng
         </th>
         <th>
             Trạng thái
@@ -25,6 +48,9 @@
         </th>
         <th>
             Ngày sinh
+        </th>
+        <th>
+            Ảnh đại diện
         </th>
         <th>
             Giới tính
@@ -45,35 +71,107 @@
             Tiểu sử
         </th>
     </tr>
+        @foreach(var item in account)
+            {
+                <tr>
+                    <td>
+                        @item.HoTen
+                    </td>
+                    <td>
+                        @item.UserName
+                    </td>
+                    <td>
+                        @item.Password
+                    </td>
+                    <td>
+                        @item.TenKieu
+                    </td>
+                    @if (@item.TrangThai == 1)
+                    {
+                        <td>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox"  checked id="excelCheckbox">
+                            </div>
+                        </td>
+                    }
+                    else
+                    {
+                        <td>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox"  id="excelCheckbox">
+                            </div>
+                        </td>
+                    }
+                    <td>
+                        @item.SDT
+                    </td>
+                    <td>
+                        @item.Email
+                    </td>
+                    <td>
+                        @item.NgaySinh
+                    </td>
+                    <td>
+                        @item.AnhDaiDien
+                    </td>
+                    @if (@item.GioiTinh == 1)
+                    {
+                        <td>Nam</td>
+                    }
+                    else
+                    {
+                        <td>Nữ</td>
+                    }
 
-    @foreach (var item in Model)
+                    <td>
+                        @item.DiaChi
+                    </td>
+                    <td>
+                        @item.QueQuan
+                    </td>
+                    <td>
+                        @item.CongTy
+                    </td>
+                    <td>
+                        @item.ChucVu
+                    </td>
+                    <td>
+                        @item.TieuSu
+                    </td>
+                </tr>
+            }
+
+
+</table>
+
+@*@foreach (var item in ViewBag.listAccount)
     {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.UserName)
+                @Html.DisplayName()
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Quyen)
+                @Html.DisplayName(item.UserName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.HoTen)
+                @Html.DisplayName(item.Password)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Password)
+                @Html.DisplayName(item.Quyen)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.TrangThai)
+                @Html.DisplayName(item.TrangThai)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.SDT)
+                @Html.DisplayName(item.SDT)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Email)
+                @Html.DisplayName(item.Email)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.NgaySinh)
+                @Html.DisplayName(item.NgaySinh)
             </td>
-            @if (item.GioiTinh == "1")
+            @if (item.GioiTinh == 1)
             {
                 <td>
                     Nam
@@ -87,20 +185,19 @@
             }
 
             <td>
-                @Html.DisplayFor(modelItem => item.DiaChi)
+                @Html.DisplayName(item.DiaChi)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.QueQuan)
+                @Html.DisplayName(item.QueQuan)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.CongTy)
+                @Html.DisplayName(item.CongTy)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.ChucVu)
+                @Html.DisplayName(item.ChucVu)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.TieuSu)
+                @Html.DisplayName(item.TieuSu)
             </td>
         </tr>
-    }
-</table>
+    }*@
