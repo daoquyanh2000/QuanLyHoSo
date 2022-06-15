@@ -62,3 +62,8 @@ input[type="file"] {
 label.error{
     color:red;
 }
+
+th, td {
+    word-break: keep-all;
+    white-space: nowrap;
+}

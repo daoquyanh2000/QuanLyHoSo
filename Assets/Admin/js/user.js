@@ -161,7 +161,7 @@ function GetData(ID, event) {
             $("#CongTy").val(res.data.CongTy);
             $("#ChucVu").val(res.data.ChucVu);
             $("#TieuSu").val(res.data.TieuSu);
-            $('.modal').modal('toggle');
+            $('#staticBackdrop').modal('toggle');
             if (res.data.AnhDaiDien != "") {
                 $("#imgTemp").hide();
                 $("#userImg").show();
@@ -259,18 +259,27 @@ function ChangeState(ID) {
 }
 
 function UpExcel() {
-    var fileUpload = $("#excelUpload").get(0);
-    var files = fileUpload.files;
-    var fileData = new FormData();
-    for (var i = 0; i < files.length; i++) {
-        fileData.append(files[i].name, files[i]);
-    }
+    var formdata = new FormData();
+    let checkbox = $(".excelCheckbox");
+    let tmp = [];
+    $.each(checkbox, function (index, value) {
+        if (this.checked) {
+
+            tmp.push(1)
+        } else {
+            tmp.push(0)
+
+        }
+    })
+    formdata.append("checkbox", tmp);
     $.ajax({
-        url: '/admin/user/Excel',
-        type: "POST",
+        url: "/admin/user/excel",
+        data: formdata,
+        cache: false,
         contentType: false,
         processData: false,
-        data: fileData,
+        type: 'post',
+        dataType: 'json',
         success: function (res) {
             $.toast({
                 heading: res.heading,
@@ -296,6 +305,9 @@ function ModalExcel() {
     $.ajax({
         url: "/admin/user/ExcelModal",
         type: "post",
+        contentType: false,
+        processData: false,
+        data: fileData,
         success: function (res) {
             var table = $("#excelContainer");
             table.html(res);

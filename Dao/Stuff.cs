@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using OfficeOpenXml;
 using QuanLyHoSo.Models;
+using QuanLyHoSo.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -179,17 +180,20 @@ namespace QuanLyHoSo.Dao
                 {
                     int col = columnInfo.SingleOrDefault(c => c.ColumnName == prop.Name).Index;
                     var val = sheet.Cells[row, col].Value;
-                    var propType = prop.PropertyType;
-                    prop.SetValue(obj, Convert.ChangeType(val, propType));
+                    if (val != null)
+                    {
+                        var propType = prop.PropertyType;
+                        prop.SetValue(obj, Convert.ChangeType(val, propType));
+                    }
+                    else
+                    {
+                    }
+
                 }
                 list.Add(obj);
             }
-
             return list;
         }
-        public static void ListToDatabase(List<ExcelNhanVien> list)
-        {
 
-        }
     }
 }

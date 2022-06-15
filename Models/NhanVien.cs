@@ -1,26 +1,15 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Dapper.Contrib.Extensions;
+using System.ComponentModel.DataAnnotations;
 
 namespace QuanLyHoSo.Models
 {
-    public class NhanVien : ExcelNhanVien
+    [Table("NhanVien")]
+    public class NhanVien 
 
     {
         //7 truong required
         public long ID { get; set; }
 
-        public string NguoiTao { get; set; }
-        public string NgayTao { get; set; }
-        public string NgaySua { get; set; }
-        public string NguoiSua { get; set; }
-    }
-
-    public class DataNhanVien : NhanVien
-    {
-        public string TenQuyen { get; set; }
-    }
-
-    public class ExcelNhanVien
-    {
         public string HoTen { get; set; }
 
         [Display(Name = "Tên tài khoản")]
@@ -39,12 +28,24 @@ namespace QuanLyHoSo.Models
         public string NgaySinh { get; set; }
 
         public string AnhDaiDien { get; set; }
-        public byte GioiTinh { get; set; }
+        public string GioiTinh { get; set; }
         public string DiaChi { get; set; }
         public string QueQuan { get; set; }
         public string CongTy { get; set; }
         public string ChucVu { get; set; }
         public string TieuSu { get; set; }
+
+        public string NguoiTao { get; set; }
+        public string NgayTao { get; set; }
+        public string NgaySua { get; set; }
+        public string NguoiSua { get; set; }
     }
+
+    public class DataNhanVien : NhanVien
+    {
+        public string TenQuyen { get; set; }
+    }
+
+ 
 
 }

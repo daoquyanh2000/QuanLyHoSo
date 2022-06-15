@@ -1,9 +1,13 @@
-﻿using Dapper.Contrib.Extensions;
+﻿using AutoMapper;
+using Dapper;
+using Dapper.Contrib.Extensions;
 using OfficeOpenXml;
 using PagedList;
+using QuanLyHoSo.App_Start;
 using QuanLyHoSo.Dao;
 using QuanLyHoSo.Dao.DaoAdmin;
 using QuanLyHoSo.Models;
+using QuanLyHoSo.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -65,7 +69,7 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
             User.SDT = fc["SDT"].ToString();
             User.Email = fc["Email"].ToString();
             User.NgaySinh = fc["NgaySinh"].ToString();
-            User.GioiTinh = Convert.ToByte(fc["GioiTinh"]);
+            User.GioiTinh = fc["GioiTinh"].ToString();
             User.DiaChi = fc["DiaChi"].ToString();
             User.QueQuan = fc["QueQuan"].ToString();
             User.ChucVu = fc["ChucVu"].ToString();
@@ -149,27 +153,44 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public JsonResult Excel()
+        public JsonResult Excel(FormCollection fc)
         {
-            /*string PathExcel = "C:\\Users\\teu-pc\\source\\repos\\daoquyanh2000\\QuanLyHoSo\\Assets\\Excel\\User\\excelQuanLyHoSo.xlsx";*/
             string PathExcel = "C:\\Users\\teu-laptop\\source\\repos\\QuanLyHoSo\\Assets\\Excel\\User\\User.xlsx";
-            if (Request.Files.Count > 0)
-            {
-                HttpFileCollectionBase files = Request.Files;
-                for (int i = 0; i < files.Count; i++)
+            var checkbox = (fc["checkbox"]).Split(',');
+            var listNhanVien = new List<NhanVien>();
+            var listExcel = new List<ViewExcelNhanVien>();
+            long tk;
+            using (ExcelPackage package = new ExcelPackage(new FileInfo(PathExcel)))
+            {            
+
+                ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+                var sheet = package.Workbook.Worksheets["data"];
+                listExcel = Stuff.GetListExcel<ViewExcelNhanVien>(sheet);
+                var config = new MapperConfiguration(cfg =>
                 {
-                    HttpPostedFileBase file = files[i];
-                    string fileName = "User.xlsx";
-                    string pathFolder = "/Assets/Excel/User";
-                    //tao folder
-                    Directory.CreateDirectory(Server.MapPath(pathFolder));
-                    // tao duong dan path
-                    string pathFile = Path.Combine(Server.MapPath(pathFolder), fileName);
-                    file.SaveAs(pathFile);
+                    cfg.AddProfile(new MappingProfile());
+                });
+                var mapper = config.CreateMapper();
+
+                // Chuyển đổi danh sách ViewExcelNhanVIen qua danh sách NhanVien.
+                listNhanVien = mapper.Map<List<NhanVien>>(listExcel);
+                int i = 0;
+                foreach(var nv in listNhanVien)
+                {
+                    nv.TrangThai = Convert.ToInt32(checkbox[i]);
+                    nv.NgayTao = DateTime.UtcNow.ToString();
+                    nv.NguoiTao = Session["UserNameNV"].ToString();
+                    i++;
                 }
-            }
+                using (IDbConnection db = new SqlConnection(ConnectString.Setup()))
+                {
+                    tk = db.Insert(listNhanVien);
+                }
+            };
+
+/*
             DataTable dt = Stuff.ExcelToDataTable(PathExcel, Session["UserNameNV"].ToString());
-            int tk = Stuff.DataTableToDb(dt, "NhanVien");
+            int tk = Stuff.DataTableToDb(dt, "NhanVien");*/
             return Json(new
             {
                 heading = "Thành công",
@@ -181,7 +202,8 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
         public PartialViewResult ExcelModal()
         {
 
-            string PathExcel = "C:\\Users\\teu-pc\\source\\repos\\daoquyanh2000\\QuanLyHoSo\\Assets\\Excel\\User\\User.xlsx";
+            /*string PathExcel = "C:\\Users\\teu-pc\\source\\repos\\daoquyanh2000\\QuanLyHoSo\\Assets\\Excel\\User\\User.xlsx";*/
+            string PathExcel = "C:\\Users\\teu-laptop\\source\\repos\\QuanLyHoSo\\Assets\\Excel\\User\\User.xlsx";
 
 
             if (Request.Files.Count > 0)
@@ -204,8 +226,22 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
                 ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
                 var sheet = package.Workbook.Worksheets["data"];
 
+                var listAccount = from nv in Stuff.GetListExcel<ViewExcelNhanVien>(sheet)
+                                  where nv.HoTen != null &&
+                                        nv.UserName != null &&
+                                        nv.Password != null &&
+                                        nv.Quyen != 0 &&
+                                        nv.TrangThai != 0 &&
+                                        nv.SDT != null &&
+                                        nv.Email != null 
+                                        join k in RoleDao.GetKieuNhanViens()
+                                        on nv.Quyen  equals k.ID
+                                        select nv;
 
-                ViewBag.listAccount = Stuff.GetListExcel<ExcelNhanVien>(sheet);
+
+
+
+                ViewBag.listAccount = Stuff.GetListExcel<ViewExcelNhanVien>(sheet);
                 ViewBag.listKnd = RoleDao.GetKieuNhanViens();
                 return PartialView();
             };

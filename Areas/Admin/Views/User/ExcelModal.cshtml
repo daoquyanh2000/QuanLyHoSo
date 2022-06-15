@@ -1,9 +1,17 @@
 ﻿@using System.Linq
 @{ 
     var account =
-    from nv in (List<QuanLyHoSo.Models.ExcelNhanVien>)ViewBag.listAccount
+    from nv in (List<QuanLyHoSo.ViewModel.ViewExcelNhanVien>)ViewBag.listAccount
+    where nv.HoTen != null &&
+          nv.UserName != null &&
+          nv.Password != null &&
+          nv.Quyen != 0 &&
+          nv.TrangThai != 0 &&
+          nv.SDT != null &&
+          nv.Email != null
     join k in (List<QuanLyHoSo.Models.KieuNhanVien>)ViewBag.listKnd
     on nv.Quyen equals k.ID
+
     select new
     {
         nv.HoTen,
@@ -71,13 +79,13 @@
             Tiểu sử
         </th>
     </tr>
-        @foreach(var item in account)
-            {
+        @foreach (var item in account)
+        {
                 <tr>
-                    <td>
+                    <td style="max-width:200px">
                         @item.HoTen
                     </td>
-                    <td>
+                    <td >
                         @item.UserName
                     </td>
                     <td>
@@ -90,7 +98,7 @@
                     {
                         <td>
                             <div class="form-check form-switch">
-                                <input class="form-check-input" type="checkbox"  checked id="excelCheckbox">
+                                <input class="form-check-input excelCheckbox" type="checkbox"  checked >
                             </div>
                         </td>
                     }
@@ -98,7 +106,7 @@
                     {
                         <td>
                             <div class="form-check form-switch">
-                                <input class="form-check-input" type="checkbox"  id="excelCheckbox">
+                                <input class="form-check-input excelCheckbox" type="checkbox" >
                             </div>
                         </td>
                     }
@@ -111,16 +119,17 @@
                     <td>
                         @item.NgaySinh
                     </td>
-                    <td>
-                        @item.AnhDaiDien
+                    <td >
+                        <img id="" src="@item.AnhDaiDien" alt="" style="max-width:100px">
+                        
                     </td>
                     @if (@item.GioiTinh == 1)
                     {
-                        <td>Nam</td>
+                        <td>Nữ</td>
                     }
                     else
                     {
-                        <td>Nữ</td>
+                        <td>Nam</td>
                     }
 
                     <td>
