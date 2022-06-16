@@ -1,12 +1,15 @@
-﻿using System;
+﻿using Dapper.Contrib.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
 namespace QuanLyHoSo.Models
 {
+    [Table("Kho")]
     public class Kho
     {
+        [Key]
         public long ID { get; set; }
         public string TenKho { get; set; }
         public string MaKho { get; set; }

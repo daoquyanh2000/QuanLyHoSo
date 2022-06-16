@@ -60,8 +60,15 @@ namespace QuanLyHoSo.Dao
                 return list;
             }
         }
-
-
+        public static List<T> GetAll<T>() where T : class
+        {
+            List<T> list = new List<T>();
+            using (var con = new SqlConnection(ConnectString.Setup()))
+            {
+                list = con.GetAll<T>().ToList();
+            }
+            return list;
+        }
 
     }
 }

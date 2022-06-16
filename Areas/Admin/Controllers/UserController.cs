@@ -154,7 +154,8 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
         [HttpPost]
         public JsonResult Excel(FormCollection fc)
         {
-            string PathExcel = "C:\\Users\\teu-laptop\\source\\repos\\QuanLyHoSo\\Assets\\Excel\\User\\User.xlsx";
+            string PathExcel = "C:\\Users\\teu-pc\\source\\repos\\daoquyanh2000\\QuanLyHoSo\\Assets\\Excel\\User\\User.xlsx";
+
             var checkbox = (fc["checkbox"]).Split(',');
             var listNhanVien = new List<NhanVien>();
             var account =
@@ -200,9 +201,9 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
         public PartialViewResult ExcelModal()
         {
 
-            /*string PathExcel = "C:\\Users\\teu-pc\\source\\repos\\daoquyanh2000\\QuanLyHoSo\\Assets\\Excel\\User\\User.xlsx";*/
-            string PathExcel = "C:\\Users\\teu-laptop\\source\\repos\\QuanLyHoSo\\Assets\\Excel\\User\\User.xlsx";
-
+            string PathExcel = "C:\\Users\\teu-pc\\source\\repos\\daoquyanh2000\\QuanLyHoSo\\Assets\\Excel\\User\\User.xlsx";
+            /*string PathExcel = "C:\\Users\\teu-laptop\\source\\repos\\QuanLyHoSo\\Assets\\Excel\\User\\User.xlsx";
+*/
 
             if (Request.Files.Count > 0)
             {
