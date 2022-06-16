@@ -36,9 +36,9 @@ namespace QuanLyHoSo.App_Start
 
         public override string[] GetRolesForUser(string username)
         {
-            var account = from nv in UserDao.GetAllUser()
+            var roles = from nv in UserDao.GetAllUser()
                           join knv in RoleDao.GetKieuNhanViens()
-                          on nv.Quyen equals knv.ID
+                          on nv.MaKieu equals knv.MaKieu
                           join knv_q in RoleDao.GetKieuNhanVien_Quyen()
                           on knv.ID equals knv_q.IDKieuNhanVien
                           join q in RoleDao.GetQuyen()
@@ -46,7 +46,7 @@ namespace QuanLyHoSo.App_Start
                           where nv.UserName == username &&
                           knv.TrangThai == 1
                           select q.MaQuyen;
-            return account.ToArray();
+            return roles.ToArray();
         }
 
         public override string[] GetUsersInRole(string roleName)

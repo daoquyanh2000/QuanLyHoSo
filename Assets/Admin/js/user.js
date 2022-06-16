@@ -2,6 +2,7 @@
     ////khi bam nut tao user moi
     $('button[data-bs-toggle="modal"]').click(function () {
         EnableForm();
+
         $("#HiddenID").val(0);
         $("#userImg").hide();
         $("#imgTemp").show();
@@ -103,6 +104,7 @@
 function CreateUser() {
     {
         var formData = new FormData($('form#userForm')[0]);
+
         var userID = $("#HiddenID").val();
         formData.append("ID", userID);
         // formData.append("AnhDaiDien", "");
@@ -115,7 +117,7 @@ function CreateUser() {
             type: 'post',
             dataType: 'json',
             success: function (res) {
-                $('.modal').modal('toggle');
+                $('#staticBackdrop').modal('toggle');
                 $.toast({
                     heading: res.heading,
                     icon: res.icon,
@@ -150,7 +152,7 @@ function GetData(ID, event) {
             $("#HoTen").val(res.data.HoTen);
             $("#UserName").val(res.data.UserName);
             $("#Password").val(res.data.Password);
-            $("#Quyen").val(res.data.Quyen);
+            $("#MaKieu").val(res.data.MaKieu);
             $("#TrangThai").val(res.data.TrangThai);
             $("#NgaySinh").val(reformatDateString(res.data.NgaySinh));
             $("#SDT").val(res.data.SDT);
@@ -290,6 +292,7 @@ function UpExcel() {
                 hideAfter: 3000,
                 showHideTransition: 'slide',
             })
+            $("#ExcelModal").modal('toggle');
             SearchUser();
         }
     });

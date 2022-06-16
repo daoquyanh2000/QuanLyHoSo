@@ -27,12 +27,12 @@
         </div>
         <div class="col-lg-6  ">
             <div class="form-group">
-                <label class="form-label" for="Quyen">Kiểu người dùng (*)</label>
-                @Html.DropDownList("Quyen", (IEnumerable<SelectListItem>)ViewBag.listKnv, new { @class = "form-select" })
+                <label class="form-label" for="MaKieu">Kiểu người dùng (*)</label>
+                @Html.DropDownList("MaKieu", (IEnumerable<SelectListItem>)ViewBag.listKnv, new { @class = "form-select" })
             </div>
             <div class="form-group">
                 <label class="form-label" for="TrangThai">Trạng thái (*)</label>
-                <select class="form-select"  id="TrangThai" name="TrangThai">
+                <select class="form-select" id="TrangThai" name="TrangThai">
                     <option value="0">Khóa</option>
                     <option value="1">Mở</option>
                 </select>
@@ -43,7 +43,7 @@
                     <i class="icon fa fa-camera border px-2 py-2" id="imgTemp" style="font-size: 200px; display: block;"></i>
                     <div class="d-flex justify-content-center">
                         <img id="userImg" src="" alt="" class="w-100 border px-2 py-2" style="display: none;">
-                        <input type="file" id="AnhDaiDien" onchange=" loadFile(event)" name="AnhDaiDien" accept="*/image" class="custom-file-upload">
+                        <input type="file" id="AnhDaiDien" onchange=" loadFile(event)" name="AnhDaiDien" accept="image/*" class="custom-file-upload">
                     </div>
                 </label>
             </div>
@@ -60,9 +60,10 @@
                 <div class="row">
                     <div class="col-lg-6">
                         <div class="form-group">
-                            <label class="form-label" for="GioiTinh">Giới tính</label>
-                            <select class="form-select" data-val="true" data-val-number="The field GioiTinh must be a number." id="GioiTinh" name="GioiTinh">
-                                <option value="0">Nam</option>
+                            <label class="form-label" for="GioiTinh" >Giới tính</label>
+                            <select class="form-select" id="GioiTinh" name="GioiTinh">
+                                <option selected hidden value="0">Chọn giới tính</option>
+                                <option  value="2">Nam</option>
                                 <option value="1">Nữ</option>
                             </select>
                         </div>

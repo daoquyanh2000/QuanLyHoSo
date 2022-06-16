@@ -20,8 +20,8 @@
 
     // form validation
     $("#userForm").validate({
-        rules: {
-            "TenKieu": {
+/*        rules: {
+            "Ten": {
                 required: true,
                 maxlength: 20,
                 minlength: 3,
@@ -39,7 +39,7 @@
             "TrangThai": {
                 required: "Bắt buộc nhập trạng thái",
             },
-        },
+        },*/
         submitHandler: function () {
             CreateUser();
         }
@@ -51,15 +51,8 @@ function CreateUser() {
     var formData = new FormData($('form#userForm')[0]);
     var userID = $("#HiddenID").val();
     formData.append("ID", userID);
-    let checkedID = [];
-    let checked = $("form input:checked");
-    $.each(checked, function () {
-        let tmp = $(this).attr("data-id")
-        checkedID.push(tmp);
-    })
-    formData.append("checkedID", checkedID);
     $.ajax({
-        url: "/admin/role/save",
+        url: "/admin/storage/save",
         data: formData,
         cache: false,
         contentType: false,

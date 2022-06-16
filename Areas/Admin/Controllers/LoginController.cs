@@ -34,7 +34,7 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
                     Session["HoTenNV"] = User.HoTen;
                     Session["UserNameNV"] = User.UserName;
                     Session["IDNV"] = User.ID;
-                    Session["QuyenNV"] = User.Quyen;
+                    Session["QuyenNV"] = User.MaKieu;
                     FormsAuthentication.SetAuthCookie(User.UserName, false);
                     return Json(new
                     {

@@ -21,7 +21,7 @@ namespace QuanLyHoSo.Dao.DaoAdmin
                     User.HoTen = dr["HoTen"].ToString();
                     User.UserName = dr["UserName"].ToString();
                     User.TrangThai = Convert.ToByte(dr["TrangThai"]);
-                    User.Quyen = Convert.ToByte(dr["Quyen"]);
+                    User.MaKieu = dr["MaKieu"].ToString();
                 }
             }
             return User;

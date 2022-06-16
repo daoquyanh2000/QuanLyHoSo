@@ -165,11 +165,13 @@
     <Compile Include="Dao\ConnectString.cs" />
     <Compile Include="Dao\DaoAdmin\LoginDao.cs" />
     <Compile Include="Dao\DaoAdmin\RoleDao.cs" />
+    <Compile Include="Dao\DaoAdmin\StorageDao.cs" />
     <Compile Include="Dao\DaoAdmin\UserDao.cs" />
     <Compile Include="Dao\Stuff.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\Kho.cs" />
     <Compile Include="Models\KieuNhanVien_Quyen.cs" />
     <Compile Include="Models\NhanVien.cs" />
     <Compile Include="Models\KieuNhanVien.cs" />
@@ -183,6 +185,7 @@
     <Content Include="Assets\Admin\css\login.css" />
     <Content Include="Assets\Admin\js\login.js" />
     <Content Include="Assets\Admin\js\role.js" />
+    <Content Include="Assets\Admin\js\storage.js" />
     <Content Include="Assets\Admin\js\user.js" />
     <Content Include="Assets\Excel\User\CVSP22G04B18DCDT003HP04Q01d.jpg" />
     <Content Include="Assets\Images\Avatars\User\bai2_3.png" />
@@ -234,6 +237,8 @@
     <Content Include="Assets\Excel\User\htn.drawio" />
     <Content Include="Assets\Excel\User\User.xlsx" />
     <Content Include="Areas\Admin\Views\User\ExcelModal.cshtml" />
+    <Content Include="Areas\Admin\Views\Storage\StorageTable.cshtml" />
+    <Content Include="Areas\Admin\Views\Storage\Modal.cshtml" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />

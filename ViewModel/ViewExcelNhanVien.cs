@@ -11,7 +11,7 @@ namespace QuanLyHoSo.ViewModel
         public string UserName { get; set; }
         public string Password { get; set; }
 
-        public byte Quyen { get; set; }
+        public string MaKieu { get; set; }
 
         public int TrangThai { get; set; }
         public string SDT { get; set; }

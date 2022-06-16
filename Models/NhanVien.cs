@@ -18,7 +18,7 @@ namespace QuanLyHoSo.Models
         [Display(Name = "Mật khẩu")]
         public string Password { get; set; }
 
-        public byte Quyen { get; set; }
+        public string MaKieu { get; set; }
 
         public int TrangThai { get; set; }
         public string SDT { get; set; }
@@ -28,7 +28,7 @@ namespace QuanLyHoSo.Models
         public string NgaySinh { get; set; }
 
         public string AnhDaiDien { get; set; }
-        public string GioiTinh { get; set; }
+        public int GioiTinh { get; set; }
         public string DiaChi { get; set; }
         public string QueQuan { get; set; }
         public string CongTy { get; set; }

@@ -72,10 +72,16 @@
                     <div class="container">
                         <form action="/Admin/Role/Create" id="userForm" method="post">
                             <div class="row my-2">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label for="TenKieu" class="form-label">Tên kiểu người dùng (*)</label>
+                                        <input class="form-control" id="TenKieu" name="TenKieu" type="text" placeholder="">
+                                    </div>
+                                </div>
                                 <div class="col-lg-6">
                                     <div class="form-group">
-                                        <label for="TenKieu" class="form-label">Kiểu người dùng (*)</label>
-                                        <input class="form-control" id="TenKieu" name="TenKieu" type="text" placeholder="">
+                                        <label for="MaKieu" class="form-label">Mã kiểu người dùng (*)</label>
+                                        <input class="form-control" id="MaKieu" name="MaKieu" type="text" placeholder="">
                                     </div>
                                 </div>
                                 <div class="col-lg-6">
@@ -105,9 +111,9 @@
                                     {
                                         <div class="col-md-4">
                                             <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" id="button_@item.ID" data-id="@item.ID"
+                                                <input class="form-check-input" type="checkbox" id="checkbox_@item.ID" data-id="@item.ID"
                                                        value="">
-                                                <label class="form-check-label" for="button_@item.ID">@item.TenQuyen</label>
+                                                <label class="form-check-label" for="checkbox_@item.ID">@item.TenQuyen</label>
                                             </div>
                                         </div>
 

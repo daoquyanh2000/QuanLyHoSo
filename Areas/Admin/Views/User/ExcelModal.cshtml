@@ -1,18 +1,18 @@
 ﻿@using System.Linq
-@{ 
+
+@{
     var account =
     from nv in (List<QuanLyHoSo.ViewModel.ViewExcelNhanVien>)ViewBag.listAccount
     where nv.HoTen != null &&
           nv.UserName != null &&
           nv.Password != null &&
-          nv.Quyen != 0 &&
+          nv.MaKieu != null &&
           nv.TrangThai != 0 &&
           nv.SDT != null &&
           nv.Email != null
     join k in (List<QuanLyHoSo.Models.KieuNhanVien>)ViewBag.listKnd
-    on nv.Quyen equals k.ID
-
-    select new
+    on nv.MaKieu equals k.MaKieu
+    select new 
     {
         nv.HoTen,
         nv.UserName,
@@ -79,76 +79,80 @@
             Tiểu sử
         </th>
     </tr>
-        @foreach (var item in account)
-        {
-                <tr>
-                    <td style="max-width:200px">
-                        @item.HoTen
-                    </td>
-                    <td >
-                        @item.UserName
-                    </td>
-                    <td>
-                        @item.Password
-                    </td>
-                    <td>
-                        @item.TenKieu
-                    </td>
-                    @if (@item.TrangThai == 1)
-                    {
-                        <td>
-                            <div class="form-check form-switch">
-                                <input class="form-check-input excelCheckbox" type="checkbox"  checked >
-                            </div>
-                        </td>
-                    }
-                    else
-                    {
-                        <td>
-                            <div class="form-check form-switch">
-                                <input class="form-check-input excelCheckbox" type="checkbox" >
-                            </div>
-                        </td>
-                    }
-                    <td>
-                        @item.SDT
-                    </td>
-                    <td>
-                        @item.Email
-                    </td>
-                    <td>
-                        @item.NgaySinh
-                    </td>
-                    <td >
-                        <img id="" src="@item.AnhDaiDien" alt="" style="max-width:100px">
-                        
-                    </td>
-                    @if (@item.GioiTinh == 1)
-                    {
-                        <td>Nữ</td>
-                    }
-                    else
-                    {
-                        <td>Nam</td>
-                    }
-
-                    <td>
-                        @item.DiaChi
-                    </td>
-                    <td>
-                        @item.QueQuan
-                    </td>
-                    <td>
-                        @item.CongTy
-                    </td>
-                    <td>
-                        @item.ChucVu
-                    </td>
-                    <td>
-                        @item.TieuSu
-                    </td>
-                </tr>
+    @foreach (var item in account)
+    {
+        <tr>
+            <td style="max-width:200px">
+                @item.HoTen
+            </td>
+            <td>
+                @item.UserName
+            </td>
+            <td>
+                @item.Password
+            </td>
+            <td>
+                @item.TenKieu
+            </td>
+            @if (@item.TrangThai == 1)
+            {
+                <td>
+                    <div class="form-check form-switch">
+                        <input class="form-check-input excelCheckbox" type="checkbox" checked>
+                    </div>
+                </td>
             }
+            else
+            {
+                <td>
+                    <div class="form-check form-switch">
+                        <input class="form-check-input excelCheckbox" type="checkbox">
+                    </div>
+                </td>
+            }
+            <td>
+                @item.SDT
+            </td>
+            <td>
+                @item.Email
+            </td>
+            <td>
+                @item.NgaySinh
+            </td>
+            <td>
+                <img id="" src="@item.AnhDaiDien" alt="" style="max-width:100px">
+
+            </td>
+            @if (@item.GioiTinh == 1)
+            {
+                <td>Nữ</td>
+            }
+            else
+            if(@item.GioiTinh==2)
+            {
+                <td>Nam</td>
+            }else
+                {
+                   <td></td>
+                }
+
+            <td>
+                @item.DiaChi
+            </td>
+            <td>
+                @item.QueQuan
+            </td>
+            <td>
+                @item.CongTy
+            </td>
+            <td>
+                @item.ChucVu
+            </td>
+            <td>
+                @item.TieuSu
+            </td>
+        </tr>
+    }
 
 
 </table>

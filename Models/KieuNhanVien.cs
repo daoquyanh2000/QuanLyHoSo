@@ -4,6 +4,7 @@
     {
         public long ID { get; set; }
         public string TenKieu { get; set; }
+        public string MaKieu { get; set; }
         public string ChuThich { get; set; }
         public byte TrangThai { get; set; }
         public string NguoiTao { get; set; }

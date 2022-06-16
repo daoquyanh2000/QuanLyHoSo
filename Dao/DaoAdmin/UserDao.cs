@@ -1,7 +1,11 @@
-﻿using QuanLyHoSo.Models;
+﻿using OfficeOpenXml;
+using QuanLyHoSo.Models;
+using QuanLyHoSo.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.IO;
+using System.Linq;
 
 namespace QuanLyHoSo.Dao.DaoAdmin
 {
@@ -57,20 +61,20 @@ namespace QuanLyHoSo.Dao.DaoAdmin
 
         public static List<DataNhanVien> GetAllUser()
         {
-            string query = "select n.*, k.TenKieu as TenQuyen from NhanVien n inner join KieuNhanVien as k on n.Quyen = k.ID";
+            string query = "select n.*, k.TenKieu as TenQuyen from NhanVien n inner join KieuNhanVien as k on n.MaKieu = k.MaKieu";
             return Stuff.GetList<DataNhanVien>(query);
         }
 
         public static void CreateNewUser(NhanVien newUser, string UserNameNV)
         {
-            string query = $"INSERT INTO [NhanVien]([UserName],[Password],[TrangThai],[Quyen],[HoTen],[SDT],[Email],[NgaySinh],[AnhDaiDien],[GioiTinh],[DiaChi],[QueQuan],[CongTy],[ChucVu],[TieuSu],[NguoiTao],[NgayTao])" +
-$"VALUES(@UserName,@Password,@TrangThai,@Quyen,@HoTen,@SDT,@Email,@NgaySinh,@AnhDaiDien,@GioiTinh,@DiaChi,@QueQuan,@CongTy,@ChucVu,@TieuSu,@NguoiTao,GETDATE())";
+            string query = $"INSERT INTO [NhanVien]([UserName],[Password],[TrangThai],[MaKieu],[HoTen],[SDT],[Email],[NgaySinh],[AnhDaiDien],[GioiTinh],[DiaChi],[QueQuan],[CongTy],[ChucVu],[TieuSu],[NguoiTao],[NgayTao])" +
+$"VALUES(@UserName,@Password,@TrangThai,@MaKieu,@HoTen,@SDT,@Email,@NgaySinh,@AnhDaiDien,@GioiTinh,@DiaChi,@QueQuan,@CongTy,@ChucVu,@TieuSu,@NguoiTao,GETDATE())";
             object param = new
             {
                 UserName = newUser.UserName,
                 Password = newUser.Password,
                 TrangThai = newUser.TrangThai,
-                Quyen = newUser.Quyen,
+                MaKieu = newUser.MaKieu,
                 HoTen = newUser.HoTen,
                 SDT = newUser.SDT,
                 Email = newUser.Email,
@@ -114,7 +118,7 @@ $"VALUES(@UserName,@Password,@TrangThai,@Quyen,@HoTen,@SDT,@Email,@NgaySinh,@Anh
             string query = "UPDATE [dbo].[NhanVien] SET [UserName] = @UserName," +
                 "[Password] = @Password," +
                 "[TrangThai] = @TrangThai," +
-                "[Quyen] = @Quyen," +
+                "[MaKieu] = @MaKieu," +
                 "[HoTen] = @HoTen," +
                 "[SDT] = @SDT," +
                 "[Email] =@Email ," +
@@ -133,7 +137,7 @@ $"VALUES(@UserName,@Password,@TrangThai,@Quyen,@HoTen,@SDT,@Email,@NgaySinh,@Anh
                 UserName = newUser.UserName,
                 Password = newUser.Password,
                 TrangThai = newUser.TrangThai,
-                Quyen = newUser.Quyen,
+                MaKieu = newUser.MaKieu,
                 HoTen = newUser.HoTen,
                 SDT = newUser.SDT,
                 Email = newUser.Email,
@@ -149,6 +153,41 @@ $"VALUES(@UserName,@Password,@TrangThai,@Quyen,@HoTen,@SDT,@Email,@NgaySinh,@Anh
                 ID = userID
             };
             Stuff.ExecuteSql(query, param);
+        }
+        public static List<T> GetListExcel<T>(string PathExcel)
+        {
+            List<T> account = new List<T>(); 
+            using (ExcelPackage package = new ExcelPackage(new FileInfo(PathExcel)))
+            {
+                ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+                var sheet = package.Workbook.Worksheets["data"];
+                //first row is for knowing the properties of object
+                var columnInfo = Enumerable.Range(1, sheet.Dimension.Columns).ToList().Select(n =>
+
+                    new { Index = n, ColumnName = sheet.Cells[1, n].Value.ToString() }
+                );
+
+                for (int row = 2; row <= sheet.Dimension.Rows; row++)
+                {
+                    T obj = (T)Activator.CreateInstance(typeof(T));//generic object
+                    foreach (var prop in typeof(T).GetProperties())
+                    {
+                        int col = columnInfo.SingleOrDefault(c => c.ColumnName == prop.Name).Index;
+                        var val = sheet.Cells[row, col].Value;
+                        if (val != null)
+                        {
+                            var propType = prop.PropertyType;
+                            prop.SetValue(obj, Convert.ChangeType(val, propType));
+                        }
+                        else
+                        {
+                        }
+
+                    }
+                    account.Add(obj);
+                }
+            };
+                return account;
         }
     }
 }

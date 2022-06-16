@@ -1,7 +1,5 @@
 ﻿using AutoMapper;
-using Dapper;
 using Dapper.Contrib.Extensions;
-using OfficeOpenXml;
 using PagedList;
 using QuanLyHoSo.App_Start;
 using QuanLyHoSo.Dao;
@@ -20,6 +18,7 @@ using System.Web.Mvc;
 namespace QuanLyHoSo.Areas.Admin.Controllers
 {
     [Authorize(Roles = "NhanVien")]
+
     public class UserController : Controller
     {
         // GET: Admin/User
@@ -50,32 +49,33 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
                               select new SelectListItem
                               {
                                   Text = k.TenKieu,
-                                  Value = k.ID.ToString()
+                                  Value = k.MaKieu,
                               };
             return PartialView("Modal");
         }
 
         [HttpPost]
-        public JsonResult Save(FormCollection fc)
+        public JsonResult Save(NhanVien User)
         {
             string UserNameNV = Session["UserNameNV"].ToString();
-            NhanVien User = new NhanVien();
-            User.ID = Convert.ToInt32(fc["ID"]);
-            User.HoTen = fc["HoTen"].ToString();
-            User.UserName = fc["UserName"].ToString();
-            User.Password = Stuff.MD5Hash(fc["Password"].ToString());
-            User.TrangThai = Convert.ToByte(fc["TrangThai"]);
-            User.Quyen = Convert.ToByte(fc["Quyen"]);
-            User.SDT = fc["SDT"].ToString();
-            User.Email = fc["Email"].ToString();
-            User.NgaySinh = fc["NgaySinh"].ToString();
-            User.GioiTinh = fc["GioiTinh"].ToString();
-            User.DiaChi = fc["DiaChi"].ToString();
-            User.QueQuan = fc["QueQuan"].ToString();
-            User.ChucVu = fc["ChucVu"].ToString();
-            User.TieuSu = fc["TieuSu"].ToString();
-            User.CongTy = fc["CongTy"].ToString();
-
+            User.Password = Stuff.MD5Hash(User.Password);
+            /*            NhanVien User = new NhanVien();
+                        User.ID = Convert.ToInt32(fc["ID"]);
+                        User.HoTen = fc["HoTen"].ToString();
+                        User.UserName = fc["UserName"].ToString();
+                        User.Password = Stuff.MD5Hash(fc["Password"].ToString());
+                        User.TrangThai = Convert.ToByte(fc["TrangThai"]);
+                        User.MaKieu = fc["MaKieu"].ToString();
+                        User.SDT = fc["SDT"].ToString();
+                        User.Email = fc["Email"].ToString();
+                        User.NgaySinh = fc["NgaySinh"].ToString();
+                        User.GioiTinh = fc["GioiTinh"] ?? "0";
+                        User.DiaChi = fc["DiaChi"].ToString();
+                        User.QueQuan = fc["QueQuan"].ToString();
+                        User.ChucVu = fc["ChucVu"].ToString();
+                        User.TieuSu = fc["TieuSu"].ToString();
+                        User.CongTy = fc["CongTy"].ToString();*/
+            var a =User.AnhDaiDien;
             HttpFileCollectionBase file = Request.Files;
             if (file.Count > 0)
             {
@@ -94,7 +94,6 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
                 else
                 {
                     User.AnhDaiDien = "";
-                    /*User.AnhDaiDien = "";*/
                 }
             }
             if (User.ID == 0)
@@ -158,39 +157,38 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
             string PathExcel = "C:\\Users\\teu-laptop\\source\\repos\\QuanLyHoSo\\Assets\\Excel\\User\\User.xlsx";
             var checkbox = (fc["checkbox"]).Split(',');
             var listNhanVien = new List<NhanVien>();
-            var listExcel = new List<ViewExcelNhanVien>();
+            var account =
+                   from nv in UserDao.GetListExcel<ViewExcelNhanVien>(PathExcel)
+                   where nv.HoTen != null &&
+                         nv.UserName != null &&
+                         nv.Password != null &&
+                         nv.MaKieu != null &&
+                         nv.TrangThai != 0 &&
+                         nv.SDT != null &&
+                         nv.Email != null
+                   join k in RoleDao.GetKieuNhanViens()
+                   on nv.MaKieu equals k.MaKieu
+                   select nv;
             long tk;
-            using (ExcelPackage package = new ExcelPackage(new FileInfo(PathExcel)))
-            {            
-
-                ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-                var sheet = package.Workbook.Worksheets["data"];
-                listExcel = Stuff.GetListExcel<ViewExcelNhanVien>(sheet);
-                var config = new MapperConfiguration(cfg =>
-                {
-                    cfg.AddProfile(new MappingProfile());
-                });
-                var mapper = config.CreateMapper();
-
-                // Chuyển đổi danh sách ViewExcelNhanVIen qua danh sách NhanVien.
-                listNhanVien = mapper.Map<List<NhanVien>>(listExcel);
-                int i = 0;
-                foreach(var nv in listNhanVien)
-                {
-                    nv.TrangThai = Convert.ToInt32(checkbox[i]);
-                    nv.NgayTao = DateTime.UtcNow.ToString();
-                    nv.NguoiTao = Session["UserNameNV"].ToString();
-                    i++;
-                }
-                using (IDbConnection db = new SqlConnection(ConnectString.Setup()))
-                {
-                    tk = db.Insert(listNhanVien);
-                }
-            };
-
-/*
-            DataTable dt = Stuff.ExcelToDataTable(PathExcel, Session["UserNameNV"].ToString());
-            int tk = Stuff.DataTableToDb(dt, "NhanVien");*/
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile(new MappingProfile());
+            });
+            var mapper = config.CreateMapper();
+            // Chuyển đổi danh sách ViewExcelNhanVIen qua danh sách NhanVien.
+            listNhanVien = mapper.Map<List<NhanVien>>(account);
+            int i = 0;
+            foreach (var nv in listNhanVien)
+            {
+                nv.TrangThai = Convert.ToInt32(checkbox[i]);
+                nv.NgayTao = DateTime.UtcNow.ToString();
+                nv.NguoiTao = Session["UserNameNV"].ToString();
+                i++;
+            }
+            using (IDbConnection db = new SqlConnection(ConnectString.Setup()))
+            {
+                tk = db.Insert(listNhanVien);
+            }
             return Json(new
             {
                 heading = "Thành công",
@@ -221,30 +219,9 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
                     file.SaveAs(pathFile);
                 }
             }
-            using (ExcelPackage package = new ExcelPackage(new FileInfo(PathExcel)))
-            {
-                ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-                var sheet = package.Workbook.Worksheets["data"];
-
-                var listAccount = from nv in Stuff.GetListExcel<ViewExcelNhanVien>(sheet)
-                                  where nv.HoTen != null &&
-                                        nv.UserName != null &&
-                                        nv.Password != null &&
-                                        nv.Quyen != 0 &&
-                                        nv.TrangThai != 0 &&
-                                        nv.SDT != null &&
-                                        nv.Email != null 
-                                        join k in RoleDao.GetKieuNhanViens()
-                                        on nv.Quyen  equals k.ID
-                                        select nv;
-
-
-
-
-                ViewBag.listAccount = Stuff.GetListExcel<ViewExcelNhanVien>(sheet);
-                ViewBag.listKnd = RoleDao.GetKieuNhanViens();
-                return PartialView();
-            };
+            ViewBag.listAccount = UserDao.GetListExcel<ViewExcelNhanVien>(PathExcel);
+            ViewBag.listKnd = RoleDao.GetKieuNhanViens();
+            return PartialView();
             
         }
     }

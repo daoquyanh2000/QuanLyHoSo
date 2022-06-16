@@ -25,15 +25,15 @@ namespace QuanLyHoSo.Dao.DaoAdmin
 
         public static void CreateNewRole(KieuNhanVien role, string HoTenNV)
         {
-            string query = $"Insert into KieuNhanVien(TenKieu,ChuThich,TrangThai,NgayTao,NguoiTao)  VALUES(@TenKieu,@ChuThich,@TrangThai,GETDATE(),@NguoiTao)";
-            object param = new { TenKieu = role.TenKieu, ChuThich = role.ChuThich, TrangThai = role.TrangThai, NguoiTao = HoTenNV };
+            string query = $"Insert into KieuNhanVien(TenKieu,MaKieu,ChuThich,TrangThai,NgayTao,NguoiTao)  VALUES(@TenKieu,@MaKieu,@ChuThich,@TrangThai,GETDATE(),@NguoiTao)";
+            object param = new { TenKieu = role.TenKieu, ChuThich = role.ChuThich, TrangThai = role.TrangThai, NguoiTao = HoTenNV, MaKieu=role.MaKieu };
             Stuff.ExecuteSql(query, param);
         }
 
         public static void UpdateRole(KieuNhanVien role, long IDNV, string UserNameNV)
         {
-            string query = "Update KieuNhanVien Set TenKieu=@TenKieu,ChuThich=@ChuThich,TrangThai=@TrangThai,NgaySua=GETDATE(),NguoiSua =@NguoiSua WHERE ID =@ID";
-            object param = new { TenKieu = role.TenKieu, ChuThich = role.ChuThich, TrangThai = role.TrangThai, NguoiSua = UserNameNV, ID = IDNV };
+            string query = "Update KieuNhanVien Set TenKieu=@TenKieu,MaKieu=@MaKieu,ChuThich=@ChuThich,TrangThai=@TrangThai,NgaySua=GETDATE(),NguoiSua =@NguoiSua WHERE ID =@ID";
+            object param = new { TenKieu = role.TenKieu, MaKieu = role.MaKieu, ChuThich = role.ChuThich, TrangThai = role.TrangThai, NguoiSua = UserNameNV, ID = IDNV };
             Stuff.ExecuteSql(query, param);
         }
 

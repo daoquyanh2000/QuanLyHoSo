@@ -8,7 +8,7 @@ using System.Web.Mvc;
 
 namespace QuanLyHoSo.Areas.Admin.Controllers
 {
-    [Authorize(Roles = "KieuNhanVien")]
+    [Authorize(Roles="KieuNhanVien")]
     public class RoleController : Controller
     {
         // GET: Admin/Role
@@ -39,6 +39,7 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
             var role = new KieuNhanVien();
             role.ID = Convert.ToInt32(fc["ID"]);
             role.TenKieu = fc["TenKieu"].ToString();
+            role.MaKieu = fc["MaKieu"].ToString();
             role.ChuThich = fc["ChuThich"].ToString();
             role.TrangThai = Convert.ToByte(fc["TrangThai"]);
             var checkedID = (fc["checkedID"]).Split(',').ToList();

@@ -75,37 +75,48 @@
                 <nav class="navbar-dark">
                     <ul class="navbar-nav">
                         <!-- sidebar item 1 start-->
-                        <li class="sidebar-item">
-                            <a data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false"
-                               aria-controls="collapseExample" class="nav-link d-flex align-items-center sidebar-link">
-                                <span class="me-2">
-                                    <i class="fa-solid fa-building-columns"></i>
-                                </span>
-                                Quản lý đơn vị
-                                <span class="icon-right ms-auto d-flex">
-                                    <i class="bi bi-chevron-down "></i>
-                                </span>
-                            </a>
-                            <div class="collapse" id="collapseExample">
-                                <ul class="navbar-dark">
-                                    <li class="navbar-nav">
-                                        <a href="/admin/user" class="nav-link">
-                                            <i class="bi bi-person-circle"></i>
-                                            Người dùng
-                                        </a>
-                                    </li>
-                                    <li class="navbar-nav">
-                                        <a href="/admin/role" class="nav-link">
-                                            <i class="bi bi-people-fill"></i>
-                                            Kiểu người dùng
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </li>
-                        <li class="sidebar-item">
-                            <hr class="dropdown-divider">
-                        </li>
+                        @if (User.IsInRole("NhanVien") || User.IsInRole("KieuNhanVien"))
+                        {
+                            <li class="sidebar-item">
+                                <a data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false"
+                                   aria-controls="collapseExample" class="nav-link d-flex align-items-center sidebar-link">
+                                    <span class="me-2">
+                                        <i class="fa-solid fa-building-columns"></i>
+                                    </span>
+                                    Quản lý đơn vị
+                                    <span class="icon-right ms-auto d-flex">
+                                        <i class="bi bi-chevron-down "></i>
+                                    </span>
+                                </a>
+
+                                <div class="collapse" id="collapseExample">
+                                    <ul class="navbar-dark">
+                                        @if (User.IsInRole("NhanVien"))
+                                        {
+                                            <li class="navbar-nav">
+                                                <a href="/admin/user" class="nav-link">
+                                                    <i class="bi bi-person-circle"></i>
+                                                    Người dùng
+                                                </a>
+                                            </li>
+                                        }
+                                        @if (User.IsInRole("KieuNhanVien"))
+                                        {
+                                            <li class="navbar-nav">
+                                                <a href="/admin/role" class="nav-link">
+                                                    <i class="bi bi-people-fill"></i>
+                                                    Kiểu người dùng
+                                                </a>
+                                            </li>
+                                        }
+                                    </ul>
+                                </div>
+                            </li>
+                            <li class="sidebar-item">
+                                <hr class="dropdown-divider">
+                            </li>
+                        }
+
                         <!-- sidebar item 1 end -->
                         <!-- sidebar item 2 start-->
                         <li class="sidebar-item">
