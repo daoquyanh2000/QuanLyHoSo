@@ -1,11 +1,6 @@
-﻿using OfficeOpenXml;
-using QuanLyHoSo.Models;
-using QuanLyHoSo.ViewModel;
-using System;
+﻿using QuanLyHoSo.Models;
 using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.IO;
-using System.Linq;
 
 namespace QuanLyHoSo.Dao.DaoAdmin
 {
@@ -153,41 +148,6 @@ $"VALUES(@UserName,@Password,@TrangThai,@MaKieu,@HoTen,@SDT,@Email,@NgaySinh,@An
                 ID = userID
             };
             Stuff.ExecuteSql(query, param);
-        }
-        public static List<T> GetListExcel<T>(string PathExcel)
-        {
-            List<T> account = new List<T>(); 
-            using (ExcelPackage package = new ExcelPackage(new FileInfo(PathExcel)))
-            {
-                ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-                var sheet = package.Workbook.Worksheets["data"];
-                //first row is for knowing the properties of object
-                var columnInfo = Enumerable.Range(1, sheet.Dimension.Columns).ToList().Select(n =>
-
-                    new { Index = n, ColumnName = sheet.Cells[1, n].Value.ToString() }
-                );
-
-                for (int row = 2; row <= sheet.Dimension.Rows; row++)
-                {
-                    T obj = (T)Activator.CreateInstance(typeof(T));//generic object
-                    foreach (var prop in typeof(T).GetProperties())
-                    {
-                        int col = columnInfo.SingleOrDefault(c => c.ColumnName == prop.Name).Index;
-                        var val = sheet.Cells[row, col].Value;
-                        if (val != null)
-                        {
-                            var propType = prop.PropertyType;
-                            prop.SetValue(obj, Convert.ChangeType(val, propType));
-                        }
-                        else
-                        {
-                        }
-
-                    }
-                    account.Add(obj);
-                }
-            };
-                return account;
         }
     }
 }

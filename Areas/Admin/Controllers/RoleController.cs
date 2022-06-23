@@ -2,14 +2,15 @@
 using QuanLyHoSo.Dao.DaoAdmin;
 using QuanLyHoSo.Models;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Web.Mvc;
 
 namespace QuanLyHoSo.Areas.Admin.Controllers
 {
-    [Authorize(Roles="KieuNhanVien")]
-    public class RoleController : Controller
+    [Authorize(Roles = "KieuNhanVien")]
+    public class RoleController : System.Web.Mvc.Controller
     {
         // GET: Admin/Role
         public ActionResult Index()
@@ -73,7 +74,7 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
                 {
                     heading = "Thành công",
                     status = "success",
-                    message = "Sửa tài khoản thành công!"
+                    message = "Sửa bản ghi thành công!"
                 }, JsonRequestBehavior.AllowGet);
             }
         }
@@ -86,7 +87,7 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
             {
                 heading = "Thành công",
                 status = "success",
-                message = "Xóa tài khoản thành công!"
+                message = "Xóa bản ghi thành công!"
             }, JsonRequestBehavior.AllowGet);
         }
 
@@ -117,6 +118,20 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
                 heading = "Thành công",
                 status = "success",
                 message = "Thay đổi trạng thái thành công!"
+            }, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult DeleteAll(List<int> checkboxs)
+        {
+            foreach (var id in checkboxs)
+            {
+                RoleDao.DeleteUserByID(id, Session["UserNameNV"].ToString());
+            }
+            return Json(new
+            {
+                heading = "Thành công",
+                status = "success",
+                message = $"Xóa {checkboxs.Count} bản ghi thành công!"
             }, JsonRequestBehavior.AllowGet);
         }
     }

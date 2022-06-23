@@ -26,25 +26,54 @@
                 maxlength: 20,
                 minlength: 3,
             },
+            "MaKieu": {
+                required: true,
+                maxlength: 20,
+                minlength: 2,
+            },
             "TrangThai": {
                 required: true,
             },
         },
         messages: {
             "TenKieu": {
-                required: "Bắt buộc nhập kiểu người dùng",
+                required: "Bắt buộc nhập tên kiểu người dùng",
                 maxlength: "Hãy nhập tối đa 20 ký tự",
                 minlength: "Hãy nhập ít nhất 3 ký tự"
             },
             "TrangThai": {
                 required: "Bắt buộc nhập trạng thái",
             },
+            "MaKieu": {
+                required: "Bắt buộc nhập mã kiểu người dùng",
+                maxlength: "Hãy nhập tối đa 20 ký tự",
+                minlength: "Hãy nhập ít nhất 2 ký tự"
+            },
         },
         submitHandler: function () {
             CreateUser();
         }
     });
-    //create user
+    $(document).on('change', '#checkAll', function () {
+        $(this).toggleClass('checkAll');
+        let checkbox = $(this).closest('table').find('.checkboxs');
+        checkbox.prop('checked', $(this).hasClass('checkAll'))
+        let checkboxChecked = $(this).closest('table').find('.checkboxs:checked');
+
+        let deleteAll = $(this).closest('main').find('#deleteAll');
+        $(deleteAll).toggleClass('disabled', checkboxChecked.length == 0)
+    })
+    $(document).on('change', '.checkboxs', function () {
+        let checkbox = $(this).closest('table').find('.checkboxs');
+        let checkboxChecked = $(this).closest('table').find('.checkboxs:checked');
+        let checkAll = $(this).closest('table').find('#checkAll');
+        state = (checkbox.length == checkboxChecked.length);
+        checkAll.prop('checked', state);
+        checkAll.toggleClass('checkAll', state);
+
+        let deleteAll = $(this).closest('main').find('#deleteAll');
+        $(deleteAll).toggleClass('disabled', checkboxChecked.length == 0);
+    })
 })
 
 function CreateUser() {
@@ -67,14 +96,15 @@ function CreateUser() {
         type: 'post',
         dataType: 'json',
         success: function (res) {
-            $('.modal').modal('toggle');
+            $('#staticBackdrop').modal('toggle');
+
             $.toast({
                 heading: res.heading,
                 icon: res.icon,
                 text: res.message,
                 position: 'top-right',
                 stack: false,
-                hideAfter: 3000,
+                hideAfter: 7000,
             })
             SearchUser();
         }
@@ -99,7 +129,7 @@ function GetData(ID, event) {
                 $(`#checkbox_${value}`).prop('checked', true);
             })
             console.log(res.checkbox)
-            $('.modal').modal('toggle');
+            $('#staticBackdrop').modal('toggle');
         }
     })
 }
@@ -131,7 +161,7 @@ function DeleteUser(ID, event) {
                     text: res.message,
                     position: 'top-right',
                     stack: 10,
-                    hideAfter: 3000,
+                    hideAfter: 7000,
                     showHideTransition: 'slide',
                 })
             }
@@ -174,7 +204,7 @@ function ChangeState(ID) {
                     text: res.message,
                     position: 'top-right',
                     stack: 10,
-                    hideAfter: 3000,
+                    hideAfter: 7000,
                     showHideTransition: 'slide',
                 })
             }
@@ -205,7 +235,7 @@ function UpExcel() {
                 text: res.message,
                 position: 'top-right',
                 stack: 10,
-                hideAfter: 3000,
+                hideAfter: 7000,
                 showHideTransition: 'slide',
             })
             SearchUser();
@@ -214,13 +244,45 @@ function UpExcel() {
 }
 
 function SearchUser() {
-    let value = $("#searchInput").val();
+    let keyword = $("#searchInput").val();
+    let page = $('.active').find('a').html()
     $.ajax({
-        url: "/admin/role/search?keyword=" + value,
+        url: "/admin/role/search/",
+        data: {
+            keyword: keyword,
+            page: page,
+        },
         type: "get",
         success: function (res) {
             var table = $("#tableContainer");
             table.html(res);
         }
     })
+}
+function GetCheckboxAll() {
+    let arr = [];
+    let checkboxs = $(".checkboxs:checked");
+    $.each(checkboxs, function (index, value) {
+        arr.push($(this).data('id'))
+    })
+    if (confirm(`Bạn thực sự muốn xóa ${arr.length} bản ghi ?`)) {
+        $.ajax({
+            type: "get",
+            url: "/admin/role/DeleteAll",
+            data: $.param({ checkboxs: arr }, true),
+            success: function (res) {
+                $.toast({
+                    heading: res.heading,
+                    icon: res.icon,
+                    text: res.message,
+                    position: 'top-right',
+                    stack: 10,
+                    hideAfter: 7000,
+                    showHideTransition: 'slide',
+                })
+                SearchUser();
+                $('#deleteAll').toggleClass('disabled');
+            }
+        })
+    }
 }

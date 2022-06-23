@@ -1,5 +1,5 @@
 ﻿@{
-    ViewBag.Title = "Index";
+
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 
 }
@@ -11,14 +11,19 @@
 
             <div class="btn-toolbar justify-content-between py-3" role="toolbar" aria-label="Toolbar with button groups">
                 <div class="btn-group" role="group" aria-label="First group">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" id="modal-on"
-                            data-bs-target="#staticBackdrop">
-                        <span>
-                            <i class="bi bi-plus-circle-fill"></i>
-                        </span>
-                        <span>Thêm người dùng mới</span>
-                    </button>
 
+                    <button type="button" class="btn btn-outline-secondary disabled" id="deleteAll" onclick="GetCheckboxAll()">
+                        <span>
+                            <i class="fa-solid fa-trash-can"></i>
+                        </span>
+                        <span>Xóa tất cả</span>
+                    </button>
+                    <a href="~/Assets/Excel/User/UserTemplate.xlsx" class="btn btn-outline-secondary" target="_blank">
+                        <span>
+                            <i class="bi bi-cloud-arrow-down"></i>
+                        </span>
+                        <span>Tập tin mẫu</span>
+                    </a>
                     <button type="button" class="btn btn-outline-secondary">
                         <input type="file" id="excelUpload" onchange=" ModalExcel()" name="excelUpload" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" class="custom-file-upload" />
                         <label for="excelUpload" class="custom-file-upload ">
@@ -28,13 +33,13 @@
                             <span>Thêm từ biểu mẫu</span>
                         </label>
                     </button>
-
-                    <a href="~/Assets/Excel/User/User.xlsx" class="btn btn-outline-secondary" target="_blank">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" id="modal-on"
+                            data-bs-target="#staticBackdrop">
                         <span>
-                            <i class="bi bi-cloud-arrow-down"></i>
+                            <i class="bi bi-plus-circle-fill"></i>
                         </span>
-                        <span>Tập tin mẫu</span>
-                    </a>
+                        <span>Thêm người dùng mới</span>
+                    </button>
                 </div>
                 <div class="input-group">
                     <input type="text" name="name" value="" class="rounded border-1" id="searchInput" />
@@ -104,7 +109,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                    <button type="button" onclick="UpExcel()"  class="btn btn-primary">Lưu người dùng</button>
+                    <button type="button" onclick="UpExcel()" class="btn btn-primary">Lưu người dùng</button>
                 </div>
             </div>
         </div>

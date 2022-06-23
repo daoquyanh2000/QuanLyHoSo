@@ -7,7 +7,7 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
         // GET: Admin/Home
         public ActionResult Index()
         {
-            if(!User.Identity.IsAuthenticated)
+            if (!User.Identity.IsAuthenticated)
             {
                 return RedirectToAction("Index", "Login");
             }

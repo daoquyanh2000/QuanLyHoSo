@@ -6,13 +6,13 @@ using System.Web.Security;
 
 namespace QuanLyHoSo.Areas.Admin.Controllers
 {
-    public class LoginController : Controller
+    public class LoginController : System.Web.Mvc.Controller
     {
         // GET: Admin/Login
         [HttpGet]
         public ActionResult Index()
         {
-            if(User.Identity.IsAuthenticated && Session["UserNameNV"] !=null)
+            if (User.Identity.IsAuthenticated && Session["UserNameNV"] != null)
             {
                 return RedirectToAction("Index", "Home");
             }

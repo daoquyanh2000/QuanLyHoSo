@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 namespace QuanLyHoSo.Models
 {
     [Table("NhanVien")]
-    public class NhanVien 
+    public class NhanVien
 
     {
         //7 truong required
@@ -15,6 +15,7 @@ namespace QuanLyHoSo.Models
         [Display(Name = "Tên tài khoản")]
         [Required(ErrorMessage = "Vui lòng nhập tên tài khoản")]
         public string UserName { get; set; }
+
         [Display(Name = "Mật khẩu")]
         public string Password { get; set; }
 
@@ -45,7 +46,4 @@ namespace QuanLyHoSo.Models
     {
         public string TenQuyen { get; set; }
     }
-
- 
-
 }

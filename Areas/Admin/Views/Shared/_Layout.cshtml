@@ -45,25 +45,25 @@
                 <!-- toggler canvas end -->
                 <a class="navbar-brand fw-bold text-uppercase" href="home">Trang Chủ</a>
 
-                    <div class=" dropdown ">
-                        <a class="nav-link dropdown-toggle text-secondary " href="#" id="navbarDropdown" role="button"
-                           data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bi bi-person-circle"></i>
-                            @if (User.Identity.IsAuthenticated)
+                <div class=" dropdown ">
+                    <a class="nav-link dropdown-toggle text-secondary " href="#" id="navbarDropdown" role="button"
+                       data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-person-circle"></i>
+                        @if (User.Identity.IsAuthenticated)
                             {
-                                @User.Identity.Name
+                        @User.Identity.Name
                              }
-                            </a>
-                        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark my-2">
-                            <li>
-                                <a href="" class="dropdown-item py-2">Thông tin tài khoản</a>
-                            </li>
-                            <li>
-                                <a href="/admin/login/logout" class="dropdown-item py-2">Đăng xuất</a>
-                            </li>
-                        </ul>
-                    </div>
-             </div>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark my-2">
+                        <li>
+                            <a href="" class="dropdown-item py-2">Thông tin tài khoản</a>
+                        </li>
+                        <li>
+                            <a href="/admin/login/logout" class="dropdown-item py-2">Đăng xuất</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
         </nav>
         <!-- navbar end -->
     </header>
@@ -77,44 +77,44 @@
                         <!-- sidebar item 1 start-->
                         @if (User.IsInRole("NhanVien") || User.IsInRole("KieuNhanVien"))
                         {
-                            <li class="sidebar-item">
-                                <a data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false"
-                                   aria-controls="collapseExample" class="nav-link d-flex align-items-center sidebar-link">
-                                    <span class="me-2">
-                                        <i class="fa-solid fa-building-columns"></i>
-                                    </span>
-                                    Quản lý đơn vị
-                                    <span class="icon-right ms-auto d-flex">
-                                        <i class="bi bi-chevron-down "></i>
-                                    </span>
-                                </a>
+                        <li class="sidebar-item">
+                            <a data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false"
+                               aria-controls="collapseExample" class="nav-link d-flex align-items-center sidebar-link">
+                                <span class="me-2">
+                                    <i class="fa-solid fa-building-columns"></i>
+                                </span>
+                                Quản lý đơn vị
+                                <span class="icon-right ms-auto d-flex">
+                                    <i class="bi bi-chevron-down "></i>
+                                </span>
+                            </a>
 
-                                <div class="collapse" id="collapseExample">
-                                    <ul class="navbar-dark">
-                                        @if (User.IsInRole("NhanVien"))
+                            <div class="collapse" id="collapseExample">
+                                <ul class="navbar-dark">
+                                    @if (User.IsInRole("NhanVien"))
                                         {
-                                            <li class="navbar-nav">
-                                                <a href="/admin/user" class="nav-link">
-                                                    <i class="bi bi-person-circle"></i>
-                                                    Người dùng
-                                                </a>
-                                            </li>
+                                    <li class="navbar-nav">
+                                        <a href="/admin/user" class="nav-link">
+                                            <i class="bi bi-person-circle"></i>
+                                            Người dùng
+                                        </a>
+                                    </li>
                                         }
-                                        @if (User.IsInRole("KieuNhanVien"))
+                                    @if (User.IsInRole("KieuNhanVien"))
                                         {
-                                            <li class="navbar-nav">
-                                                <a href="/admin/role" class="nav-link">
-                                                    <i class="bi bi-people-fill"></i>
-                                                    Kiểu người dùng
-                                                </a>
-                                            </li>
+                                    <li class="navbar-nav">
+                                        <a href="/admin/role" class="nav-link">
+                                            <i class="bi bi-people-fill"></i>
+                                            Kiểu người dùng
+                                        </a>
+                                    </li>
                                         }
-                                    </ul>
-                                </div>
-                            </li>
-                            <li class="sidebar-item">
-                                <hr class="dropdown-divider">
-                            </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li class="sidebar-item">
+                            <hr class="dropdown-divider">
+                        </li>
                         }
 
                         <!-- sidebar item 1 end -->
@@ -137,7 +137,7 @@
                                             <i class="bi bi-archive"></i>
                                             Quản lý kho lưu trữ
                                         </a>
-                                        <a href="" class="nav-link">
+                                        <a href="/admin/stack" class="nav-link">
                                             <i class="bi bi-stack"></i>
                                             Quản lý ngăn lưu trữ
                                         </a>
@@ -151,11 +151,8 @@
                         <!-- sidebar item 2 end-->
                         <!-- sidebar item 3 start-->
                         <li class="sidebar-item">
-                            <a data-bs-toggle="collapse" href="#collapseExample3" role="button" aria-expanded="false"
-                               aria-controls="collapseExample2" class="nav-link d-flex align-items-center sidebar-link">
-                                <span class="me-2">
-                                    <i class="fa-solid fa-folder-open"></i>
-                                </span>
+                            <a href="/admin/category" class="nav-link">
+                                <i class="bi bi-stack"></i>
                                 Quản lý danh mục hồ sơ
                             </a>
                         </li>

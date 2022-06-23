@@ -5,6 +5,9 @@
     <table class="table table-striped table-light table-bordered display w-100" id="users">
         <thead>
             <tr>
+                <th>
+                    <input type="checkbox" name="checkAll" class="form-check-input" id="checkAll" />
+                </th>
                 <th>Tên kiểu người dùng</th>
                 <th>Mã kiểu người dùng</th>
                 <th>Trạng thái</th>
@@ -19,10 +22,14 @@
             <input type="number" name="hidden" value="0" style="display:none" id="HiddenID" />
             @foreach (var item in Model)
             {
-        <tr data-id="@item.ID">
-            <td>@item.TenKieu</td>
-            <td>@item.MaKieu</td>
-            @if (@item.TrangThai == 1)
+
+            <tr data-id="@item.ID">
+                <td>
+                    <input type="checkbox" class="form-check-input checkboxs" name="checkboxs" data-id="@item.ID" />
+                </td>
+                <td>@item.TenKieu</td>
+                <td>@item.MaKieu</td>
+                @if (@item.TrangThai == 1)
             {
                 <td>
                     <div class="form-check form-switch">
@@ -39,24 +46,24 @@
                 </td>
             }
 
-            <td>@item.NgayTao</td>
-            <td>@item.NguoiTao</td>
-            <td>@item.NgaySua</td>
-            <td>@item.NguoiSua</td>
-            <td>
-                <div class="btn-group btn-group-sm" role="group" aria-label="Basic mixed styles example">
-                    <button type="button" class="btn btn-outline-secondary" onclick="ViewUser(@item.ID,event)">
-                        <span>Xem</span>
-                    </button>
-                    <button type="button" class="btn btn-outline-secondary" onclick="UpdateUser(@item.ID,event)">
-                        <span>Sửa</span>
-                    </button>
-                    <button type="button" class="btn btn-outline-secondary" onclick="DeleteUser(@item.ID,event)">
-                        <span>Xóa</span>
-                    </button>
-                </div>
-            </td>
-        </tr>
+                <td>@item.NgayTao</td>
+                <td>@item.NguoiTao</td>
+                <td>@item.NgaySua</td>
+                <td>@item.NguoiSua</td>
+                <td>
+                    <div class="btn-group btn-group-sm" role="group" aria-label="Basic mixed styles example">
+                        <button type="button" class="btn btn-outline-secondary" onclick="ViewUser(@item.ID,event)">
+                            <span>Xem</span>
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary" onclick="UpdateUser(@item.ID,event)">
+                            <span>Sửa</span>
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary" onclick="DeleteUser(@item.ID,event)">
+                            <span>Xóa</span>
+                        </button>
+                    </div>
+                </td>
+            </tr>
 
             }
         </tbody>

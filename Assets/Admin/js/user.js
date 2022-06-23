@@ -99,6 +99,29 @@
         return this.optional(element) || phone_number.length == 10 &&
             phone_number.match(/[0-9\-\(\)\s]+/);
     }, "Hãy nhập đúng định dạng điện thoại");
+
+    $(document).on('change', '#checkAll', function () {
+        console.log(this);
+        $(this).toggleClass('checkAll');
+        let checkbox = $(this).closest('table').find('.checkboxs');
+        checkbox.prop('checked', $(this).hasClass('checkAll'))
+        let checkboxChecked = $(this).closest('table').find('.checkboxs:checked');
+
+        let deleteAll = $(this).closest('main').find('#deleteAll');
+        console.log(deleteAll);
+        $(deleteAll).toggleClass('disabled', checkboxChecked.length == 0)
+    })
+    $(document).on('change', '.checkboxs', function () {
+        let checkbox = $(this).closest('table').find('.checkboxs');
+        let checkboxChecked = $(this).closest('table').find('.checkboxs:checked');
+        let checkAll = $(this).closest('table').find('#checkAll');
+        state = (checkbox.length == checkboxChecked.length);
+        checkAll.prop('checked', state);
+        checkAll.toggleClass('checkAll', state);
+
+        let deleteAll = $(this).closest('main').find('#deleteAll');
+        $(deleteAll).toggleClass('disabled', checkboxChecked.length == 0);
+    })
 })
 
 function CreateUser() {
@@ -124,7 +147,7 @@ function CreateUser() {
                     text: res.message,
                     position: 'top-right',
                     stack: false,
-                    hideAfter: 3000,
+                    hideAfter: 7000,
                 })
                 SearchUser();
             }
@@ -189,10 +212,8 @@ function ViewUser(ID, event) {
 }
 
 function DeleteUser(ID, event) {
-    var tr = document.querySelector(`tr[data-id="${ID}"]`)
     if (confirm("Bạn có chắc chắn xóa người dùng này không?")) {
         event.preventDefault();
-        tr.remove();
         $.ajax({
             url: "/admin/user/delete",
             data: { ID: ID },
@@ -205,9 +226,10 @@ function DeleteUser(ID, event) {
                     text: res.message,
                     position: 'top-right',
                     stack: 10,
-                    hideAfter: 3000,
+                    hideAfter: 7000,
                     showHideTransition: 'slide',
                 })
+                SearchUser();
             }
         })
     }
@@ -249,7 +271,7 @@ function ChangeState(ID) {
                     text: res.message,
                     position: 'top-right',
                     stack: 10,
-                    hideAfter: 3000,
+                    hideAfter: 7000,
                     showHideTransition: 'slide',
                 })
             }
@@ -266,11 +288,9 @@ function UpExcel() {
     let tmp = [];
     $.each(checkbox, function (index, value) {
         if (this.checked) {
-
             tmp.push(1)
         } else {
             tmp.push(0)
-
         }
     })
     formdata.append("checkbox", tmp);
@@ -289,7 +309,7 @@ function UpExcel() {
                 text: res.message,
                 position: 'top-right',
                 stack: 10,
-                hideAfter: 3000,
+                hideAfter: 7000,
                 showHideTransition: 'slide',
             })
             $("#ExcelModal").modal('toggle');
@@ -319,9 +339,14 @@ function ModalExcel() {
     })
 }
 function SearchUser() {
-    let value = $("#searchInput").val();
+    let keyword = $("#searchInput").val();
+    let page = $('.active').find('a').html()
     $.ajax({
-        url: "/admin/user/search?keyword=" + value,
+        url: "/admin/user/search/",
+        data: {
+            keyword: keyword,
+            page: page,
+        },
         type: "get",
         success: function (res) {
             var table = $("#tableContainer");
@@ -338,3 +363,31 @@ var loadFile = function (event) {
     $('#imgTemp').hide();
     $('#userImg').show();
 };
+
+function GetCheckboxAll() {
+    let arr = [];
+    let checkboxs = $(".checkboxs:checked");
+    $.each(checkboxs, function (index, value) {
+        arr.push($(this).data('id'))
+    })
+    if (confirm(`Bạn thực sự muốn xóa ${arr.length} bản ghi ?`)) {
+        $.ajax({
+            type: "get",
+            url: "/admin/user/DeleteAll",
+            data: $.param({ checkboxs: arr }, true),
+            success: function (res) {
+                $.toast({
+                    heading: res.heading,
+                    icon: res.icon,
+                    text: res.message,
+                    position: 'top-right',
+                    stack: 10,
+                    hideAfter: 7000,
+                    showHideTransition: 'slide',
+                })
+                SearchUser();
+                $('#deleteAll').toggleClass('disabled');
+            }
+        })
+    }
+}

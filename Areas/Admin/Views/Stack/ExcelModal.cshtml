@@ -1,0 +1,80 @@
+﻿@using System.Linq
+
+@{
+    var account =
+    from ke in (List<QuanLyHoSo.ViewModel.ViewExcelNgan>)ViewBag.listNganExcel
+    where ke.TenNgan != null &&
+          ke.MaNgan != null &&
+          ke.MaKhoChua != null &&
+          ke.KichThuoc !=0
+    join k in (List<QuanLyHoSo.Models.Kho>)ViewBag.listKho
+    on ke.MaKhoChua equals k.MaKho
+    select new
+    {
+        TenNgan = ke.TenNgan,
+        MaNgan = ke.MaNgan,
+        TenKhoChua = k.TenKho,
+        TrangThai = ke.TrangThai,
+        KichThuoc = ke.KichThuoc,
+        MoTa = ke.MoTa
+
+    };
+}
+<table class="table table-striped table-light table-bordered DisplayName w-100 table-hover">
+    <tr>
+        <th>
+            Tên ngăn
+        </th>
+        <th>
+            Mã ngăn
+        </th>
+        <th>
+            Tên kho chứa
+        </th>
+        <th>
+            Trạng thái
+        </th>
+        <th>
+            Kích thước
+        </th>
+        <th>
+            Mô tả
+        </th>
+    </tr>
+    @foreach (var item in account)
+    {
+        <tr>
+            <td>
+                @item.TenNgan
+            </td>
+            <td>
+                @item.MaNgan
+            </td>
+            <td>
+                @item.TenKhoChua
+            </td>
+            @if (@item.TrangThai == 1)
+            {
+                <td>
+                    <div class="form-check form-switch">
+                        <input class="form-check-input excelCheckbox" type="checkbox" checked>
+                    </div>
+                </td>
+            }
+            else
+            {
+                <td>
+                    <div class="form-check form-switch">
+                        <input class="form-check-input excelCheckbox" type="checkbox">
+                    </div>
+                </td>
+            }
+            <td>
+                @item.KichThuoc
+            </td>
+            <td>
+                @item.MoTa
+            </td>
+        </tr>
+    }
+</table>

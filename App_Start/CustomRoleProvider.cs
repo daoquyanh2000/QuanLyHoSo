@@ -37,15 +37,15 @@ namespace QuanLyHoSo.App_Start
         public override string[] GetRolesForUser(string username)
         {
             var roles = from nv in UserDao.GetAllUser()
-                          join knv in RoleDao.GetKieuNhanViens()
-                          on nv.MaKieu equals knv.MaKieu
-                          join knv_q in RoleDao.GetKieuNhanVien_Quyen()
-                          on knv.ID equals knv_q.IDKieuNhanVien
-                          join q in RoleDao.GetQuyen()
-                          on knv_q.IDQuyen equals q.ID
-                          where nv.UserName == username &&
-                          knv.TrangThai == 1
-                          select q.MaQuyen;
+                        join knv in RoleDao.GetKieuNhanViens()
+                        on nv.MaKieu equals knv.MaKieu
+                        join knv_q in RoleDao.GetKieuNhanVien_Quyen()
+                        on knv.ID equals knv_q.IDKieuNhanVien
+                        join q in RoleDao.GetQuyen()
+                        on knv_q.IDQuyen equals q.ID
+                        where nv.UserName == username &&
+                        knv.TrangThai == 1
+                        select q.MaQuyen;
             return roles.ToArray();
         }
 

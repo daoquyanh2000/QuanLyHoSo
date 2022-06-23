@@ -1,4 +1,4 @@
-﻿$(function () {
+﻿$(document).ready(function () {
     ////khi bam nut tao user moi
     $('button[data-bs-toggle="modal"]').click(function () {
         EnableForm();
@@ -20,8 +20,8 @@
 
     // form validation
     $("#userForm").validate({
-/*        rules: {
-            "Ten": {
+        rules: {
+            "TenKho": {
                 required: true,
                 maxlength: 20,
                 minlength: 3,
@@ -29,23 +29,85 @@
             "TrangThai": {
                 required: true,
             },
+            "MaKho": {
+                required: true,
+                maxlength: 20,
+            },
         },
         messages: {
-            "TenKieu": {
-                required: "Bắt buộc nhập kiểu người dùng",
+            "TenKho": {
+                required: "Bắt buộc nhập tên kho",
                 maxlength: "Hãy nhập tối đa 20 ký tự",
                 minlength: "Hãy nhập ít nhất 3 ký tự"
             },
             "TrangThai": {
                 required: "Bắt buộc nhập trạng thái",
+            }, "MaKho": {
+                required: "Bắt buộc nhập mã kho",
+                maxlength: "Hãy nhập tối đa 20 ký tự",
             },
-        },*/
+        },
         submitHandler: function () {
             CreateUser();
         }
     });
-    //create user
+    $(document).on('click', '#modal-on', function () {
+        RenderModal(0);
+    })
+    $(document).on('change', '#checkAll', function () {
+        $(this).toggleClass('checkAll');
+        let checkbox = $(this).closest('table').find('.checkboxs');
+        checkbox.prop('checked', $(this).hasClass('checkAll'))
+        let checkboxChecked = $(this).closest('table').find('.checkboxs:checked');
+
+        let deleteAll = $(this).closest('main').find('#deleteAll');
+        $(deleteAll).toggleClass('disabled', checkboxChecked.length == 0)
+    })
+    $(document).on('change', '.checkboxs', function () {
+        let checkbox = $(this).closest('table').find('.checkboxs');
+        let checkboxChecked = $(this).closest('table').find('.checkboxs:checked');
+        let checkAll = $(this).closest('table').find('#checkAll');
+        state = (checkbox.length == checkboxChecked.length);
+        checkAll.prop('checked', state);
+        checkAll.toggleClass('checkAll', state);
+
+        let deleteAll = $(this).closest('main').find('#deleteAll');
+        $(deleteAll).toggleClass('disabled', checkboxChecked.length == 0);
+    })
 })
+
+function GetData(ID, event) {
+    event.preventDefault();
+    $.ajax({
+        url: "/admin/storage/View",
+        dataType: "json",
+        data: { ID: ID },
+        type: "get",
+        success: function (res) {
+            $("#HiddenID").val(res.data.ID);
+            $("#TenKho").val(res.data.TenKho);
+            $("#MaKho").val(res.data.MaKho);
+            $("#IDKhoCha").val(res.data.IDKhoCha);
+            $("#KichThuoc").val(res.data.KichThuoc);
+            $("#TrangThai").val(res.data.TrangThai);
+            $("#MoTa").val(res.data.MoTa);
+            $('#staticBackdrop').modal('toggle');
+        }
+    })
+}
+function EnableForm() {
+    $('#userForm :input').each(function () {
+        $(this).val("");
+        $(this).attr("disabled", false);
+        $(`button[type="submit"]`).attr("disabled", false);
+    });
+}
+function DisableForm() {
+    $('#userForm :input').each(function () {
+        $(this).attr("disabled", true);
+    });
+    $(`button[type="submit"]`).attr("disabled", true);
+}
 
 function CreateUser() {
     var formData = new FormData($('form#userForm')[0]);
@@ -60,60 +122,28 @@ function CreateUser() {
         type: 'post',
         dataType: 'json',
         success: function (res) {
-            $('.modal').modal('toggle');
+            $('#staticBackdrop').modal('toggle');
             $.toast({
                 heading: res.heading,
                 icon: res.icon,
                 text: res.message,
                 position: 'top-right',
                 stack: false,
-                hideAfter: 3000,
+                hideAfter: 7000,
             })
             SearchUser();
         }
     })
 }
-
-function GetData(ID, event) {
-    $('form input[type="checkbox"]').prop('checked', false);
-    event.preventDefault();
-    $.ajax({
-        url: "/admin/role/View",
-        dataType: "json",
-        data: { ID: ID },
-        type: "get",
-        success: function (res) {
-            $("#HiddenID").val(res.data.ID);
-            $("#TenKieu").val(res.data.TenKieu);
-            $("#MaKieu").val(res.data.MaKieu);
-            $("#TrangThai").val(res.data.TrangThai);
-            $("#ChuThich").val(res.data.ChuThich);
-            $(res.checkbox).each(function (index, value) {
-                $(`#checkbox_${value}`).prop('checked', true);
-            })
-            console.log(res.checkbox)
-            $('.modal').modal('toggle');
-        }
-    })
-}
-function DisableForm() {
-    $('#userForm :input').each(function () {
-        $(this).attr("disabled", true);
-    });
-    $(`button[type="submit"]`).attr("disabled", true);
-}
 function ViewUser(ID, event) {
     GetData(ID, event);
     DisableForm();
 }
-
 function DeleteUser(ID, event) {
-    var tr = document.querySelector(`tr[data-id="${ID}"]`)
     if (confirm("Bạn có chắc chắn xóa người dùng này không?")) {
         event.preventDefault();
-        tr.remove();
         $.ajax({
-            url: "/admin/role/delete",
+            url: "/admin/storage/delete",
             data: { ID: ID },
             type: 'get',
             dataType: 'json',
@@ -124,24 +154,30 @@ function DeleteUser(ID, event) {
                     text: res.message,
                     position: 'top-right',
                     stack: 10,
-                    hideAfter: 3000,
+                    hideAfter: 7000,
                     showHideTransition: 'slide',
                 })
+                SearchUser();
             }
         })
     }
 }
-function UpdateUser(ID, event) {
-    GetData(ID, event);
-    EnableForm();
+function RenderModal(ID) {
+    $.ajax({
+        url: "/admin/storage/Modal?ID=" + ID,
+        type: "get",
+        dataType: "html",
+        success: function (res) {
+            let dropList = $("#IDKhoCha");
+            dropList.replaceWith(res);
+        }
+    })
 }
 
-function EnableForm() {
-    $('#userForm :input').each(function () {
-        $(this).val("");
-        $(this).attr("disabled", false);
-        $(`button[type="submit"]`).attr("disabled", false);
-    });
+function UpdateUser(ID, event) {
+    GetData(ID, event);
+    RenderModal(ID);
+    EnableForm();
 }
 
 function ChangeState(ID) {
@@ -155,7 +191,7 @@ function ChangeState(ID) {
         event.preventDefault();
         /*        tr.remove();*/
         $.ajax({
-            url: "/admin/role/Change",
+            url: "/admin/storage/Change",
             data: { ID: ID, state: setState },
             type: "get",
             dataType: "json",
@@ -167,7 +203,7 @@ function ChangeState(ID) {
                     text: res.message,
                     position: 'top-right',
                     stack: 10,
-                    hideAfter: 3000,
+                    hideAfter: 7000,
                     showHideTransition: 'slide',
                 })
             }
@@ -179,18 +215,25 @@ function ChangeState(ID) {
 }
 
 function UpExcel() {
-    var fileUpload = $("#excelUpload").get(0);
-    var files = fileUpload.files;
-    var fileData = new FormData();
-    for (var i = 0; i < files.length; i++) {
-        fileData.append(files[i].name, files[i]);
-    }
+    var formdata = new FormData();
+    let checkbox = $(".excelCheckbox");
+    let tmp = [];
+    $.each(checkbox, function (index, value) {
+        if (this.checked) {
+            tmp.push(1)
+        } else {
+            tmp.push(0)
+        }
+    })
+    formdata.append("checkbox", tmp);
     $.ajax({
-        url: '/admin/user/Excel',
-        type: "POST",
+        url: "/admin/storage/excel",
+        data: formdata,
+        cache: false,
         contentType: false,
         processData: false,
-        data: fileData,
+        type: 'post',
+        dataType: 'json',
         success: function (res) {
             $.toast({
                 heading: res.heading,
@@ -198,22 +241,93 @@ function UpExcel() {
                 text: res.message,
                 position: 'top-right',
                 stack: 10,
-                hideAfter: 3000,
+                hideAfter: 7000,
                 showHideTransition: 'slide',
             })
+            $("#ExcelModal").modal('toggle');
             SearchUser();
+        },
+        error: function (request, status, error) {
+            alert(request.responseText);
+            console.log(request);
         }
     });
 }
-
-function SearchUser() {
-    let value = $("#searchInput").val();
+function ModalExcel() {
+    var fileUpload = $("#excelUpload").get(0);
+    var files = fileUpload.files;
+    var fileData = new FormData();
+    for (var i = 0; i < files.length; i++) {
+        fileData.append(files[i].name, files[i]);
+    }
     $.ajax({
-        url: "/admin/role/search?keyword=" + value,
+        url: "/admin/storage/ExcelModal",
+        type: "post",
+        contentType: false,
+        processData: false,
+        data: fileData,
+        success: function (res) {
+            if (res.error) {
+                $.toast({
+                    heading: res.heading,
+                    icon: res.icon,
+                    text: res.message,
+                    position: 'top-right',
+                    stack: 10,
+                    hideAfter: 7000,
+                    showHideTransition: 'slide',
+                })
+            } else {
+                var table = $("#excelContainer");
+                table.html(res);
+                $("#ExcelModal").modal('toggle');
+            }
+
+        }
+    })
+}
+function SearchUser() {
+    let keyword = $("#searchInput").val();
+    let page = $('.active').find('a').html()
+    $.ajax({
+        url: "/admin/storage/search/",
+        data: {
+            keyword: keyword,
+            page: page,
+        },
         type: "get",
         success: function (res) {
             var table = $("#tableContainer");
             table.html(res);
         }
     })
+}
+
+function GetCheckboxAll() {
+    let arr = [];
+    let checkboxs = $(".checkboxs:checked");
+    $.each(checkboxs, function (index, value) {
+        arr.push($(this).data('id'))
+    })
+    if (confirm(`Bạn thực sự muốn xóa ${arr.length} bản ghi ?`)) {
+        $.ajax({
+            type: "get",
+            url: "/admin/storage/DeleteAll",
+            data: $.param({ checkboxs: arr }, true),
+            success: function (res) {
+
+                $.toast({
+                    heading: res.heading,
+                    icon: res.icon,
+                    text: res.message,
+                    position: 'top-right',
+                    stack: 10,
+                    hideAfter: 7000,
+                    showHideTransition: 'slide',
+                })
+                SearchUser();
+                $('#deleteAll').toggleClass('disabled');
+            }
+        })
+    }
 }

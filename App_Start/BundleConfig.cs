@@ -1,5 +1,4 @@
-﻿using System.Web;
-using System.Web.Optimization;
+﻿using System.Web.Optimization;
 
 namespace QuanLyHoSo
 {
@@ -26,7 +25,6 @@ namespace QuanLyHoSo
             bundles.Add(new StyleBundle("~/Content/css")
                 .Include("~/Content/bootstrap.css")
                 .Include("~/Content/PagedList.css"));
-
         }
     }
 }

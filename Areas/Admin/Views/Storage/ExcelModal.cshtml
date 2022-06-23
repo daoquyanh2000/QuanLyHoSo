@@ -1,0 +1,59 @@
+﻿@model IEnumerable<QuanLyHoSo.ViewModel.ViewKho>
+<table class="table table-striped table-light table-bordered DisplayName w-100 table-hover">
+    <tr>
+        <th>
+            Tên kho
+        </th>
+        <th>
+            Mã kho
+        </th>
+        <th>
+            Tên kho cha
+        </th>
+        <th>
+            Trạng thái
+        </th>
+        <th>
+            Kích thước
+        </th>
+        <th>
+            Mô tả
+        </th>
+    </tr>
+    @foreach (var item in Model)
+    {
+    <tr>
+        <td>
+            @item.TenKho
+        </td>
+        <td>
+            @item.MaKho
+        </td>
+        <td>
+            @item.TenKhoCha
+        </td>
+        @if (@item.TrangThai == 1)
+    {
+        <td>
+            <div class="form-check form-switch">
+                <input class="form-check-input excelCheckbox" type="checkbox" checked>
+            </div>
+        </td>
+    }
+    else
+    {
+        <td>
+            <div class="form-check form-switch">
+                <input class="form-check-input excelCheckbox" type="checkbox">
+            </div>
+        </td>
+    }
+        <td>
+            @item.KichThuoc
+        </td>
+        <td>
+            @item.MoTa
+        </td>
+    </tr>
+    }
+</table>

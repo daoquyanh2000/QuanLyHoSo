@@ -26,7 +26,7 @@ namespace QuanLyHoSo.Dao.DaoAdmin
         public static void CreateNewRole(KieuNhanVien role, string HoTenNV)
         {
             string query = $"Insert into KieuNhanVien(TenKieu,MaKieu,ChuThich,TrangThai,NgayTao,NguoiTao)  VALUES(@TenKieu,@MaKieu,@ChuThich,@TrangThai,GETDATE(),@NguoiTao)";
-            object param = new { TenKieu = role.TenKieu, ChuThich = role.ChuThich, TrangThai = role.TrangThai, NguoiTao = HoTenNV, MaKieu=role.MaKieu };
+            object param = new { TenKieu = role.TenKieu, ChuThich = role.ChuThich, TrangThai = role.TrangThai, NguoiTao = HoTenNV, MaKieu = role.MaKieu };
             Stuff.ExecuteSql(query, param);
         }
 
@@ -51,7 +51,8 @@ namespace QuanLyHoSo.Dao.DaoAdmin
 
         public static void ThemQuyen(long IDKnv, string IDQuyen)
         {
-            string query = $"Insert into KieuNhanVien_Quyen(IDKieuNhanVien,IDQuyen)  VALUES('{IDKnv}','{IDQuyen}')";
+            string query = $"Insert into KieuNhanVien_Quyen(IDKieuNhanVien,IDQuyen)  " +
+                $"VALUES('{IDKnv}','{IDQuyen}')";
             Stuff.ExecuteSql(query);
         }
 
@@ -63,7 +64,8 @@ namespace QuanLyHoSo.Dao.DaoAdmin
 
         public static void DeleteKieuNhanVien_Quyen(long RoleID)
         {
-            string query = $"Delete  from KieuNhanVien_Quyen where KieuNhanVien_Quyen.IDKieuNhanVien ={RoleID}";
+            string query = $"Delete  from KieuNhanVien_Quyen where" +
+                $" KieuNhanVien_Quyen.IDKieuNhanVien ={RoleID}";
             Stuff.ExecuteSql(query);
         }
     }

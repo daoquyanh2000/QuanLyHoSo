@@ -1,7 +1,6 @@
 ﻿@{
-    ViewBag.Title = "Index";
-    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
 
 <main>
@@ -11,14 +10,19 @@
 
             <div class="btn-toolbar justify-content-between py-3" role="toolbar" aria-label="Toolbar with button groups">
                 <div class="btn-group" role="group" aria-label="First group">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" id="modal-on"
-                            data-bs-target="#staticBackdrop">
+                    <button type="button" class="btn btn-outline-secondary disabled" onclick="GetCheckboxAll()" id="deleteAll">
                         <span>
-                            <i class="bi bi-plus-circle-fill"></i>
-                        </span>
-                        <span>Thêm kho mới</span>
-                    </button>
+                            <i class="fa-solid fa-trash-can"></i>
 
+                        </span>
+                        <span>Xóa tất cả</span>
+                    </button>
+                    <a href="~/Assets/Excel/Storage/StorageTemplate.xlsx" class="btn btn-outline-secondary" target="_blank">
+                        <span>
+                            <i class="bi bi-cloud-arrow-down"></i>
+                        </span>
+                        <span>Tập tin mẫu</span>
+                    </a>
                     <button type="button" class="btn btn-outline-secondary">
                         <input type="file" id="excelUpload" onchange=" ModalExcel()" name="excelUpload" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" class="custom-file-upload" />
                         <label for="excelUpload" class="custom-file-upload ">
@@ -28,13 +32,13 @@
                             <span>Thêm từ biểu mẫu</span>
                         </label>
                     </button>
-
-                    <a href="~/Assets/Excel/User/User.xlsx" class="btn btn-outline-secondary" target="_blank">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" id="modal-on"
+                            data-bs-target="#staticBackdrop">
                         <span>
-                            <i class="bi bi-cloud-arrow-down"></i>
+                            <i class="bi bi-plus-circle-fill"></i>
                         </span>
-                        <span>Tập tin mẫu</span>
-                    </a>
+                        <span>Thêm kho mới</span>
+                    </button>
                 </div>
                 <div class="input-group">
                     <input type="text" name="name" value="" class="rounded border-1" id="searchInput" />
@@ -69,14 +73,57 @@
         <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg ">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title " id="exampleModalLabel">Thông tin tài khoản</h5>
+                    <h5 class="modal-title " id="exampleModalLabel">Thông tin kho</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="container">
-                        @{
-                            Html.RenderAction("Modal", "Storage");
-                        }
+                    <div class="container" id="modalContainer">
+                        <form action="" id="userForm">
+                            <div class="row my-2">
+                                <div class="col-12 fw-bold fst-italic">
+                                    (*) Thông tin bắt buộc
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label for="TenKho" class="form-label">Tên kho (*)</label>
+                                        <input class="form-control" id="TenKho" name="TenKho">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="MaKho" class="form-label">Mã kho (*)</label>
+                                        <input class="form-control" id="MaKho" type="text" name="MaKho">
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group ">
+                                        <label class="form-label " for="IDKhoCha">Kho cha (*)</label>
+                                        @{ 
+                                            Html.RenderAction("Modal", "Storage", new { ID=0 });
+                                        }
+                                       @* @Html.DropDownList("IDKhoCha", (IEnumerable<SelectListItem>)TempData["listKho"], "Chọn kho cha", new { @class = "form-select" })*@
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label" for="TrangThai">Trạng thái (*)</label>
+                                        <select class="form-select" id="TrangThai" name="TrangThai">
+                                            <option value="0">Khóa</option>
+                                            <option value="1">Mở</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label for="KichThuoc" class="form-label">Kích thước kho (*)</label>
+                                        <input class="form-control" id="KichThuoc" type="number" name="KichThuoc">
+                                    </div>
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label for="MoTa" class="form-label">Mô tả</label>
+                                        <textarea class="form-control" id="MoTa" name="MoTa"
+                                                  rows="5"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
                     </div>
                 </div>
                 <div class="modal-footer">

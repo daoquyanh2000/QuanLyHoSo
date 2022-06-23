@@ -18,8 +18,7 @@ using System.Web.Mvc;
 namespace QuanLyHoSo.Areas.Admin.Controllers
 {
     [Authorize(Roles = "NhanVien")]
-
-    public class UserController : Controller
+    public class UserController : System.Web.Mvc.Controller
     {
         // GET: Admin/User
         public ActionResult Index()
@@ -33,7 +32,7 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
             int pageSizeNumber = 4;
             if (keyword == null) keyword = "";
             var results = from nv in UserDao.GetAllUser()
-                          where nv.UserName.Contains(keyword)
+                          where nv.UserName.Contains(keyword) && nv.TrangThai != 10
                           orderby nv.ID descending
                           select nv;
             ViewBag.search = keyword;
@@ -75,7 +74,7 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
                         User.ChucVu = fc["ChucVu"].ToString();
                         User.TieuSu = fc["TieuSu"].ToString();
                         User.CongTy = fc["CongTy"].ToString();*/
-            var a =User.AnhDaiDien;
+            var a = User.AnhDaiDien;
             HttpFileCollectionBase file = Request.Files;
             if (file.Count > 0)
             {
@@ -113,7 +112,7 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
                 {
                     heading = "Thành công",
                     status = "success",
-                    message = "Sửa tài khoản thành công!"
+                    message = "Sửa bản ghi thành công!"
                 }, JsonRequestBehavior.AllowGet);
             }
         }
@@ -126,7 +125,7 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
             {
                 heading = "Thành công",
                 status = "success",
-                message = "Xóa tài khoản thành công!"
+                message = "Xóa bản ghi thành công!"
             }, JsonRequestBehavior.AllowGet);
         }
 
@@ -154,17 +153,22 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
         [HttpPost]
         public JsonResult Excel(FormCollection fc)
         {
-            string PathExcel = "C:\\Users\\teu-pc\\source\\repos\\daoquyanh2000\\QuanLyHoSo\\Assets\\Excel\\User\\User.xlsx";
+            //path file
+            string fileName = "User.xlsx";
+            string pathFolder = "/Assets/Excel/User";
+            //tao folder
+            Directory.CreateDirectory(Server.MapPath(pathFolder));
+            // tao duong dan path
+            string pathFile = Path.Combine(Server.MapPath(pathFolder), fileName);
 
             var checkbox = (fc["checkbox"]).Split(',');
             var listNhanVien = new List<NhanVien>();
             var account =
-                   from nv in UserDao.GetListExcel<ViewExcelNhanVien>(PathExcel)
+                   from nv in Stuff.GetListExcel<ViewExcelNhanVien>(pathFile)
                    where nv.HoTen != null &&
                          nv.UserName != null &&
                          nv.Password != null &&
                          nv.MaKieu != null &&
-                         nv.TrangThai != 0 &&
                          nv.SDT != null &&
                          nv.Email != null
                    join k in RoleDao.GetKieuNhanViens()
@@ -194,17 +198,13 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
             {
                 heading = "Thành công",
                 status = "success",
-                message = $"Tạo {tk} tài khoản thành công!"
+                message = $"Tạo {tk} bản ghi thành công!"
             }, JsonRequestBehavior.AllowGet);
         }
 
         public PartialViewResult ExcelModal()
         {
-
-            string PathExcel = "C:\\Users\\teu-pc\\source\\repos\\daoquyanh2000\\QuanLyHoSo\\Assets\\Excel\\User\\User.xlsx";
-            /*string PathExcel = "C:\\Users\\teu-laptop\\source\\repos\\QuanLyHoSo\\Assets\\Excel\\User\\User.xlsx";
-*/
-
+            string pathFile = string.Empty;
             if (Request.Files.Count > 0)
             {
                 HttpFileCollectionBase files = Request.Files;
@@ -216,14 +216,27 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
                     //tao folder
                     Directory.CreateDirectory(Server.MapPath(pathFolder));
                     // tao duong dan path
-                    string pathFile = Path.Combine(Server.MapPath(pathFolder), fileName);
+                    pathFile = Path.Combine(Server.MapPath(pathFolder), fileName);
                     file.SaveAs(pathFile);
                 }
             }
-            ViewBag.listAccount = UserDao.GetListExcel<ViewExcelNhanVien>(PathExcel);
+            ViewBag.listAccount = Stuff.GetListExcel<ViewExcelNhanVien>(pathFile);
             ViewBag.listKnd = RoleDao.GetKieuNhanViens();
             return PartialView();
-            
+        }
+
+        public JsonResult DeleteAll(List<int> checkboxs)
+        {
+            foreach (var id in checkboxs)
+            {
+                UserDao.DeleteUserByID(id, Session["UserNameNV"].ToString());
+            }
+            return Json(new
+            {
+                heading = "Thành công",
+                status = "success",
+                message = $"Xóa {checkboxs.Count} bản ghi thành công!"
+            }, JsonRequestBehavior.AllowGet);
         }
     }
 }

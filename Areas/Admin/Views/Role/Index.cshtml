@@ -1,5 +1,5 @@
 ﻿@{
-    ViewBag.Title = "Index";
+
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
 
@@ -9,6 +9,12 @@
         <div class="container-fluid">
             <div class="btn-toolbar justify-content-between py-3" role="toolbar" aria-label="Toolbar with button groups">
                 <div class="btn-group" role="group" aria-label="First group">
+                    <button type="button" class="btn btn-outline-secondary disabled" onclick="GetCheckboxAll()" id="deleteAll">
+                        <span>
+                            <i class="bi bi-plus-circle-fill"></i>
+                        </span>
+                        <span>Xóa tất cả</span>
+                    </button>
                     <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" id="modal-on"
                             data-bs-target="#staticBackdrop">
                         <span>
@@ -17,22 +23,22 @@
                         <span>Thêm kiểu người dùng mới</span>
                     </button>
 
-@*                    <button type="button" class="btn btn-outline-secondary">
-                        <input type="file" id="excelUpload" onchange=" UpExcel()" name="excelUpload" accept="*/image" class="custom-file-upload" />
-                        <label for="excelUpload" class="custom-file-upload ">
-                            <span>
-                                <i class="bi bi-paperclip"></i>
-                            </span>
-                            <span>Thêm từ biểu mẫu</span>
-                        </label>
-                    </button>
+                    @*                    <button type="button" class="btn btn-outline-secondary">
+                            <input type="file" id="excelUpload" onchange=" UpExcel()" name="excelUpload" accept="*/image" class="custom-file-upload" />
+                            <label for="excelUpload" class="custom-file-upload ">
+                                <span>
+                                    <i class="bi bi-paperclip"></i>
+                                </span>
+                                <span>Thêm từ biểu mẫu</span>
+                            </label>
+                        </button>
 
-                    <a href="https://1drv.ms/x/s!AmdgZJaagePn6g0JxvKDvxZek5Rc?e=pl4l6x" class="btn btn-outline-secondary" target="_blank">
-                        <span>
-                            <i class="bi bi-cloud-arrow-down"></i>
-                        </span>
-                        <span>Tập tin mẫu</span>
-                    </a>*@
+                        <a href="https://1drv.ms/x/s!AmdgZJaagePn6g0JxvKDvxZek5Rc?e=pl4l6x" class="btn btn-outline-secondary" target="_blank">
+                            <span>
+                                <i class="bi bi-cloud-arrow-down"></i>
+                            </span>
+                            <span>Tập tin mẫu</span>
+                        </a>*@
                 </div>
                 <div class="input-group">
                     <input type="text" name="name" value="" class="rounded border-1" id="searchInput" />
@@ -109,13 +115,13 @@
                                 <div class="row">
                                     @foreach (var item in ViewBag.listQuyen)
                                     {
-                                        <div class="col-md-4">
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" id="checkbox_@item.ID" data-id="@item.ID"
-                                                       value="">
-                                                <label class="form-check-label" for="checkbox_@item.ID">@item.TenQuyen</label>
-                                            </div>
+                                    <div class="col-md-4">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="checkbox_@item.ID" data-id="@item.ID"
+                                                   value="">
+                                            <label class="form-check-label" for="checkbox_@item.ID">@item.TenQuyen</label>
                                         </div>
+                                    </div>
 
                                     }
                                 </div>
@@ -125,7 +131,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" form="userForm"  class="btn btn-primary">Lưu</button>
+                    <button type="submit" form="userForm" class="btn btn-primary">Lưu</button>
                 </div>
             </div>
         </div>
