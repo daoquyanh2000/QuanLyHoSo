@@ -106,5 +106,6 @@ namespace QuanLyHoSo.Dao
                 return con.Get<T>(ID);
             }
         }
+        
     }
 }

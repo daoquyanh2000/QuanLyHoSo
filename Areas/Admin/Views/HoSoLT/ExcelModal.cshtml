@@ -1,0 +1,70 @@
+﻿@model IEnumerable<QuanLyHoSo.ViewModel.ViewHoSo>
+<table class="table table-striped table-light table-bordered DisplayName w-100 table-hover">
+    <tr>
+        <th>
+            Tiêu đề
+        </th>
+        <th>
+            Mã hồ sơ
+        </th>
+        <th>
+            Ký hiệu
+        </th>
+        <th>
+            Tên danh mục
+        </th>
+        <th>
+            Tên kho
+        </th>
+        <th>
+            Tên ngăn
+        </th>
+        <th>
+            Tên loại hồ sơ
+        </th>
+        <th>
+            Mô tả
+        </th>
+        <th>
+            Thời gian lưu trữ
+        </th>
+        <th>
+            Thời hạn bảo quản
+        </th>
+    </tr>
+    @foreach (var item in Model)
+    {
+<tr>
+    <td>
+        @item.TieuDe
+    </td>
+    <td>
+        @item.MaHoSo
+    </td>
+    <td>
+        @item.KyHieu
+    </td>
+    <td>
+        @item.TenDanhMuc
+    </td>
+    <td>
+        @item.TenKho
+    </td>
+    <td>
+        @item.TenNgan
+    </td>
+    <td>
+        @item.TenLoaiHoSo
+    </td>
+    <td>
+        @item.MoTa
+    </td>
+    <td>
+        @item.ThoiGianLuuTru
+    </td>
+    <td>
+        @item.ThoiHanBaoQuan 
+    </td>
+</tr>
+    }
+</table>

@@ -79,12 +79,14 @@ $(document).ready(function () {
 
 function EnableForm() {
     $('#userForm :input').each(function () {
+        $('label[class="error"]').remove();
         $(this).val("");
         $(this).attr("disabled", false);
         $(`button[type="submit"]`).attr("disabled", false);
     });
 }
 function DisableForm() {
+    $('label[class="error"]').remove();
     $('#userForm :input').each(function () {
         $(this).attr("disabled", true);
     });

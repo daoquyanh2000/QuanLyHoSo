@@ -18,7 +18,7 @@ using System.Web.Mvc;
 namespace QuanLyHoSo.Areas.Admin.Controllers
 {
     [Authorize(Roles = "NhanVien")]
-    public class UserController : System.Web.Mvc.Controller
+    public class UserController : Controller
     {
         // GET: Admin/User
         public ActionResult Index()

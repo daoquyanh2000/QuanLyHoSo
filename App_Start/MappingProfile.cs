@@ -9,6 +9,7 @@ namespace QuanLyHoSo.App_Start
         public MappingProfile()
         {
             CreateMap<ViewExcelNhanVien, NhanVien>();
+            CreateMap<ViewHoSo, HoSo>();
         }
     }
 }

@@ -44,8 +44,12 @@ input[type="file"] {
 @media (min-width:1023px) {
     main,
     footer {
+
         margin-top: var(--topNavbarHeight);
         margin-left: var(--offcavas-width);
+    }
+    main {
+        padding: 12px;
     }
 
     /* .modal-backdrop {

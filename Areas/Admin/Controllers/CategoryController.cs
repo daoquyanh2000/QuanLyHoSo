@@ -14,6 +14,8 @@ using System.Web.Mvc;
 
 namespace QuanLyHoSo.Areas.Admin.Controllers
 {
+    [Authorize(Roles = "DanhMuc")]
+
     public class CategoryController : Controller
     {
         // GET: Admin/Category

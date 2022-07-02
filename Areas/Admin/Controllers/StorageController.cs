@@ -15,7 +15,9 @@ using System.Web.Mvc;
 
 namespace QuanLyHoSo.Areas.Admin.Controllers
 {
-    public class StorageController : System.Web.Mvc.Controller
+    [Authorize(Roles = "Kho")]
+
+    public class StorageController : Controller
     {
         // GET: Admin/Storage
         public ActionResult Index()
@@ -45,7 +47,7 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
                           orderby k.ID descending
                           where k.TrangThai != 10 && k.TenKho.Contains(keyword)
                           || k.MaKho.Contains(keyword)
-                          || (k.TenKhoCha ?? "trống").Contains(keyword)
+                          || (k.TenKhoCha ?? "trống Trống TRỐNG").Contains(keyword)
                           select k;
             ViewBag.search = keyword;
             var model = results.ToPagedList(pageNumber, pageSizeNumber);

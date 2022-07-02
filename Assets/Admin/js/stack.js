@@ -1,4 +1,7 @@
 ﻿$(document).ready(function () {
+    $('a[href="#collapseExample2"]').attr("aria-expanded", true)
+    $("#collapseExample2").addClass('show');
+
     ////khi bam nut tao user moi
     $('button[data-bs-toggle="modal"]').click(function () {
         EnableForm();
@@ -194,12 +197,14 @@ function GetData(ID, event) {
 }
 function EnableForm() {
     $('#userForm :input').each(function () {
+        $('label[class="error"]').remove();
         $(this).val("");
         $(this).attr("disabled", false);
         $(`button[type="submit"]`).attr("disabled", false);
     });
 }
 function DisableForm() {
+    $('label[class="error"]').remove();
     $('#userForm :input').each(function () {
         $(this).attr("disabled", true);
     });

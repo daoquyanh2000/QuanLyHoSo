@@ -14,6 +14,7 @@ using System.Web.Mvc;
 
 namespace QuanLyHoSo.Areas.Admin.Controllers
 {
+    [Authorize(Roles = "Ngan")]
     public class StackController : System.Web.Mvc.Controller
     {
         // GET: Admin/Stack
@@ -98,7 +99,7 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
         {
             foreach (var id in checkboxs)
             {
-                StorageDao.DeleteUserByID(id, Session["UserNameNV"].ToString());
+                StackDao.DeleteUserByID(id, Session["UserNameNV"].ToString());
             }
             return Json(new
             {

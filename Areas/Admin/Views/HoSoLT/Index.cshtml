@@ -1,0 +1,283 @@
+﻿@{
+
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<main>
+    <input type="number" name="hidden" value="0" style="display:none" id="HiddenState" />
+    <nav>
+        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+            <button class="nav-link active" id="HoSoLT-tab" data-bs-toggle="tab" data-bs-target="#HoSoLT" type="button" role="tab" aria-controls="HoSoLT" aria-selected="true" onclick="SearchUser(0)">Hồ sơ lưu trữ</button>
+            <button class="nav-link" id="HoSoHT-tab" data-bs-toggle="tab" data-bs-target="#HoSoHT" type="button" role="tab" aria-controls="HoSoHT" aria-selected="false" onclick="SearchUser(1)">Hồ sơ hình thành</button>
+
+        </div>
+    </nav>
+    <div class="tab-content" id="nav-tabContent">
+        <div class="tab-pane fade show active" id="HoSoLT" role="tabpanel" aria-labelledby="HoSoLT-tab">
+            <!-- nav button start -->
+            <section>
+                <div class="container-fluid">
+
+                    <div class="btn-toolbar justify-content-between py-3" role="toolbar" aria-label="Toolbar with button groups">
+                        <div class="btn-group" role="group" aria-label="First group">
+                            <button type="button" class="btn btn-outline-secondary disabled" onclick="GetCheckboxAll(10)" id="deleteAll">
+                                <span>
+                                    <i class="fa-solid fa-trash-can"></i>
+
+                                </span>
+                                <span>Xóa</span>
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary disabled" onclick="GetCheckboxAll(1)" id="HinhThanhAll">
+                                <span>
+                                    <i class="fa-solid fa-trash-can"></i>
+
+                                </span>
+                                <span>Hình thành</span>
+                            </button>
+                            <a href="~/Assets/Excel/Record/RecordTemplate.xlsx" class="btn btn-outline-secondary" target="_blank">
+                                <span>
+                                    <i class="bi bi-cloud-arrow-down"></i>
+                                </span>
+                                <span>Tập tin mẫu</span>
+                            </a>
+                            <button type="button" class="btn btn-outline-secondary">
+                                <input type="file" id="excelUpload" onchange=" ModalExcel()" name="excelUpload" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" class="custom-file-upload" />
+                                <label for="excelUpload" class="custom-file-upload ">
+                                    <span>
+                                        <i class="bi bi-paperclip"></i>
+                                    </span>
+                                    <span>Thêm từ biểu mẫu</span>
+                                </label>
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" id="modal-on"
+                                    data-bs-target="#staticBackdrop">
+                                <span>
+                                    <i class="bi bi-plus-circle-fill"></i>
+                                </span>
+                                <span>Thêm hồ sơ mới</span>
+                            </button>
+                        </div>
+                        <div class="input-group">
+                            <input type="text" name="name" value="" class="rounded border-1 " id="searchInput_0" />
+                            <button for="searchInput_0" id="searchBtn_0" class="btn btn-outline-secondary " >
+                                <span>
+                                    <i class="fa-solid fa-magnifying-glass"></i>
+                                </span>
+                                <span>Tìm kiếm</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!-- nav button end  -->
+            <div id="tableContainer">
+                <!-- table start -->
+                @{
+                    Html.RenderAction("Search", "HoSoLT", new { page = 1 });
+
+                }
+                <!-- table end -->
+            </div>
+        </div>
+        <div class="tab-pane fade" id="HoSoHT" role="tabpanel" aria-labelledby="HoSoHT-tab">
+            <div class="tab-pane fade show active" id="HoSoLT" role="tabpanel" aria-labelledby="HoSoLT-tab">
+                <!-- nav button start -->
+                <section>
+                    <div class="container-fluid">
+
+                        <div class="btn-toolbar justify-content-between py-3" role="toolbar" aria-label="Toolbar with button groups">
+                            <div class="btn-group" role="group" aria-label="First group">
+                                <button type="button" class="btn btn-outline-secondary disabled" onclick="GetCheckboxAll(2)" id="GuiDuyetAll">
+                                    <span>
+                                        <i class="fa-solid fa-trash-can"></i>
+
+                                    </span>
+                                    <span>Gửi duyệt</span>
+                                </button>
+                                <button type="button" class="btn btn-outline-secondary disabled" onclick="GetCheckboxAll(0)" id="HuyHinhThanhAll">
+                                    <span>
+                                        <i class="fa-solid fa-trash-can"></i>
+
+                                    </span>
+                                    <span>Hủy hình thành</span>
+                                </button>
+
+                            </div>
+                            <div class="input-group">
+                                <input type="text" name="name" value="" class="rounded border-1 search_1" id="searchInput_1" />
+                                <button for="searchInput_1" id="searchBtn_1" class="btn btn-outline-secondary" >
+                                    <span>
+                                        <i class="fa-solid fa-magnifying-glass"></i>
+                                    </span>
+                                    <span>Tìm kiếm</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <!-- nav button end  -->
+                <div id="HoSoHTTable">
+                    <!-- table start -->
+                    @{
+                        Html.RenderAction("Search", "HoSoHT", new { page = 1 });
+
+                    }
+                    <!-- table end -->
+                </div>
+            </div>
+
+        </div>
+
+
+        <!-- content start  -->
+        <!-- content end  -->
+</main>
+
+<!-- modal start -->
+<section>
+    <div class="modal fade " id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+         aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg ">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title " id="exampleModalLabel">Thông tin kho</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="container" id="modalContainer">
+                        <form action="" id="userForm">
+                            <div class="row my-2">
+                                <div class="col-12 fw-bold fst-italic">
+                                    (*) Thông tin bắt buộc
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label for="TieuDe" class="form-label">Tiêu đề hồ sơ(*)</label>
+                                        <input class="form-control" id="TieuDe" name="TieuDe">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="MaLoaiHoSo" class="form-label">Loại hồ sơ (*)</label>
+                                        @Html.DropDownList("MaLoaiHoSo", (IEnumerable<SelectListItem>)TempData["listLoaiHoSo"], new { @class = "form-select" })
+                                    </div>
+
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="text-center">
+                                        <label for="AnhBia" class=" fst-italic text-center form-label">
+                                            Ảnh bìa
+                                            <i class="icon fa fa-camera border px-2 py-2" id="imgTemp" style="font-size: 150px; display: block;"></i>
+                                            <div class="d-flex justify-content-center">
+                                                <img id="userImg" src="" alt="" class="w-100 border px-2 py-2" style="display: none;">
+                                                <input type="file" id="AnhBia" onchange=" loadFile(event)" name="AnhBia" accept="image/*" class="custom-file-upload">
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="form-group">
+                                        <label for="MaDanhMuc" class="form-label">Danh mục (*)</label>
+                                        @Html.DropDownList("MaDanhMuc", (IEnumerable<SelectListItem>)TempData["listDanhMuc"], new { @class = "form-select" })
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="form-group ">
+                                        <label class="form-label " for="MaKho">Kho chứa (*)</label>
+                                        @Html.DropDownList("MaKho", (IEnumerable<SelectListItem>)TempData["listKho"], new { @class = "form-select" })
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="form-group">
+                                        <label for="MaNgan" class="form-label">Ngăn chứa (*)</label>
+                                        @Html.DropDownList("MaNgan", (IEnumerable<SelectListItem>)TempData["listNgan"], new { @class = "form-select" })
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="form-group">
+                                        <label for="KyHieu" class="form-label">Ký hiệu hoặc số(*)</label>
+                                        <input class="form-control" id="KyHieu" type="text" name="KyHieu">
+                                    </div>
+                                </div>
+                                <div class="col-lg-8">
+                                    <div class="form-group">
+                                        <label for="MaHoSo" class="form-label">Mã hồ sơ (*)</label>
+                                        <input class="form-control" id="MaHoSo" type="text" name="MaHoSo">
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label class="form-label" for="ThoiGianLuuTru">Thời gian lưu trữ tới(*)</label>
+                                        <input class="form-control" id="ThoiGianLuuTru" name="ThoiGianLuuTru" type="date" value="">
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label class="form-label" for="ThoiHanBaoQuan">Thời hạn bảo quản(*)</label>
+                                        <div class="input-group mb-3">
+                                            <input type="text" class="form-control" id="ThoiHanBaoQuan" name="ThoiHanBaoQuan" placeholder="Số năm">
+                                            <button class="btn btn-secondary" type="button" id="vinhVien">Vĩnh viễn</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label class="form-label" for="MoTa">Mô tả</label>
+                                        <textarea class="form-control" cols="2" id="MoTa" name="MoTa" rows="2"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                    <button type="submit" form="userForm" class="btn btn-primary">Lưu</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- modal end -->
+<!-- modal start -->
+<section>
+    <div class="modal fade " id="ExcelModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+         aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg ">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title " id="exampleModalLabel">Thông tin tài khoản hợp lệ</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="container" id="excelContainer">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                    <button type="button" onclick="UpExcel()" class="btn btn-primary">Lưu người dùng</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- modal end -->
+<!-- Modal thanh phan-->
+<div class="modal fade" id="ThanhPhanModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                ...
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Understood</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/Assets/Admin/js/hosoLT.js"></script>

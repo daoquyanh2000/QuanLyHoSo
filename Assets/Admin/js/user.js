@@ -1,4 +1,6 @@
 ﻿$(function () {
+    $('a[href="#collapseExample"]').attr("aria-expanded", true)
+    $("#collapseExample").addClass('show');
     ////khi bam nut tao user moi
     $('button[data-bs-toggle="modal"]').click(function () {
         EnableForm();
@@ -99,6 +101,7 @@
         return this.optional(element) || phone_number.length == 10 &&
             phone_number.match(/[0-9\-\(\)\s]+/);
     }, "Hãy nhập đúng định dạng điện thoại");
+
 
     $(document).on('change', '#checkAll', function () {
         console.log(this);
