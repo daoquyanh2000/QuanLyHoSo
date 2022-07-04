@@ -17,46 +17,46 @@ using System.Web.Mvc;
 namespace QuanLyHoSo.Areas.Admin.Controllers
 {
     [Authorize(Roles = "HSLT")]
-
     public class HoSoLTController : Controller
     {
         // GET: Admin/HoSoLT
         public ActionResult Index()
         {
             TempData["listLoaiHoSo"] = from k in Stuff.GetAll<LoaiHoSo>()
+                                       orderby k.ID descending
+                                       where k.TrangThai == 1
+                                       select new SelectListItem
+                                       {
+                                           Text = k.TenLoaiHoSo,
+                                           Value = k.MaLoaiHoSo,
+                                       };
+            TempData["listDanhMuc"] = from k in Stuff.GetAll<DanhMuc>()
                                       orderby k.ID descending
                                       where k.TrangThai == 1
                                       select new SelectListItem
                                       {
-                                          Text = k.TenLoaiHoSo,
-                                          Value = k.MaLoaiHoSo,
+                                          Text = k.TenDanhMuc,
+                                          Value = k.MaDanhMuc,
                                       };
-            TempData["listDanhMuc"] = from k in Stuff.GetAll<DanhMuc>()
-                                  orderby k.ID descending
-                                  where k.TrangThai == 1
-                                  select new SelectListItem
-                                  {
-                                      Text = k.TenDanhMuc,
-                                      Value = k.MaDanhMuc,
-                                  };
             TempData["listKho"] = from k in Stuff.GetAll<Kho>()
                                   orderby k.ID descending
-                                  where k.TrangThai == 1 
+                                  where k.TrangThai == 1
                                   select new SelectListItem
                                   {
                                       Text = k.TenKho,
                                       Value = k.MaKho,
                                   };
             TempData["listNgan"] = from k in Stuff.GetAll<Ngan>()
-                                  orderby k.ID descending
-                                  where k.TrangThai == 1 
-                                  select new SelectListItem
-                                  {
-                                      Text = k.TenNgan,
-                                      Value = k.MaNgan,
-                                  };
+                                   orderby k.ID descending
+                                   where k.TrangThai == 1
+                                   select new SelectListItem
+                                   {
+                                       Text = k.TenNgan,
+                                       Value = k.MaNgan,
+                                   };
             return View();
         }
+
         public PartialViewResult Search(string keyword, int? page)
         {
             int pageNumber = (page ?? 1);
@@ -64,7 +64,7 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
             if (keyword == null) keyword = "";
 
             var results = from hs in RecordDao.GetAllRecord()
-                          where (hs.TrangThai ==0 || hs.TrangThai==100)
+                          where (hs.TrangThai == 0 || hs.TrangThai == 100)
                           && (hs.TieuDe.Contains(keyword)
                           || hs.MaHoSo.Contains(keyword)
                           || hs.TenDanhMuc.Contains(keyword)
@@ -76,6 +76,7 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
             var model = results.ToPagedList(pageNumber, pageSizeNumber);
             return PartialView("HoSoLTTable", model);
         }
+
         public JsonResult View(long ID)
         {
             HoSo hs = Stuff.GetByID<HoSo>(ID);
@@ -84,6 +85,7 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
                 data = hs,
             }, JsonRequestBehavior.AllowGet);
         }
+
         public JsonResult Delete(long ID)
         {
             RecordDao.DeleteUserByID(ID, Session["UserNameNV"].ToString());
@@ -96,21 +98,20 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
             }, JsonRequestBehavior.AllowGet);
         }
 
-        public JsonResult DeleteAll(List<int> checkboxs,int state)
+        public JsonResult DeleteAll(List<int> checkboxs, int state)
         {
             /*state =0 -> lưu trữ
             state = 1 -> hình thành
             state = 2 -> gửi duyệt
-            state =10 -> xóa 
+            state =10 -> xóa
             state =100  -> đóng băng
             */
-            if (state ==10)
+            if (state == 10)
             {
                 foreach (var id in checkboxs)
                 {
                     RecordDao.DeleteUserByID(id, Session["UserNameNV"].ToString());
                 }
-
             }
             else
             {
@@ -127,6 +128,7 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
                 message = $"Thay đổi trạng thái của {checkboxs.Count} bản ghi thành công!"
             }, JsonRequestBehavior.AllowGet);
         }
+
         [HttpPost]
         public JsonResult Save(HoSo hs)
         {
@@ -171,14 +173,15 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
             return Json(new
             {
                 data = from n in Stuff.GetAll<Ngan>()
-                           join k in Stuff.GetAll<Kho>()
-                           on n.IDKho equals k.ID
-                           where  n.TrangThai == 1 &&
-                           k.TrangThai == 1 &&
-                           k.MaKho == MaKho
-                           select n,
-        }, JsonRequestBehavior.AllowGet);
+                       join k in Stuff.GetAll<Kho>()
+                       on n.IDKho equals k.ID
+                       where n.TrangThai == 1 &&
+                       k.TrangThai == 1 &&
+                       k.MaKho == MaKho
+                       select n,
+            }, JsonRequestBehavior.AllowGet);
         }
+
         public ActionResult ExcelModal()
         {
             try
@@ -201,7 +204,7 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
                 }
                 Session["pathFile"] = pathFile;
                 var listeExcelKho = Stuff.GetListExcel<ViewExcelHoSo>(pathFile);
-                var listDm = Stuff.GetAll<DanhMuc>().Where(x=>x.TrangThai==1) ;
+                var listDm = Stuff.GetAll<DanhMuc>().Where(x => x.TrangThai == 1);
                 var lisNgan = Stuff.GetAll<Ngan>().Where(x => x.TrangThai == 1);
                 var listKho = Stuff.GetAll<Kho>().Where(x => x.TrangThai == 1);
                 var listType = Stuff.GetAll<LoaiHoSo>().Where(x => x.TrangThai == 1);
@@ -241,7 +244,7 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
                                 TenNgan = n.TenNgan,
                                 TenLoaiHoSo = t.TenLoaiHoSo
                             };
-            model = model.ToList();
+                model = model.ToList();
                 TempData["listExcelHoSo"] = model;
                 return PartialView(model);
             }
@@ -256,9 +259,9 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
                 }, JsonRequestBehavior.AllowGet);
             }
         }
+
         public JsonResult Excel()
         {
-
             var model = (List<ViewHoSo>)TempData["listExcelHoSo"];
             var config = new MapperConfiguration(cfg =>
             {
@@ -275,7 +278,6 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
             long tk;
             using (var db = new SqlConnection(ConnectString.Setup()))
             {
-
                 tk = db.Insert(listHoSo);
             }
             return Json(new
@@ -285,13 +287,14 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
                 message = $"Lưu {tk} bản ghi thành công!"
             }, JsonRequestBehavior.AllowGet);
         }
+
         //đóng băng hồ sơ
-        public JsonResult Change(int ID,int state)
+        public JsonResult Change(int ID, int state)
         {
-/*              0 : hồ sơ lưu trữ
-                1 : hồ sơ hình thành
-                10 : hồ sơ xóa
-                100 hồ sơ đóng băng*/
+            /*              0 : hồ sơ lưu trữ
+                            1 : hồ sơ hình thành
+                            10 : hồ sơ xóa
+                            100 hồ sơ đóng băng*/
             RecordDao.ChangeStateByID(ID, state, Session["UserNameNV"].ToString());
             return Json(new
             {

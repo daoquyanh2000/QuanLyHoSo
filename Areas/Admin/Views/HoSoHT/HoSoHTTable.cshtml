@@ -26,48 +26,47 @@
             <input type="number" name="hidden" value="0" style="display:none" id="HiddenState" />
             @foreach (var item in Model)
             {
-                <tr data-id="@item.ID" onmouseenter="ShowTr(@item.ID,'users')">
-                    <td>
-                        <input type="checkbox" class="form-check-input checkboxs" name="checkboxs" data-id="@item.ID" />
-                    </td>
-                    <td>@item.TieuDe</td>
-                    <td>@item.MaHoSo</td>
-                    <td>@item.TenKho</td>
-                    <td>@item.TenNgan</td>
-                    <td>@item.TenDanhMuc</td>
-                    <td>@item.ThoiGianLuuTru</td>
-                    <td>@item.NgayTao</td>
-                    <td>@item.NguoiTao</td>
-                    <td>@item.NgaySua</td>
-                    <td>@item.NguoiSua</td>
-                </tr>
-                <tr style="display: none" id="tr_@item.ID">
-                    <td colspan="12">
-                        <div class="d-flex ">
+            <tr data-id="@item.ID" onmouseenter="ShowTr(@item.ID,'users')">
+                <td>
+                    <input type="checkbox" class="form-check-input checkboxs" name="checkboxs" data-id="@item.ID" />
+                </td>
+                <td>@item.TieuDe</td>
+                <td>@item.MaHoSo</td>
+                <td>@item.TenKho</td>
+                <td>@item.TenNgan</td>
+                <td>@item.TenDanhMuc</td>
+                <td>@item.ThoiGianLuuTru</td>
+                <td>@item.NgayTao</td>
+                <td>@item.NguoiTao</td>
+                <td>@item.NgaySua</td>
+                <td>@item.NguoiSua</td>
+            </tr>
+            <tr style="display: none" id="tr_@item.ID">
+                <td colspan="12">
+                    <div class="d-flex ">
 
-                            <button type="button" class="btn btn-outline-secondary mx-1" onclick="ChangeState(@item.ID,2)">
-                                <span>Gửi duyệt </span>
-                            </button>
-                            <button type="button" class="btn btn-outline-secondary mx-1" data-bs-toggle="modal" data-bs-target="#ThanhPhanModal">
-                                <span>Thành phần </span>
-                            </button>
-                            <button type="button" class="btn btn-outline-secondary mx-1" onclick="ChangeState(@item.ID,0)">
-                                <span>Hủy hình thành </span>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
+                        <button type="button" class="btn btn-outline-secondary mx-1" onclick="ChangeState(@item.ID,2)">
+                            <span>Gửi duyệt </span>
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary mx-1" data-bs-toggle="modal" data-bs-target="#ThanhPhanModal">
+                            <span>Thành phần </span>
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary mx-1" onclick="ChangeState(@item.ID,0)">
+                            <span>Hủy hình thành </span>
+                        </button>
+                    </div>
+                </td>
+            </tr>
 
             }
         </tbody>
     </table>
-@*     //Thêm phân trang vào *@
+    @*     //Thêm phân trang vào *@
     Trang @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) / @Model.PageCount
 
     @Html.PagedListPager(Model,
     page => Url.Action("Search",
     new { keyword = ViewBag.search, page = page }),
 PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(new AjaxOptions() { HttpMethod = "GET", UpdateTargetId = "HoSoHTTable" }))
-     Kết thúc 
+    Kết thúc
 </div>
-

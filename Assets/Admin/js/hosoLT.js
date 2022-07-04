@@ -1,5 +1,4 @@
-﻿
-var danhMuc = "";
+﻿var danhMuc = "";
 var kho = "";
 var ngan = "";
 var kyHieu = "";
@@ -11,18 +10,18 @@ $(function () {
             $('#searchBtn_0').click();
         }
     })
-    .on('keypress', '#searchInput_1', function (e) {
-        if (e.which == 13) {
-            $('#searchBtn_1').click();
-        }
-    })
+        .on('keypress', '#searchInput_1', function (e) {
+            if (e.which == 13) {
+                $('#searchBtn_1').click();
+            }
+        })
     //Add sự kiện nút tìm kiếm
     $(document).on('click', '#searchBtn_0', function (e) {
         SearchUser(0);
     })
-    .on('click', '#searchBtn_1', function (e) {
-        SearchUser(1);
-    })
+        .on('click', '#searchBtn_1', function (e) {
+            SearchUser(1);
+        })
     $("#collapseExample4").addClass('show');
     $('a[href="#collapseExample4"]').attr("aria-expanded", true)
     ////khi bam nut tao user moi
@@ -121,7 +120,6 @@ $(function () {
         submitHandler: function () {
             CreateUser();
         }
-
     });
     jQuery.validator.addMethod("checkDate", function (value, element) {
         value = new Date(value);
@@ -144,7 +142,6 @@ $(function () {
         $(HinhThanhAll).toggleClass('disabled', checkboxChecked.length == 0);
         $(GuiDuyetAll).toggleClass('disabled', checkboxChecked.length == 0);
         $(HuyHinhThanhAll).toggleClass('disabled', checkboxChecked.length == 0);
-
     })
     //xử lý các checkbox
     $(document).on('change', '.checkboxs', function () {
@@ -159,7 +156,7 @@ $(function () {
         let HinhThanhAll = $(this).closest('main').find('#HinhThanhAll');
         let HuyHinhThanhAll = $(this).closest('main').find('#HuyHinhThanhAll');
         let GuiDuyetAll = $(this).closest('main').find('#GuiDuyetAll');
-        
+
         $(deleteAll).toggleClass('disabled', checkboxChecked.length == 0);
         $(HinhThanhAll).toggleClass('disabled', checkboxChecked.length == 0);
         $(GuiDuyetAll).toggleClass('disabled', checkboxChecked.length == 0);
@@ -180,7 +177,6 @@ $(function () {
         }
     })
 
-
     $(document).on('change', '#MaDanhMuc', function () {
         danhMuc = $(this).val();
         maHoSo = danhMuc + "." + kho + "." + ngan + "." + kyHieu;
@@ -191,21 +187,17 @@ $(function () {
         maHoSo = danhMuc + "." + kho + "." + ngan + "." + kyHieu;
         $('#MaHoSo').val(maHoSo);
         GetNgan(kho)
-
     })
     $(document).on('change', '#MaNgan', function () {
         ngan = $(this).val();
         maHoSo = danhMuc + "." + kho + "." + ngan + "." + kyHieu;
         $('#MaHoSo').val(maHoSo);
-
     })
     $(document).on('keyup', '#KyHieu', function () {
         kyHieu = $(this).val();
         maHoSo = danhMuc + "." + kho + "." + ngan + "." + kyHieu;
         $('#MaHoSo').val(maHoSo);
-
     })
-
 })
 function SearchUser(state) {
     let url = '';
@@ -228,7 +220,6 @@ function SearchUser(state) {
         success: function (res) {
             let table = '';
             if (state == 0) {
-
                 table = $("#tableContainer");
             } else {
                 table = $('#HoSoHTTable');
@@ -243,7 +234,7 @@ function GetNgan(MaKho) {
     $.ajax({
         url: "/admin/hosolt/GetNgan",
         data: {
-            MaKho :MaKho,
+            MaKho: MaKho,
         },
         type: 'get',
         success: function (res) {
@@ -254,18 +245,15 @@ function GetNgan(MaKho) {
                 $('#MaNgan').html(html)
             }
             else {
-            $('#MaNgan').html(html).change();
+                $('#MaNgan').html(html).change();
             }
             $('#KyHieu').keyup();
         }
     })
-
-    
 }
 
 //ID muốn thay đổi và state muốn thay đổi
-function ChangeState(ID,state) {
-
+function ChangeState(ID, state) {
     if (confirm("Bạn có muốn thay đổi trạng thái hồ sơ không?")) {
         $.ajax({
             url: "/admin/hosolt/Change",
@@ -291,10 +279,8 @@ function ChangeState(ID,state) {
             }
         })
     }
-
 }
 function DongBang(ID, state) {
-
     if (confirm("Bạn có muốn thay đổi trạng thái băng hồ sơ không?")) {
         $.ajax({
             url: "/admin/hosolt/Change",
@@ -315,7 +301,6 @@ function DongBang(ID, state) {
             }
         })
     }
-
 }
 
 function EnableForm() {
@@ -325,8 +310,6 @@ function EnableForm() {
         $(this).attr("disabled", false);
         $(`button[type="submit"]`).attr("disabled", false);
     });
-
-
 }
 function DisableForm() {
     $('label[class="error"]').remove();
@@ -336,7 +319,7 @@ function DisableForm() {
     $(`button[type="submit"]`).attr("disabled", true);
 }
 function ViewUser(ID, event) {
-    GetData(ID, event,0);
+    GetData(ID, event, 0);
     DisableForm();
 }
 function UpdateUser(ID, event) {
@@ -387,14 +370,12 @@ function GetData(ID, event, state) {
                 THBQ.val(res.data.ThoiHanBaoQuan);
             }
             if (state == 0) {
-                $(THBQ).prop('disabled',true)
+                $(THBQ).prop('disabled', true)
             }
-
         }
     })
 }
 function CreateUser() {
-
     var formData = new FormData($('form#userForm')[0]);
     var userID = $("#HiddenID").val();
     formData.append("ID", userID);
@@ -418,7 +399,6 @@ function CreateUser() {
                 showHideTransition: 'slide',
             })
             SearchUser(0);
-
         }
     })
 }
@@ -461,9 +441,8 @@ function GetCheckboxAll(state) {
         $.ajax({
             type: "get",
             url: "/admin/hosolt/DeleteAll",
-            data: $.param({ checkboxs: arr,state:state }, true),
+            data: $.param({ checkboxs: arr, state: state }, true),
             success: function (res) {
-
                 $.toast({
                     heading: res.heading,
                     icon: res.icon,
@@ -474,11 +453,9 @@ function GetCheckboxAll(state) {
                     showHideTransition: 'slide',
                 })
                 if (state == 1 || state == 100) {
-
                     SearchUser(0);
                 } else {
                     SearchUser(1);
-
                 }
                 $('#deleteAll').toggleClass('disabled');
                 $('#HinhThanhAll').toggleClass('disabled');
@@ -488,7 +465,7 @@ function GetCheckboxAll(state) {
         })
     }
 }
-function loadFile (event) {
+function loadFile(event) {
     var userImg = document.getElementById('userImg');
     userImg.src = URL.createObjectURL(event.target.files[0]);
     userImg.onload = function () {
@@ -546,7 +523,7 @@ function UpExcel() {
         }
     });
 }
-function ShowTr(ID,nameTable) {
+function ShowTr(ID, nameTable) {
     $(`table#${nameTable} tr[id^="tr_"]`).hide();
     $(`table#${nameTable} tr[id^="tr_${ID}"]`).css('display', 'table-row')
 }

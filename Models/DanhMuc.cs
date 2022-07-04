@@ -1,8 +1,4 @@
 ﻿using Dapper.Contrib.Extensions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 
 namespace QuanLyHoSo.Models
 {
@@ -11,6 +7,7 @@ namespace QuanLyHoSo.Models
     {
         [Key]
         public long ID { get; set; }
+
         public string TenDanhMuc { get; set; }
         public string MaDanhMuc { get; set; }
         public long IDDanhMucCha { get; set; }

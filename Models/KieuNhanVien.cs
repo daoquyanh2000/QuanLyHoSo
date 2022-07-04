@@ -1,7 +1,11 @@
-﻿namespace QuanLyHoSo.Models
+﻿using Dapper.Contrib.Extensions;
+
+namespace QuanLyHoSo.Models
 {
+    [Table("KieuNhanVien")]
     public class KieuNhanVien
     {
+        [Key]
         public long ID { get; set; }
         public string TenKieu { get; set; }
         public string MaKieu { get; set; }

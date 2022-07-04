@@ -4,8 +4,6 @@ using QuanLyHoSo.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Web;
 
 namespace QuanLyHoSo.Dao.DaoAdmin
 {
@@ -13,23 +11,25 @@ namespace QuanLyHoSo.Dao.DaoAdmin
     {
         public static List<ViewHoSo> GetAllRecord()
         {
-            string query = @"select hs.*,k.TenKho,n.TenNgan,dm.TenDanhMuc from HoSo hs 
-	                        left join Kho k on hs.MaKho = k.MaKho 
-	                        left join Ngan n on hs.MaNgan = n.MaNgan 
+            string query = @"select hs.*,k.TenKho,n.TenNgan,dm.TenDanhMuc from HoSo hs
+	                        left join Kho k on hs.MaKho = k.MaKho
+	                        left join Ngan n on hs.MaNgan = n.MaNgan
 	                        left join DanhMuc dm on hs.MaDanhMuc =dm.MaDanhMuc";
             return Stuff.GetList<ViewHoSo>(query);
-
         }
+
         public static void ChangeStateByID(long ID, int state, string UserNameNV)
         {
             string query = $"Update [HoSo] SET [TrangThai]={state},[NguoiSua]='{UserNameNV}',[NgaySua]=GETDATE() WHERE ID={ID}";
             Stuff.ExecuteSql(query);
         }
+
         public static void DeleteUserByID(long ID, string UserNameNV)
         {
             string query = $"Update [HoSo] SET [TrangThai]=10,[NguoiSua]='{UserNameNV}',[NgaySua]=GETDATE() WHERE ID={ID}";
             Stuff.ExecuteSql(query);
         }
+
         public static void Create(HoSo hs, string UserNameNV)
         {
             //create new kho
@@ -40,9 +40,10 @@ namespace QuanLyHoSo.Dao.DaoAdmin
                 con.Insert(hs);
             }
         }
+
         public static void Update(HoSo hs, long IDNV, string UserNameNV)
         {
-            string query = @"Update HoSo Set 
+            string query = @"Update HoSo Set
                                     TieuDe=@TieuDe,
                                     MaHoSo=@MaHoSo,
                                     KyHieu=@KyHieu,
@@ -75,6 +76,7 @@ namespace QuanLyHoSo.Dao.DaoAdmin
             };
             Stuff.ExecuteSql(query, param);
         }
+
         /*        public static void Update(HoSo hs, long IDNV, string UserNameNV)
                 {
                     //create new kho

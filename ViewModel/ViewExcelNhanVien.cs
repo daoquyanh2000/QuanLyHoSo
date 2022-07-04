@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-
-namespace QuanLyHoSo.ViewModel
+﻿namespace QuanLyHoSo.ViewModel
 {
     public class ViewExcelNhanVien
     {
@@ -27,5 +22,23 @@ namespace QuanLyHoSo.ViewModel
         public string CongTy { get; set; }
         public string ChucVu { get; set; }
         public string TieuSu { get; set; }
+    }
+    public class Sex
+    {
+        public string GioiTinh { get; set; }
+        public int MaGioiTinh { get; set; }
+
+    }
+    public class State
+    {
+        public string TrangThai { get; set; }
+        public int MaTrangThai { get; set; }
+
+    }
+    public class Image
+    {
+        public string TenAnhDaiDien { get; set; }
+        public string DuongDan { get; set; }
+
     }
 }

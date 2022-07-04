@@ -51,7 +51,7 @@
                         <i class="bi bi-person-circle"></i>
                         @if (User.Identity.IsAuthenticated)
                         {
-                            @User.Identity.Name
+                        @User.Identity.Name
                         }
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark my-2">
@@ -77,107 +77,106 @@
                         <!-- sidebar item 1 start-->
                         @if (User.IsInRole("NhanVien") || User.IsInRole("KieuNhanVien"))
                         {
-                            <li class="sidebar-item">
-                                <a data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false"
-                                   aria-controls="collapseExample" class="nav-link d-flex align-items-center sidebar-link">
-                                    <span class="me-2">
-                                        <i class="fa-solid fa-building-columns"></i>
-                                    </span>
-                                    Quản lý đơn vị
-                                    <span class="icon-right ms-auto d-flex">
-                                        <i class="bi bi-chevron-down "></i>
-                                    </span>
-                                </a>
+                        <li class="sidebar-item">
+                            <a data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false"
+                               aria-controls="collapseExample" class="nav-link d-flex align-items-center sidebar-link">
+                                <span class="me-2">
+                                    <i class="fa-solid fa-building-columns"></i>
+                                </span>
+                                Quản lý đơn vị
+                                <span class="icon-right ms-auto d-flex">
+                                    <i class="bi bi-chevron-down "></i>
+                                </span>
+                            </a>
 
-                                <div class="collapse" id="collapseExample">
-                                    <ul class="navbar-dark">
-                                        @if (User.IsInRole("NhanVien"))
+                            <div class="collapse" id="collapseExample">
+                                <ul class="navbar-dark">
+                                    @if (User.IsInRole("NhanVien"))
                                         {
-                                            <li class="navbar-nav">
-                                                <a href="/admin/user" class="nav-link">
-                                                    <i class="bi bi-person-circle"></i>
-                                                    Người dùng
-                                                </a>
-                                            </li>
+                                    <li class="navbar-nav">
+                                        <a href="/admin/user" class="nav-link">
+                                            <i class="bi bi-person-circle"></i>
+                                            Người dùng
+                                        </a>
+                                    </li>
                                         }
-                                        @if (User.IsInRole("KieuNhanVien"))
+                                    @if (User.IsInRole("KieuNhanVien"))
                                         {
-                                            <li class="navbar-nav">
-                                                <a href="/admin/role" class="nav-link">
-                                                    <i class="bi bi-people-fill"></i>
-                                                    Kiểu người dùng
-                                                </a>
-                                            </li>
+                                    <li class="navbar-nav">
+                                        <a href="/admin/role" class="nav-link">
+                                            <i class="bi bi-people-fill"></i>
+                                            Kiểu người dùng
+                                        </a>
+                                    </li>
                                         }
-                                    </ul>
-                                </div>
-                            </li>
-                            <li class="sidebar-item">
-                                <hr class="dropdown-divider">
-                            </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li class="sidebar-item">
+                            <hr class="dropdown-divider">
+                        </li>
                         }
 
                         <!-- sidebar item 1 end -->
                         @if (User.IsInRole("Kho") || User.IsInRole("Ngan"))
                         {
                             <!-- sidebar item 2 start-->
-                            <li class="sidebar-item">
-                                <a data-bs-toggle="collapse" href="#collapseExample2" role="button" aria-expanded="false"
-                                   aria-controls="collapseExample2" class="nav-link d-flex align-items-center sidebar-link">
-                                    <span class="me-2">
-                                        <i class="bi bi-boxes"></i>
-                                    </span>
-                                    Quản lý kho lưu trữ
-                                    <span class="icon-right ms-auto d-flex">
-                                        <i class="bi bi-chevron-down "></i>
-                                    </span>
-                                </a>
-                                <div class="collapse" id="collapseExample2">
-                                    <ul class="navbar-dark">
-                                        <li class="navbar-nav">
-                                            @if (User.IsInRole("Kho"))
+                        <li class="sidebar-item">
+                            <a data-bs-toggle="collapse" href="#collapseExample2" role="button" aria-expanded="false"
+                               aria-controls="collapseExample2" class="nav-link d-flex align-items-center sidebar-link">
+                                <span class="me-2">
+                                    <i class="bi bi-boxes"></i>
+                                </span>
+                                Quản lý kho lưu trữ
+                                <span class="icon-right ms-auto d-flex">
+                                    <i class="bi bi-chevron-down "></i>
+                                </span>
+                            </a>
+                            <div class="collapse" id="collapseExample2">
+                                <ul class="navbar-dark">
+                                    <li class="navbar-nav">
+                                        @if (User.IsInRole("Kho"))
                                             {
-                                                <a href="/admin/storage" class="nav-link">
-                                                    <i class="bi bi-archive"></i>
-                                                    Quản lý kho lưu trữ
-                                                </a>
+                                        <a href="/admin/storage" class="nav-link">
+                                            <i class="bi bi-archive"></i>
+                                            Quản lý kho lưu trữ
+                                        </a>
                                             }
-                                            @if (User.IsInRole("Ngan"))
+                                        @if (User.IsInRole("Ngan"))
                                             {
-                                                <a href="/admin/stack" class="nav-link">
-                                                    <i class="bi bi-stack"></i>
-                                                    Quản lý ngăn lưu trữ
-                                                </a>
+                                        <a href="/admin/stack" class="nav-link">
+                                            <i class="bi bi-stack"></i>
+                                            Quản lý ngăn lưu trữ
+                                        </a>
                                             }
-
-                                        </li>
-                                    </ul>
-                                </div>
-                            </li>
-                            <li class="sidebar-item">
-                                <hr class="dropdown-divider">
-                            </li>
-                            <!-- sidebar item 2 end-->
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li class="sidebar-item">
+                            <hr class="dropdown-divider">
+                        </li>
+ <!-- sidebar item 2 end-->
                         }
                         @if (User.IsInRole("DanhMuc"))
                         {
                             <!-- sidebar item 3 start-->
-                            <li class="sidebar-item">
-                                <a href="/admin/category" class="nav-link">
-                                    <i class="bi bi-stack"></i>
-                                    Quản lý danh mục hồ sơ
-                                </a>
-                            </li>
-                            <li class="sidebar-item">
-                                <hr class="dropdown-divider">
-                            </li>
-                            <!-- sidebar item 3 end-->
+                        <li class="sidebar-item">
+                            <a href="/admin/category" class="nav-link">
+                                <i class="bi bi-stack"></i>
+                                Quản lý danh mục hồ sơ
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
+                            <hr class="dropdown-divider">
+                        </li>
+ <!-- sidebar item 3 end-->
                         }
 
                         @if (User.IsInRole("HSLT"))
                         {
                             <!-- sidebar item 4 start-->
-@*                            <li class="sidebar-item">
+                        @*                            <li class="sidebar-item">
                                 <a data-bs-toggle="collapse" href="#collapseExample4" role="button" aria-expanded="false"
                                    aria-controls="collapseExample4" class="nav-link d-flex align-items-center sidebar-link">
                                     <span class="me-2">
@@ -204,20 +203,19 @@
                                 </div>
                             </li>*@
 
-                            <li class="sidebar-item">
-                                <a href="/admin/HoSoLT" class="nav-link">
-                                    <span class="me-2">
-                                        <i class="fa-solid fa-file-pen"></i>
-                                    </span>
-                                    Quản lý hồ sơ lưu trữ
-                                </a>
-                            </li>
-                            <li class="sidebar-item">
-                                <hr class="dropdown-divider">
-                            </li>
-                            <!-- sidebar item 4 end-->
+                        <li class="sidebar-item">
+                            <a href="/admin/HoSoLT" class="nav-link">
+                                <span class="me-2">
+                                    <i class="fa-solid fa-file-pen"></i>
+                                </span>
+                                Quản lý hồ sơ lưu trữ
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
+                            <hr class="dropdown-divider">
+                        </li>
+ <!-- sidebar item 4 end-->
                         }
-
 
                         <!-- sidebar item 5 start-->
                         <li class="sidebar-item">
@@ -304,7 +302,7 @@
             </div>
         </div>
     </section>
-    
+
     <!-- offcanvas end -->
     @RenderBody()
     <!-- footer start -->

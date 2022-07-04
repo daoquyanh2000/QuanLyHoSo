@@ -1,9 +1,6 @@
 ﻿using PagedList;
 using QuanLyHoSo.Dao.DaoAdmin;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 
 namespace QuanLyHoSo.Areas.Admin.Controllers
@@ -15,6 +12,7 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
         {
             return View();
         }
+
         [HttpGet]
         public PartialViewResult Search(string keyword, int? page)
         {
@@ -33,7 +31,7 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
                           select hs;
             ViewBag.search = keyword;
             var model = results.ToPagedList(pageNumber, pageSizeNumber);
-            return PartialView("HoSoHTTable",model);
+            return PartialView("HoSoHTTable", model);
         }
     }
 }

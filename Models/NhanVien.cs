@@ -46,4 +46,5 @@ namespace QuanLyHoSo.Models
     {
         public string TenQuyen { get; set; }
     }
+
 }

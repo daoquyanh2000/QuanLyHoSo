@@ -25,60 +25,60 @@
             <input type="number" name="hidden" value="0" style="display:none" id="HiddenID" />
             @foreach (var item in Model)
             {
-                <tr data-id="@item.ID" onmouseenter="ShowTr(@item.ID,'users')">
-                    <td>
-                        <input type="checkbox" class="form-check-input checkboxs" name="checkboxs" data-id="@item.ID" />
-                    </td>
-                    <td>@item.TieuDe</td>
-                    <td>@item.MaHoSo</td>
-                    <td>@item.TenKho</td>
-                    <td>@item.TenNgan</td>
-                    <td>@item.TenDanhMuc</td>
-                    <td>@item.ThoiGianLuuTru</td>
-                    <td>@item.NgayTao</td>
-                    <td>@item.NguoiTao</td>
-                    <td>@item.NgaySua</td>
-                    <td>@item.NguoiSua</td>
-                </tr>
+            <tr data-id="@item.ID" onmouseenter="ShowTr(@item.ID,'users')">
+                <td>
+                    <input type="checkbox" class="form-check-input checkboxs" name="checkboxs" data-id="@item.ID" />
+                </td>
+                <td>@item.TieuDe</td>
+                <td>@item.MaHoSo</td>
+                <td>@item.TenKho</td>
+                <td>@item.TenNgan</td>
+                <td>@item.TenDanhMuc</td>
+                <td>@item.ThoiGianLuuTru</td>
+                <td>@item.NgayTao</td>
+                <td>@item.NguoiTao</td>
+                <td>@item.NgaySua</td>
+                <td>@item.NguoiSua</td>
+            </tr>
                 if (item.TrangThai != 100)
                 {
-                    <tr style="display: none" id="tr_@item.ID">
-                        <td colspan="12">
-                            <div class="d-flex ">
+            <tr style="display: none" id="tr_@item.ID">
+                <td colspan="12">
+                    <div class="d-flex ">
 
-                                <button type="button" class="btn btn-outline-secondary mx-1" onclick="ChangeState(@item.ID,1)">
-                                    <span>Hình thành </span>
-                                </button>
-                                <button type="button" class="btn btn-outline-secondary mx-1" data-bs-toggle="modal" data-bs-target="#ThanhPhanModal">
-                                    <span>Thành phần </span>
-                                </button>
-                                <button type="button" class="btn btn-outline-secondary mx-1" onclick="ViewUser(@item.ID,event)">
-                                    <span>Xem hồ sơ </span>
-                                </button>
-                                <button type="button" class="btn btn-outline-secondary mx-1" onclick="UpdateUser(@item.ID,event)">
-                                    <span>Sửa hồ sơ</span>
-                                </button>
-                                <button type="button" class="btn btn-outline-secondary mx-1" onclick="DeleteUser(@item.ID,event)">
-                                    <span>Xóa hồ sơ </span>
-                                </button>
-                                <button type="button" class="btn btn-outline-secondary mx-1" onclick="ChangeState(@item.ID,100)">
-                                    <span>Đóng băng </span>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
+                        <button type="button" class="btn btn-outline-secondary mx-1" onclick="ChangeState(@item.ID,1)">
+                            <span>Hình thành </span>
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary mx-1" data-bs-toggle="modal" data-bs-target="#ThanhPhanModal">
+                            <span>Thành phần </span>
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary mx-1" onclick="ViewUser(@item.ID,event)">
+                            <span>Xem hồ sơ </span>
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary mx-1" onclick="UpdateUser(@item.ID,event)">
+                            <span>Sửa hồ sơ</span>
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary mx-1" onclick="DeleteUser(@item.ID,event)">
+                            <span>Xóa hồ sơ </span>
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary mx-1" onclick="ChangeState(@item.ID,100)">
+                            <span>Đóng băng </span>
+                        </button>
+                    </div>
+                </td>
+            </tr>
                 }
                 else
                 {
-                    <tr style="display: none" id="tr_@item.ID">
-                        <td colspan="12">
-                            <div class="d-flex ">
-                                <button type="button" class="btn btn-outline-secondary mx-1" onclick="DongBang(@item.ID,0)">
-                                    <span>Hủy đóng băng </span>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
+            <tr style="display: none" id="tr_@item.ID">
+                <td colspan="12">
+                    <div class="d-flex ">
+                        <button type="button" class="btn btn-outline-secondary mx-1" onclick="DongBang(@item.ID,0)">
+                            <span>Hủy đóng băng </span>
+                        </button>
+                    </div>
+                </td>
+            </tr>
                 }
 
             }
@@ -93,4 +93,3 @@
 PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(new AjaxOptions() { HttpMethod = "GET", UpdateTargetId = "tableContainer" }))
     <!-- Kết thúc -->
 </div>
-

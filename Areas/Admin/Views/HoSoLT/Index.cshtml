@@ -9,7 +9,6 @@
         <div class="nav nav-tabs" id="nav-tab" role="tablist">
             <button class="nav-link active" id="HoSoLT-tab" data-bs-toggle="tab" data-bs-target="#HoSoLT" type="button" role="tab" aria-controls="HoSoLT" aria-selected="true" onclick="SearchUser(0)">Hồ sơ lưu trữ</button>
             <button class="nav-link" id="HoSoHT-tab" data-bs-toggle="tab" data-bs-target="#HoSoHT" type="button" role="tab" aria-controls="HoSoHT" aria-selected="false" onclick="SearchUser(1)">Hồ sơ hình thành</button>
-
         </div>
     </nav>
     <div class="tab-content" id="nav-tabContent">
@@ -23,14 +22,12 @@
                             <button type="button" class="btn btn-outline-secondary disabled" onclick="GetCheckboxAll(10)" id="deleteAll">
                                 <span>
                                     <i class="fa-solid fa-trash-can"></i>
-
                                 </span>
                                 <span>Xóa</span>
                             </button>
                             <button type="button" class="btn btn-outline-secondary disabled" onclick="GetCheckboxAll(1)" id="HinhThanhAll">
                                 <span>
                                     <i class="fa-solid fa-trash-can"></i>
-
                                 </span>
                                 <span>Hình thành</span>
                             </button>
@@ -59,7 +56,7 @@
                         </div>
                         <div class="input-group">
                             <input type="text" name="name" value="" class="rounded border-1 " id="searchInput_0" />
-                            <button for="searchInput_0" id="searchBtn_0" class="btn btn-outline-secondary " >
+                            <button for="searchInput_0" id="searchBtn_0" class="btn btn-outline-secondary ">
                                 <span>
                                     <i class="fa-solid fa-magnifying-glass"></i>
                                 </span>
@@ -90,22 +87,19 @@
                                 <button type="button" class="btn btn-outline-secondary disabled" onclick="GetCheckboxAll(2)" id="GuiDuyetAll">
                                     <span>
                                         <i class="fa-solid fa-trash-can"></i>
-
                                     </span>
                                     <span>Gửi duyệt</span>
                                 </button>
                                 <button type="button" class="btn btn-outline-secondary disabled" onclick="GetCheckboxAll(0)" id="HuyHinhThanhAll">
                                     <span>
                                         <i class="fa-solid fa-trash-can"></i>
-
                                     </span>
                                     <span>Hủy hình thành</span>
                                 </button>
-
                             </div>
                             <div class="input-group">
                                 <input type="text" name="name" value="" class="rounded border-1 search_1" id="searchInput_1" />
-                                <button for="searchInput_1" id="searchBtn_1" class="btn btn-outline-secondary" >
+                                <button for="searchInput_1" id="searchBtn_1" class="btn btn-outline-secondary">
                                     <span>
                                         <i class="fa-solid fa-magnifying-glass"></i>
                                     </span>
@@ -125,9 +119,7 @@
                     <!-- table end -->
                 </div>
             </div>
-
         </div>
-
 
         <!-- content start  -->
         <!-- content end  -->
@@ -160,7 +152,6 @@
                                         <label for="MaLoaiHoSo" class="form-label">Loại hồ sơ (*)</label>
                                         @Html.DropDownList("MaLoaiHoSo", (IEnumerable<SelectListItem>)TempData["listLoaiHoSo"], new { @class = "form-select" })
                                     </div>
-
                                 </div>
                                 <div class="col-lg-6">
                                     <div class="text-center">

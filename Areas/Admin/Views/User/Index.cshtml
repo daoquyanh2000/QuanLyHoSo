@@ -18,12 +18,12 @@
                         </span>
                         <span>Xóa tất cả</span>
                     </button>
-                    <a href="~/Assets/Excel/User/UserTemplate.xlsx" class="btn btn-outline-secondary" target="_blank">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#UpExcelModal">
                         <span>
                             <i class="bi bi-cloud-arrow-down"></i>
                         </span>
                         <span>Tập tin mẫu</span>
-                    </a>
+                    </button>
                     <button type="button" class="btn btn-outline-secondary">
                         <input type="file" id="excelUpload" onchange=" ModalExcel()" name="excelUpload" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" class="custom-file-upload" />
                         <label for="excelUpload" class="custom-file-upload ">
@@ -116,5 +116,38 @@
     </div>
 </section>
 <!-- modal end -->
+<!-- Modal -->
+<div class="modal fade" id="UpExcelModal" tabindex="-1" aria-labelledby="UpExcelModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Tải file Excel</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <button type="button" class="btn btn-outline-secondary">
+                        <input type="file" id="MultiImage" onchange=" MultiImage()" name="MultiImage" accept="image/*" class="custom-file-upload " multiple>
+                        <label for="MultiImage" class="custom-file-upload ">
+                            <span>
+                                <i class="bi bi-paperclip"></i>
+                            </span>
+                            <span>Thêm ảnh đại diện vào file Excel</span>
+                        </label>
+                    </button>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <a href="~/admin/user/DownloadExcel" class="btn btn-primary">
+                    <span>
+                        <i class="bi bi-cloud-arrow-down"></i>
+                    </span>
+                    <span>Tải file excel</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script src="~/Assets/Admin/js/user.js"></script>

@@ -1,5 +1,8 @@
 ﻿using AutoMapper;
 using Dapper.Contrib.Extensions;
+using OfficeOpenXml;
+using OfficeOpenXml.LoadFunctions.Params;
+using OfficeOpenXml.Table;
 using PagedList;
 using QuanLyHoSo.App_Start;
 using QuanLyHoSo.Dao;
@@ -58,23 +61,6 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
         {
             string UserNameNV = Session["UserNameNV"].ToString();
             User.Password = Stuff.MD5Hash(User.Password);
-            /*            NhanVien User = new NhanVien();
-                        User.ID = Convert.ToInt32(fc["ID"]);
-                        User.HoTen = fc["HoTen"].ToString();
-                        User.UserName = fc["UserName"].ToString();
-                        User.Password = Stuff.MD5Hash(fc["Password"].ToString());
-                        User.TrangThai = Convert.ToByte(fc["TrangThai"]);
-                        User.MaKieu = fc["MaKieu"].ToString();
-                        User.SDT = fc["SDT"].ToString();
-                        User.Email = fc["Email"].ToString();
-                        User.NgaySinh = fc["NgaySinh"].ToString();
-                        User.GioiTinh = fc["GioiTinh"] ?? "0";
-                        User.DiaChi = fc["DiaChi"].ToString();
-                        User.QueQuan = fc["QueQuan"].ToString();
-                        User.ChucVu = fc["ChucVu"].ToString();
-                        User.TieuSu = fc["TieuSu"].ToString();
-                        User.CongTy = fc["CongTy"].ToString();*/
-            var a = User.AnhDaiDien;
             HttpFileCollectionBase file = Request.Files;
             if (file.Count > 0)
             {
@@ -174,6 +160,7 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
                    join k in RoleDao.GetKieuNhanViens()
                    on nv.MaKieu equals k.MaKieu
                    select nv;
+
             long tk;
             var config = new MapperConfiguration(cfg =>
             {
@@ -202,29 +189,163 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
             }, JsonRequestBehavior.AllowGet);
         }
 
+        /*        public PartialViewResult ExcelModal()
+                {
+                    string pathFile = string.Empty;
+                    if (Request.Files.Count > 0)
+                    {
+                        HttpFileCollectionBase files = Request.Files;
+                        for (int i = 0; i < files.Count; i++)
+                        {
+                            HttpPostedFileBase file = files[i];
+                            string fileName = "User.xlsx";
+                            string pathFolder = "/Assets/Excel/User";
+                            //tao folder
+                            Directory.CreateDirectory(Server.MapPath(pathFolder));
+                            // tao duong dan path
+                            pathFile = Path.Combine(Server.MapPath(pathFolder), fileName);
+                            file.SaveAs(pathFile);
+                        }
+                    }
+
+                    ViewBag.listAccount = Stuff.GetListExcel<ViewExcelNhanVien>(pathFile);
+                    ViewBag.listKnd = RoleDao.GetKieuNhanViens();
+                    return PartialView();
+                }*/
         public PartialViewResult ExcelModal()
         {
-            string pathFile = string.Empty;
-            if (Request.Files.Count > 0)
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+            using (var package = new ExcelPackage())
             {
-                HttpFileCollectionBase files = Request.Files;
-                for (int i = 0; i < files.Count; i++)
-                {
-                    HttpPostedFileBase file = files[i];
-                    string fileName = "User.xlsx";
-                    string pathFolder = "/Assets/Excel/User";
-                    //tao folder
-                    Directory.CreateDirectory(Server.MapPath(pathFolder));
-                    // tao duong dan path
-                    pathFile = Path.Combine(Server.MapPath(pathFolder), fileName);
-                    file.SaveAs(pathFile);
-                }
+                //A workbook must have at least on cell, so lets add one... 
+                var wsData = package.Workbook.Worksheets.Add("Data");
+                var wsThongTinBang = package.Workbook.Worksheets.Add("ThongTinBang");
+
+
+                //To set values in the spreadsheet use the Cells indexer.
+                var nd = new List<ViewExcelNhanVien>();
+                var knd = from k in Stuff.GetAll<KieuNhanVien>()
+                          where k.TrangThai == 1
+                          select new
+                          {
+                              TenKieu = k.TenKieu,
+                              MaKieu = k.MaKieu,
+                          };
+                var GioiTinh = new List<Sex>() {
+                    new Sex { GioiTinh = "Nam", MaGioiTinh = 1  },
+                    new Sex { GioiTinh = "Nữ", MaGioiTinh = 0  },
+                } ;
+                var TrangThai = new List<State>() {
+                    new State { TrangThai = "Đóng", MaTrangThai = 0  },
+                    new State { TrangThai = "Mở", MaTrangThai = 1  },
+                };
+                wsData.Cells["A1"].LoadFromCollection(nd, true, TableStyles.Medium1);
+                wsThongTinBang.Cells["A1"].LoadFromCollection(knd, true, TableStyles.Medium1);
+                wsThongTinBang.Cells["D1"].LoadFromCollection(GioiTinh, true, TableStyles.Medium1);
+                wsThongTinBang.Cells["G1"].LoadFromCollection(TrangThai, true, TableStyles.Medium1);
+
+                var listKnd = wsData.DataValidations.AddListValidation("D2");
+                var listTrangThai = wsData.DataValidations.AddListValidation("E2");
+                var listGioiTinh = wsData.DataValidations.AddListValidation("J2");
+
+                listKnd.Formula.ExcelFormula = "'ThongTinBang'!B:B";
+                listTrangThai.Formula.ExcelFormula = "'ThongTinBang'!E2:E3";
+                listGioiTinh.Formula.ExcelFormula = "'ThongTinBang'!H2:H3";
+
+
+                wsData.Cells["H:H"].Style.Numberformat.Format = "dd/mm/yyyy";
+                wsData.Cells[1, 1, wsData.Dimension.End.Row, wsData.Dimension.End.Column].AutoFitColumns();
+                wsThongTinBang.Cells[1, 1, wsThongTinBang.Dimension.End.Row, wsThongTinBang.Dimension.End.Column].AutoFitColumns();
+                //Save the new workbook. We haven't specified the filename so use the Save as method.
+                package.SaveAs(new FileInfo(@"D:\myworkbook.xlsx"));
             }
-            ViewBag.listAccount = Stuff.GetListExcel<ViewExcelNhanVien>(pathFile);
-            ViewBag.listKnd = RoleDao.GetKieuNhanViens();
+
             return PartialView();
         }
 
+        [HttpGet]
+        public ActionResult DownloadExcel()
+        {
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+            string ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            using (var package = new ExcelPackage())
+            {
+                //A workbook must have at least on cell, so lets add one... 
+                var wsData = package.Workbook.Worksheets.Add("Data");
+                var wsThongTinBang = package.Workbook.Worksheets.Add("ThongTinBang");
+
+
+                //To set values in the spreadsheet use the Cells indexer.
+                var nd = new List<ViewExcelNhanVien>();
+                var knd = from k in Stuff.GetAll<KieuNhanVien>()
+                          where k.TrangThai == 1
+                          select new
+                          {
+                              TenKieu = k.TenKieu,
+                              MaKieu = k.MaKieu,
+                          };
+                knd = knd.ToList();
+                var GioiTinh = new List<Sex>() {
+                    new Sex { GioiTinh = "Nam", MaGioiTinh = 1  },
+                    new Sex { GioiTinh = "Nữ", MaGioiTinh = 0  },
+                };
+                var TrangThai = new List<State>() {
+                    new State { TrangThai = "Đóng", MaTrangThai = 0  },
+                    new State { TrangThai = "Mở", MaTrangThai = 1  },
+                };
+                var AnhDaiDien = (List<Image>)TempData["AnhDaiDien"];
+                wsData.Cells["A1"].LoadFromCollection(nd, true, TableStyles.Medium1);
+                wsThongTinBang.Cells["A1"].LoadFromCollection(knd, true, TableStyles.Medium1);
+                wsThongTinBang.Cells["D1"].LoadFromCollection(GioiTinh, true, TableStyles.Medium1);
+                wsThongTinBang.Cells["G1"].LoadFromCollection(TrangThai, true, TableStyles.Medium1);
+                wsThongTinBang.Cells["J1"].LoadFromCollection(AnhDaiDien, true, TableStyles.Medium1);
+
+                var listKnd = wsData.DataValidations.AddListValidation("D2");
+                var listTrangThai = wsData.DataValidations.AddListValidation("E2");
+                var listGioiTinh = wsData.DataValidations.AddListValidation("J2");
+                var listAnhDaiDien = wsData.DataValidations.AddListValidation("I2");
+
+                listKnd.Formula.ExcelFormula = $"'ThongTinBang'!B2:B{knd.Count()}";
+                listTrangThai.Formula.ExcelFormula = "'ThongTinBang'!E2:E3";
+                listGioiTinh.Formula.ExcelFormula = "'ThongTinBang'!H2:H3";
+                listAnhDaiDien.Formula.ExcelFormula = $"'ThongTinBang'!K2:K{AnhDaiDien.Count()}";
+
+
+                wsData.Cells["H:H"].Style.Numberformat.Format = "dd/mm/yyyy";
+                wsData.Cells[1, 1, wsData.Dimension.End.Row, wsData.Dimension.End.Column].AutoFitColumns();
+                wsThongTinBang.Cells[1, 1, wsThongTinBang.Dimension.End.Row, wsThongTinBang.Dimension.End.Column].AutoFitColumns();
+                //Save the new workbook. We haven't specified the filename so use the Save as method.
+                var excelData = package.GetAsByteArray();
+                var fileName = "UserTemplate.xlsx";
+                return File(excelData, ContentType, fileName);
+            }
+        }
+        public JsonResult GetAnhDaiDien(FormCollection fc)
+        {
+            HttpFileCollectionBase file = Request.Files;
+            var AnhDaiDien = new List<Image>();
+            for(var i = 0; i < file.Count; i++)
+            {
+                var newName = file[i].FileName.Split('.');
+                string fName = newName[0] + "_" + DateTime.Now.Ticks.ToString() + "." + newName[1];
+                string pathFolder = "/Assets/Images/Avatars/User";
+                //tao folder
+                Directory.CreateDirectory(Server.MapPath(pathFolder));
+                // tao duong dan path
+                string pathFile = Path.Combine(Server.MapPath(pathFolder), fName);
+                var img = new Image { TenAnhDaiDien = file[i].FileName, DuongDan = pathFolder + "/" + fName };
+                AnhDaiDien.Add(img);
+                file[i].SaveAs(pathFile);
+            };
+            TempData["AnhDaiDien"] = AnhDaiDien;
+            return Json(new
+            {
+                data = AnhDaiDien,
+                heading = "Thành công",
+                status = "success",
+                message = $"tải lên {AnhDaiDien.Count()} ảnh thành công!"
+            }, JsonRequestBehavior.AllowGet) ;
+        }
         public JsonResult DeleteAll(List<int> checkboxs)
         {
             foreach (var id in checkboxs)

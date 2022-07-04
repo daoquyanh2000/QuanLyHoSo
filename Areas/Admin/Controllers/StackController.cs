@@ -24,11 +24,12 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
                               where k.TrangThai == 1
                               select new SelectListItem
                               {
-                                  Text=k.TenKho,
-                                  Value=k.ID.ToString(),
+                                  Text = k.TenKho,
+                                  Value = k.ID.ToString(),
                               };
             return View();
         }
+
         public PartialViewResult Search(string keyword, int? page)
         {
             int pageNumber = (page ?? 1);
@@ -37,12 +38,13 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
 
             var results = from n in StackDao.GetAllStack()
                           orderby n.ID descending
-                          where n.TenNgan.Contains(keyword) && n.TrangThai!=10
+                          where n.TenNgan.Contains(keyword) && n.TrangThai != 10
                           select n;
             ViewBag.search = keyword;
             var model = results.ToPagedList(pageNumber, pageSizeNumber);
             return PartialView("StackTable", model);
         }
+
         public JsonResult View(long ID)
         {
             Ngan ngan = Stuff.GetByID<Ngan>(ID);
@@ -51,6 +53,7 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
                 data = ngan,
             }, JsonRequestBehavior.AllowGet);
         }
+
         [HttpGet]
         public JsonResult Change(long ID, int state)
         {
@@ -62,6 +65,7 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
                 message = "Thay đổi trạng thái thành công!"
             }, JsonRequestBehavior.AllowGet);
         }
+
         [HttpPost]
         public JsonResult Save(Ngan Ngan)
         {
@@ -83,6 +87,7 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
                 message = "Lưu thành công!"
             }, JsonRequestBehavior.AllowGet);
         }
+
         [HttpGet]
         public JsonResult Delete(long ID)
         {
@@ -95,6 +100,7 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
                 message = "Xóa bản ghi thành công!"
             }, JsonRequestBehavior.AllowGet);
         }
+
         public JsonResult DeleteAll(List<int> checkboxs)
         {
             foreach (var id in checkboxs)
@@ -108,6 +114,7 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
                 message = $"Xóa {checkboxs.Count} bản ghi thành công!"
             }, JsonRequestBehavior.AllowGet);
         }
+
         public ActionResult ExcelModal()
         {
             try
@@ -146,6 +153,7 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
                 }, JsonRequestBehavior.AllowGet);
             }
         }
+
         [HttpPost]
         public JsonResult Excel(FormCollection fc)
         {
@@ -189,5 +197,4 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
             }, JsonRequestBehavior.AllowGet);
         }
     }
-
 }

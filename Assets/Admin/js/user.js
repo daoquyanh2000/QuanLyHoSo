@@ -102,7 +102,6 @@
             phone_number.match(/[0-9\-\(\)\s]+/);
     }, "Hãy nhập đúng định dạng điện thoại");
 
-
     $(document).on('change', '#checkAll', function () {
         console.log(this);
         $(this).toggleClass('checkAll');
@@ -393,4 +392,26 @@ function GetCheckboxAll() {
             }
         })
     }
+}
+function MultiImage() {
+    let fileUpload  = $('input#MultiImage').get(0);
+    let files = fileUpload.files;
+    let formData = new FormData();
+    for (let i = 0; i < files.length; i++) {
+        formData.append(files[i].name, files[i]);
+    }
+    $.ajax({
+        type: 'POST',
+        url: "/admin/user/GetAnhDaiDien",
+        data: formData,
+        contentType: false,
+        processData: false,
+        success: function (res) {
+                console.log(res.data)
+        },
+        error: function (err) {
+            console.log(err)
+        }
+    })
+
 }

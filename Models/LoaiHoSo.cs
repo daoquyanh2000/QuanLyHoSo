@@ -1,8 +1,4 @@
 ﻿using Dapper.Contrib.Extensions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 
 namespace QuanLyHoSo.Dao.DaoAdmin
 {
@@ -11,6 +7,7 @@ namespace QuanLyHoSo.Dao.DaoAdmin
     {
         [Key]
         public long ID { get; set; }
+
         public string TenLoaiHoSo { get; set; }
         public string MaLoaiHoSo { get; set; }
         public byte TrangThai { get; set; }
