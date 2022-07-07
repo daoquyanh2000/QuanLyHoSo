@@ -19,7 +19,7 @@ namespace QuanLyHoSo.Dao.DaoAdmin
         }
         public static void UpdateStorage(DanhMuc dm, long IDNV, string UserNameNV)
         {
-            string query = "Update DanhMuc Set TenDanhMuc=@TenDanhMuc,MaDanhMuc=@MaDanhMuc,IDDanhMucCha=@IDDanhMucCha,TrangThai=@TrangThai,MoTa=@MoTa,NgaySua=GETDATE(),NguoiSua =@NguoiSua WHERE ID =@ID";
+            string query = "Update DanhMuc Set TenDanhMuc=@TenDanhMuc,MaDanhMuc=@MaDanhMuc,IDDanhMucCha=@IDDanhMucCha,TrangThai=@TrangThai,MoTa=@MoTa,NgaySua=GETDATE(),NguoiSua =@NguoiSua,DuongDan=@DuongDan WHERE ID =@ID";
             object param = new
             {
                 TenDanhMuc = dm.TenDanhMuc,
@@ -28,6 +28,7 @@ namespace QuanLyHoSo.Dao.DaoAdmin
                 TrangThai = dm.TrangThai,
                 MoTa = dm.MoTa,
                 NguoiSua = UserNameNV,
+                DuongDan=dm.DuongDan,
                 ID = IDNV
             };
             Stuff.ExecuteSql(query, param);
@@ -55,5 +56,15 @@ namespace QuanLyHoSo.Dao.DaoAdmin
             string query = $"Update [DanhMuc] SET [TrangThai]=10,[NguoiSua]='{UserNameNV}',[NgaySua]=GETDATE() WHERE ID={ID}";
             Stuff.ExecuteSql(query);
         }
+        public static List<DanhMuc> GetByIDCha(long IDCha)
+        {
+            string query = "select * from DanhMuc Where DuongDan like '@IDCha-%'";
+            object param = new
+            {
+                IDCHa = IDCha
+            };
+            return Stuff.GetList<DanhMuc>(query,param);
+        }
+                
     }
 }

@@ -11,12 +11,12 @@
                 <th>Tên danh mục</th>
                 <th>Mã mã danh mục</th>
                 <th>Tên danh mục cha</th>
-                <th>Trạng thái</th>
                 <th>Mô tả</th>
                 <th>Ngày tạo</th>
                 <th>Người tạo</th>
                 <th>Ngày sửa</th>
                 <th>Người sửa</th>
+                <th>Trạng thái</th>
                 <th>Chức năng</th>
             </tr>
         </thead>
@@ -24,11 +24,11 @@
             <input type="number" name="hidden" value="0" style="display:none" id="HiddenID" />
             @foreach (var item in Model)
             {
-                <tr data-id="@item.ID">
-                    <td>
+                <tr data-id="@item.ID" data-parent-id="@item.DuongDan" class="" onclick="Expand(@item.ID,this)">
+                    <td onclick="event.stopPropagation()">
                         <input type="checkbox" class="form-check-input checkboxs" name="checkboxs" data-id="@item.ID" />
                     </td>
-                    <td>@item.TenDanhMuc</td>
+                    <td>@item.TenDanhMuc <span style="color:red">(@item.DanhMucCon.Count())</span></td>
                     <td>@item.MaDanhMuc</td>
                     @if (item.TenDanhMucCha != null)
                     {
@@ -40,9 +40,14 @@
 
                     }
 
+                    <td>@item.MoTa</td>
+                    <td>@item.NgayTao</td>
+                    <td>@item.NguoiTao</td>
+                    <td>@item.NgaySua</td>
+                    <td>@item.NguoiSua</td>
                     @if (@item.TrangThai == 1)
                     {
-                        <td>
+                        <td onclick="event.stopPropagation()">
                             <div class="form-check form-switch">
                                 <input class="form-check-input" type="checkbox" id="button-@item.ID" checked onchange="ChangeState(@item.ID)">
                             </div>
@@ -50,18 +55,13 @@
                     }
                     else
                     {
-                        <td>
+                        <td onclick="event.stopPropagation()">
                             <div class="form-check form-switch">
                                 <input class="form-check-input" type="checkbox" id="button-@item.ID" onchange="ChangeState(@item.ID)">
                             </div>
                         </td>
                     }
-                    <td>@item.MoTa</td>
-                    <td>@item.NgayTao</td>
-                    <td>@item.NguoiTao</td>
-                    <td>@item.NgaySua</td>
-                    <td>@item.NguoiSua</td>
-                    <td>
+                    <td onclick="event.stopPropagation()">
                         <div class="btn-group btn-group-sm" role="group" aria-label="Basic mixed styles example">
                             <button type="button" class="btn btn-outline-secondary" onclick="ViewUser(@item.ID,event)">
                                 <span>Xem</span>
@@ -75,6 +75,10 @@
                         </div>
                     </td>
                 </tr>
+                if (item.DanhMucCon.Any())
+                {
+                    @DeQuyTr(item.DanhMucCon, 20);
+                }
 
             }
         </tbody>
@@ -88,3 +92,67 @@
 PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(new AjaxOptions() { HttpMethod = "GET", UpdateTargetId = "tableContainer" }))
     <!-- Kết thúc -->
 </div>
+
+
+@helper DeQuyTr(List<QuanLyHoSo.ViewModel.ViewDanhMuc> DanhMucCon,int paddingLeft)
+{
+
+foreach (var item in DanhMucCon)
+{
+<tr data-id="@item.ID" style="display:none" data-parent-id="@item.DuongDan" onclick="Expand(@item.ID,this)" class="trShow">
+    <td onclick="event.stopPropagation()">
+        <input type="checkbox" class="form-check-input checkboxs" name="checkboxs" data-id="@item.ID" />
+    </td>
+    <td style="padding-left:@{@paddingLeft} ">» @item.TenDanhMuc  <span style="color:red">( @DanhMucCon.Count() )</span></td>
+    <td>@item.MaDanhMuc</td>
+    @if (item.TenDanhMucCha != null)
+    {
+        <td>@item.TenDanhMucCha</td>
+    }
+    else
+    {
+        <td>Trống</td>
+
+    }
+
+    <td>@item.MoTa</td>
+    <td>@item.NgayTao</td>
+    <td>@item.NguoiTao</td>
+    <td>@item.NgaySua</td>
+    <td>@item.NguoiSua</td>
+    @if (@item.TrangThai == 1)
+    {
+        <td onclick="event.stopPropagation()">
+            <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="button-@item.ID" checked onchange="ChangeState(@item.ID)">
+            </div>
+        </td>
+    }
+    else
+    {
+        <td onclick="event.stopPropagation()">
+            <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="button-@item.ID" onchange="ChangeState(@item.ID)">
+            </div>
+        </td>
+    }
+    <td onclick="event.stopPropagation()">
+        <div class="btn-group btn-group-sm" role="group" aria-label="Basic mixed styles example">
+            <button type="button" class="btn btn-outline-secondary" onclick="ViewUser(@item.ID,event)">
+                <span>Xem</span>
+            </button>
+            <button type="button" class="btn btn-outline-secondary" onclick="UpdateUser(@item.ID,event)">
+                <span>Sửa</span>
+            </button>
+            <button type="button" class="btn btn-outline-secondary" onclick="DeleteUser(@item.ID,event)">
+                <span>Xóa</span>
+            </button>
+        </div>
+    </td>
+</tr>
+        if (item.DanhMucCon.Any())
+        {
+            @DeQuyTr(item.DanhMucCon, paddingLeft+20);
+        }
+    }
+} 

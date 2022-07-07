@@ -25,7 +25,6 @@ namespace QuanLyHoSo.Dao
 
                     new { Index = n, ColumnName = sheet.Cells[1, n].Value.ToString() }
                 );
-
                 for (int row = 2; row <= sheet.Dimension.Rows; row++)
                 {
                     T obj = (T)Activator.CreateInstance(typeof(T));//generic object
@@ -37,9 +36,6 @@ namespace QuanLyHoSo.Dao
                         {
                             var propType = prop.PropertyType;
                             prop.SetValue(obj, Convert.ChangeType(val, propType));
-                        }
-                        else
-                        {
                         }
                     }
                     account.Add(obj);

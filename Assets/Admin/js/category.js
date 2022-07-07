@@ -1,9 +1,10 @@
 ﻿
 $(document).ready(function () {
+
     ////khi bam nut tao user moi
     $('button[data-bs-toggle="modal"]').click(function () {
         EnableForm();
-        $("#HiddenID").val(0);
+        $("#HiddenID").val('');
     })
     //
     var input = document.getElementById("searchInput");
@@ -53,7 +54,7 @@ $(document).ready(function () {
         }
     });
     $(document).on('click', '#modal-on', function () {
-        RenderModal(0);
+        GetDanhMuc(0);
     })
     $(document).on('change', '#checkAll', function () {
         $(this).toggleClass('checkAll');
@@ -106,6 +107,7 @@ function GetData(ID, event) {
             $("#IDDanhMucCha").val(res.data.IDDanhMucCha);
             $("#TrangThai").val(res.data.TrangThai);
             $("#MoTa").val(res.data.MoTa);
+            $("#DuongDan").val(res.data.DuongDan);
             $('#staticBackdrop').modal('toggle');
         }
     })
@@ -132,7 +134,7 @@ function ViewUser(ID, event) {
 }
 function UpdateUser(ID, event) {
     GetData(ID, event);
-    RenderModal(ID);
+    GetDanhMuc(ID);
     EnableForm();
 }
 function CreateUser() {
@@ -195,14 +197,20 @@ function ChangeState(ID) {
         (nextState == true) ? checkboxID.prop('checked', false) : checkboxID.prop('checked', true)
     }
 }
-function RenderModal(ID) {
+function GetDanhMuc(ID) {
+    let html = '<option value="0">Chọn kho cha</option>';
     $.ajax({
-        url: "/admin/category/Modal?ID=" + ID,
-        type: "get",
-        dataType: "html",
+        url: "/admin/category/GetDanhMuc",
+        data: {
+            ID:ID
+        },
+        type: 'get',
         success: function (res) {
-            let dropList = $("#IDDanhMucCha");
-            dropList.replaceWith(res);
+            res.data.forEach((val, index) => {
+                html += `<option value="${val.ID}">${val.TenDanhMuc} </option>`;
+            })
+            $('#IDDanhMucCha').html(html);
+            console.log(html)
         }
     })
 }
@@ -331,4 +339,21 @@ function UpExcel() {
             console.log(request);
         }
     });
+}
+
+//Thu gọn và mở rộng
+function Expand(id, item) {
+    let allChild = $(`table tbody tr[data-parent-id*="${id}-"]`)
+    $(item).toggleClass('trShow');
+    let check = $(item).hasClass('trShow');
+    if (check) {
+        $(allChild).each(function (index, value) {
+            $(this).show();
+        })
+    } else {
+        $(allChild).each(function (index, value) {
+            $(this).hide();
+        })
+    }
+
 }

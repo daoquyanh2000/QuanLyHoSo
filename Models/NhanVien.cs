@@ -29,7 +29,7 @@ namespace QuanLyHoSo.Models
         public string NgaySinh { get; set; }
 
         public string AnhDaiDien { get; set; }
-        public int GioiTinh { get; set; }
+        public string GioiTinh { get; set; }
         public string DiaChi { get; set; }
         public string QueQuan { get; set; }
         public string CongTy { get; set; }

@@ -12,6 +12,7 @@ using QuanLyHoSo.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Linq.SqlClient;
 using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
@@ -20,7 +21,7 @@ using System.Web.Mvc;
 
 namespace QuanLyHoSo.Areas.Admin.Controllers
 {
-    [Authorize(Roles = "NhanVien")]
+    [Authorize(Roles = "NhanVien")] 
     public class UserController : Controller
     {
         // GET: Admin/User
@@ -35,7 +36,10 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
             int pageSizeNumber = 4;
             if (keyword == null) keyword = "";
             var results = from nv in UserDao.GetAllUser()
-                          where nv.UserName.Contains(keyword) && nv.TrangThai != 10
+                          where (nv.HoTen.Contains(keyword) ||
+                          nv.UserName.Contains(keyword) ||
+                          nv.TenQuyen.Contains(keyword))
+                          && nv.TrangThai != 10
                           orderby nv.ID descending
                           select nv;
             ViewBag.search = keyword;
@@ -43,19 +47,18 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
             return PartialView("UserTable", model);
         }
 
-        public PartialViewResult Modal()
-        {
-            ViewBag.listKnv = from k in RoleDao.GetKieuNhanViens()
-                              orderby k.ID descending
-                              where k.TrangThai == 1
-                              select new SelectListItem
-                              {
-                                  Text = k.TenKieu,
-                                  Value = k.MaKieu,
-                              };
-            return PartialView("Modal");
-        }
 
+
+        public JsonResult GetKieuNhanVien()
+        {
+            return Json(new
+            {
+                data = from n in Stuff.GetAll<KieuNhanVien>()
+                       orderby n.ID descending
+                       where n.TrangThai==1
+                       select n,
+            }, JsonRequestBehavior.AllowGet);
+        }
         [HttpPost]
         public JsonResult Save(NhanVien User)
         {
@@ -189,82 +192,83 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
             }, JsonRequestBehavior.AllowGet);
         }
 
-        /*        public PartialViewResult ExcelModal()
-                {
-                    string pathFile = string.Empty;
-                    if (Request.Files.Count > 0)
-                    {
-                        HttpFileCollectionBase files = Request.Files;
-                        for (int i = 0; i < files.Count; i++)
-                        {
-                            HttpPostedFileBase file = files[i];
-                            string fileName = "User.xlsx";
-                            string pathFolder = "/Assets/Excel/User";
-                            //tao folder
-                            Directory.CreateDirectory(Server.MapPath(pathFolder));
-                            // tao duong dan path
-                            pathFile = Path.Combine(Server.MapPath(pathFolder), fileName);
-                            file.SaveAs(pathFile);
-                        }
-                    }
-
-                    ViewBag.listAccount = Stuff.GetListExcel<ViewExcelNhanVien>(pathFile);
-                    ViewBag.listKnd = RoleDao.GetKieuNhanViens();
-                    return PartialView();
-                }*/
-        public PartialViewResult ExcelModal()
+/*        public PartialViewResult ExcelModal()
         {
-            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-            using (var package = new ExcelPackage())
+            string pathFile = string.Empty;
+            if (Request.Files.Count > 0)
             {
-                //A workbook must have at least on cell, so lets add one... 
-                var wsData = package.Workbook.Worksheets.Add("Data");
-                var wsThongTinBang = package.Workbook.Worksheets.Add("ThongTinBang");
-
-
-                //To set values in the spreadsheet use the Cells indexer.
-                var nd = new List<ViewExcelNhanVien>();
-                var knd = from k in Stuff.GetAll<KieuNhanVien>()
-                          where k.TrangThai == 1
-                          select new
-                          {
-                              TenKieu = k.TenKieu,
-                              MaKieu = k.MaKieu,
-                          };
-                var GioiTinh = new List<Sex>() {
-                    new Sex { GioiTinh = "Nam", MaGioiTinh = 1  },
-                    new Sex { GioiTinh = "Nữ", MaGioiTinh = 0  },
-                } ;
-                var TrangThai = new List<State>() {
-                    new State { TrangThai = "Đóng", MaTrangThai = 0  },
-                    new State { TrangThai = "Mở", MaTrangThai = 1  },
-                };
-                wsData.Cells["A1"].LoadFromCollection(nd, true, TableStyles.Medium1);
-                wsThongTinBang.Cells["A1"].LoadFromCollection(knd, true, TableStyles.Medium1);
-                wsThongTinBang.Cells["D1"].LoadFromCollection(GioiTinh, true, TableStyles.Medium1);
-                wsThongTinBang.Cells["G1"].LoadFromCollection(TrangThai, true, TableStyles.Medium1);
-
-                var listKnd = wsData.DataValidations.AddListValidation("D2");
-                var listTrangThai = wsData.DataValidations.AddListValidation("E2");
-                var listGioiTinh = wsData.DataValidations.AddListValidation("J2");
-
-                listKnd.Formula.ExcelFormula = "'ThongTinBang'!B:B";
-                listTrangThai.Formula.ExcelFormula = "'ThongTinBang'!E2:E3";
-                listGioiTinh.Formula.ExcelFormula = "'ThongTinBang'!H2:H3";
-
-
-                wsData.Cells["H:H"].Style.Numberformat.Format = "dd/mm/yyyy";
-                wsData.Cells[1, 1, wsData.Dimension.End.Row, wsData.Dimension.End.Column].AutoFitColumns();
-                wsThongTinBang.Cells[1, 1, wsThongTinBang.Dimension.End.Row, wsThongTinBang.Dimension.End.Column].AutoFitColumns();
-                //Save the new workbook. We haven't specified the filename so use the Save as method.
-                package.SaveAs(new FileInfo(@"D:\myworkbook.xlsx"));
+                HttpFileCollectionBase files = Request.Files;
+                for (int i = 0; i < files.Count; i++)
+                {
+                    HttpPostedFileBase file = files[i];
+                    string fileName = "User.xlsx";
+                    string pathFolder = "/Assets/Excel/User";
+                    //tao folder
+                    Directory.CreateDirectory(Server.MapPath(pathFolder));
+                    // tao duong dan path
+                    pathFile = Path.Combine(Server.MapPath(pathFolder), fileName);
+                    file.SaveAs(pathFile);
+                }
             }
 
+            ViewBag.listAccount = Stuff.GetListExcel<ViewExcelNhanVien>(pathFile);
+            ViewBag.listKnd = RoleDao.GetKieuNhanViens();
             return PartialView();
+        }*/
+        public PartialViewResult ExcelModal(FormCollection fc)
+        {
+            
+            string pathFile = string.Empty;
+            if (Request.Files.Count > 0)
+            {
+                HttpFileCollectionBase files = Request.Files;
+                for (int i = 0; i < files.Count; i++)
+                {
+                    HttpPostedFileBase file = files[i];
+                    string fileName = "User.xlsx";
+                    string pathFolder = "/Assets/Excel/User";
+                    //tao folder
+                    Directory.CreateDirectory(Server.MapPath(pathFolder));
+                    // tao duong dan path
+                    pathFile = Path.Combine(Server.MapPath(pathFolder), fileName);
+                    file.SaveAs(pathFile);
+                }
+            }
+            var model = Stuff.GetListExcel<ViewExcelNhanVien>(pathFile);
+            var account =
+            from nv in model
+                where nv.HoTen != null &&
+                      nv.UserName != null &&
+                      nv.Password != null &&
+                      nv.MaKieu != null &&
+                      nv.SDT != null &&
+                      nv.Email != null
+                join k in Stuff.GetAll<KieuNhanVien>()
+                on nv.MaKieu equals k.MaKieu
+                select new DataNhanVien
+                {
+                    HoTen= nv.HoTen,
+                    UserName = nv.UserName,
+                    Password = nv.Password,
+                    TrangThai = nv.TrangThai,
+                    SDT = nv.SDT,
+                    Email = nv.Email,
+                    NgaySinh = nv.NgaySinh,
+                    AnhDaiDien = nv.AnhDaiDien,
+                    GioiTinh = nv.GioiTinh,
+                    DiaChi = nv.DiaChi,
+                    QueQuan = nv.QueQuan,
+                    CongTy = nv.CongTy,
+                    ChucVu = nv.ChucVu,
+                    TieuSu = nv.TieuSu,
+                    TenQuyen = k.TenKieu
+                };
+
+            return PartialView(account);
         }
 
         [HttpGet]
-        public ActionResult DownloadExcel()
+        public ActionResult DownloadExcel(int state)
         {
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
             string ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
@@ -274,9 +278,7 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
                 var wsData = package.Workbook.Worksheets.Add("Data");
                 var wsThongTinBang = package.Workbook.Worksheets.Add("ThongTinBang");
 
-
                 //To set values in the spreadsheet use the Cells indexer.
-                var nd = new List<ViewExcelNhanVien>();
                 var knd = from k in Stuff.GetAll<KieuNhanVien>()
                           where k.TrangThai == 1
                           select new
@@ -293,25 +295,32 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
                     new State { TrangThai = "Đóng", MaTrangThai = 0  },
                     new State { TrangThai = "Mở", MaTrangThai = 1  },
                 };
-                var AnhDaiDien = (List<Image>)TempData["AnhDaiDien"];
+                var AnhDaiDien = (List<Image>)Session["AnhDaiDien"];
+                var nd = new List<ViewExcelNhanVien>();
                 wsData.Cells["A1"].LoadFromCollection(nd, true, TableStyles.Medium1);
                 wsThongTinBang.Cells["A1"].LoadFromCollection(knd, true, TableStyles.Medium1);
                 wsThongTinBang.Cells["D1"].LoadFromCollection(GioiTinh, true, TableStyles.Medium1);
                 wsThongTinBang.Cells["G1"].LoadFromCollection(TrangThai, true, TableStyles.Medium1);
-                wsThongTinBang.Cells["J1"].LoadFromCollection(AnhDaiDien, true, TableStyles.Medium1);
+
+                //khi co anh vao
+                if (state == 1)
+                {
+                    wsThongTinBang.Cells["J1"].LoadFromCollection(AnhDaiDien, true, TableStyles.Medium1);
+                    var listAnhDaiDien = wsData.DataValidations.AddListValidation("O2");
+                    listAnhDaiDien.Formula.ExcelFormula = $"ThongTinBang!$K$2:$K${AnhDaiDien.Count() + 1}";
+
+                }
 
                 var listKnd = wsData.DataValidations.AddListValidation("D2");
                 var listTrangThai = wsData.DataValidations.AddListValidation("E2");
-                var listGioiTinh = wsData.DataValidations.AddListValidation("J2");
-                var listAnhDaiDien = wsData.DataValidations.AddListValidation("I2");
+                var listGioiTinh = wsData.DataValidations.AddListValidation("I2");
 
-                listKnd.Formula.ExcelFormula = $"'ThongTinBang'!B2:B{knd.Count()}";
-                listTrangThai.Formula.ExcelFormula = "'ThongTinBang'!E2:E3";
-                listGioiTinh.Formula.ExcelFormula = "'ThongTinBang'!H2:H3";
-                listAnhDaiDien.Formula.ExcelFormula = $"'ThongTinBang'!K2:K{AnhDaiDien.Count()}";
+                listKnd.Formula.ExcelFormula = $"ThongTinBang!$B$2:$B${knd.Count()+1}";
+                listTrangThai.Formula.ExcelFormula = "ThongTinBang!$E$2:$E$3";
+                listGioiTinh.Formula.ExcelFormula = "ThongTinBang!$H$2:$H$3";
 
 
-                wsData.Cells["H:H"].Style.Numberformat.Format = "dd/mm/yyyy";
+                wsData.Cells["H:H"].Style.Numberformat.Format = "m/d/yyyy";
                 wsData.Cells[1, 1, wsData.Dimension.End.Row, wsData.Dimension.End.Column].AutoFitColumns();
                 wsThongTinBang.Cells[1, 1, wsThongTinBang.Dimension.End.Row, wsThongTinBang.Dimension.End.Column].AutoFitColumns();
                 //Save the new workbook. We haven't specified the filename so use the Save as method.
@@ -337,7 +346,7 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
                 AnhDaiDien.Add(img);
                 file[i].SaveAs(pathFile);
             };
-            TempData["AnhDaiDien"] = AnhDaiDien;
+            Session["AnhDaiDien"] = AnhDaiDien;
             return Json(new
             {
                 data = AnhDaiDien,

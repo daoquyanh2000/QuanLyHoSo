@@ -1,6 +1,6 @@
 ﻿@using System.Linq
 
-@{
+@*@{
     var account =
     from nv in (List<QuanLyHoSo.ViewModel.ViewExcelNhanVien>)ViewBag.listAccount
     where nv.HoTen != null &&
@@ -29,7 +29,8 @@
         nv.TieuSu,
         k.TenKieu
     };
-}
+}*@
+@model IEnumerable<QuanLyHoSo.Models.DataNhanVien>
 <table class="table table-striped table-light table-bordered DisplayName w-100 table-hover">
     <tr>
         <th>
@@ -42,7 +43,7 @@
             Mật khẩu
         </th>
         <th>
-            Kiểu người dùng
+            Mã kiểu người dùng
         </th>
         <th>
             Trạng thái
@@ -78,7 +79,7 @@
             Tiểu sử
         </th>
     </tr>
-    @foreach (var item in account)
+    @foreach (var item in Model)
     {
         <tr>
             <td style="max-width:200px">
@@ -91,7 +92,7 @@
                 @item.Password
             </td>
             <td>
-                @item.TenKieu
+                @item.TenQuyen
             </td>
             @if (@item.TrangThai == 1)
             {
@@ -121,12 +122,12 @@
             <td>
                 <img id="" src="@item.AnhDaiDien" alt="" style="max-width:100px">
             </td>
-            @if (@item.GioiTinh == 1)
+            @if (@item.GioiTinh == 1.ToString())
             {
                 <td>Nữ</td>
             }
             else
-                if (@item.GioiTinh == 2)
+                if (@item.GioiTinh == 0.ToString())
             {
                 <td>Nam</td>
             }

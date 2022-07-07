@@ -79,6 +79,7 @@
                 <div class="modal-body">
                     <div class="container" id="modalContainer">
                         <form action="" id="userForm">
+                            <input id="DuongDan" name="DuongDan"style="display:none" />
                             <div class="row my-2">
                                 <div class="col-12 fw-bold fst-italic">
                                     (*) Thông tin bắt buộc
@@ -96,10 +97,9 @@
                                 <div class="col-lg-6">
                                     <div class="form-group ">
                                         <label class="form-label " for="IDDanhMucCha">Kho chứa ngăn (*)</label>
+                                        <select class="form-select" id="IDDanhMucCha" name="IDDanhMucCha">
 
-                                        @{
-                                            Html.RenderAction("Modal", "Category", new { ID = 0 });
-                                        }
+                                        </select>
                                     </div>
                                     <div class="form-group">
                                         <label class="form-label" for="TrangThai">Trạng thái (*)</label>

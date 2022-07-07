@@ -1,4 +1,5 @@
 ﻿using Dapper.Contrib.Extensions;
+using System.Collections.Generic;
 
 namespace QuanLyHoSo.Models
 {
@@ -11,11 +12,15 @@ namespace QuanLyHoSo.Models
         public string TenDanhMuc { get; set; }
         public string MaDanhMuc { get; set; }
         public long IDDanhMucCha { get; set; }
+        
+        public string DuongDan { get; set; }
         public byte TrangThai { get; set; }
         public string MoTa { get; set; }
         public string NgayTao { get; set; }
         public string NguoiTao { get; set; }
         public string NgaySua { get; set; }
         public string NguoiSua { get; set; }
+
+
     }
 }

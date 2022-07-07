@@ -1,4 +1,5 @@
 ﻿$(function () {
+    GetKieuNhanVien();
     $('a[href="#collapseExample"]').attr("aria-expanded", true)
     $("#collapseExample").addClass('show');
     ////khi bam nut tao user moi
@@ -123,6 +124,11 @@
 
         let deleteAll = $(this).closest('main').find('#deleteAll');
         $(deleteAll).toggleClass('disabled', checkboxChecked.length == 0);
+    })
+    $('#templateBtn').on('click', function () {
+        $('#MultiImage').val(null);
+        $('#tableImage').html('');
+        $('#linkExcel').attr('href', "/admin/user/downloadExcel?state=0")
     })
 })
 
@@ -286,6 +292,7 @@ function ChangeState(ID) {
 
 function UpExcel() {
     var formdata = new FormData();
+
     let checkbox = $(".excelCheckbox");
     let tmp = [];
     $.each(checkbox, function (index, value) {
@@ -319,7 +326,22 @@ function UpExcel() {
         }
     });
 }
+function GetKieuNhanVien() {
+    let html = '';
 
+    $.ajax({
+        url: "/admin/user/GetKieuNhanVien",
+
+        type: 'get',
+        success: function (res) {
+            res.data.forEach((val, index) => {
+                html += `<option value="${val.MaKieu}">${val.TenKieu} </option>`;
+            })
+            $('#MaKieu').html(html);
+            console.log(html)
+        }
+    })
+}
 function ModalExcel() {
     var fileUpload = $("#excelUpload").get(0);
     var files = fileUpload.files;
@@ -393,13 +415,18 @@ function GetCheckboxAll() {
         })
     }
 }
-function MultiImage() {
-    let fileUpload  = $('input#MultiImage').get(0);
+function GetAnhDaiDien() {
+    let fileUpload = $('input#MultiImage').get(0);
     let files = fileUpload.files;
+    if (files.length == 0) {
+        alert("bạn chưa tải ảnh lên");
+        return;
+    }
     let formData = new FormData();
     for (let i = 0; i < files.length; i++) {
         formData.append(files[i].name, files[i]);
     }
+
     $.ajax({
         type: 'POST',
         url: "/admin/user/GetAnhDaiDien",
@@ -407,11 +434,20 @@ function MultiImage() {
         contentType: false,
         processData: false,
         success: function (res) {
-                console.log(res.data)
+            let html = '';
+            $(res.data).each(function (index, value) {
+                html += `                        <tr>
+                            <td>${value.TenAnhDaiDien}</td>
+                            <td><img src="${value.DuongDan}" alt="anh"style="max-width:100px" /></td>
+
+                        </tr>`;
+            })
+            $('#tableImage').html(html);
+            $('#linkExcel').attr('href',"/admin/user/downloadExcel?state=1")
+
         },
         error: function (err) {
             console.log(err)
         }
     })
-
 }

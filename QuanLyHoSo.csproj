@@ -81,6 +81,7 @@
     <Reference Include="PresentationCore" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Data.Linq" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Security" />
     <Reference Include="System.Threading.Tasks" />
@@ -253,7 +254,6 @@
     <Content Include="Areas\Admin\Views\Storage\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Role\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Role\_RoleTable.cshtml" />
-    <Content Include="Areas\Admin\Views\User\Modal.cshtml" />
     <Content Include="Areas\Admin\Views\User\ExcelModal.cshtml" />
     <Content Include="Areas\Admin\Views\Storage\StorageTable.cshtml" />
     <Content Include="Areas\Admin\Views\Storage\DropList.cshtml" />
@@ -265,7 +265,6 @@
     <Content Include="Areas\Admin\Views\Stack\ExcelModal.cshtml" />
     <Content Include="Assets\Excel\Stack\Stack.xlsx" />
     <Content Include="Areas\Admin\Views\Category\Index.cshtml" />
-    <Content Include="Areas\Admin\Views\Category\DropList.cshtml" />
     <Content Include="Areas\Admin\Views\Category\CategoryTable.cshtml" />
     <Content Include="Areas\Admin\Views\Category\ExcelModal.cshtml" />
     <Content Include="Assets\Excel\Category\Category.xlsx" />

@@ -6,6 +6,7 @@ using QuanLyHoSo.Models;
 using QuanLyHoSo.ViewModel;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
@@ -34,21 +35,34 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
                           || k.MaDanhMuc.Contains(keyword)
                           || (k.TenDanhMucCha ?? "trống").Contains(keyword))
                           select k;
+            //add danh muc con
+            foreach(var k in results)
+            {
+                k.DanhMucCon = results.Where(x => x.IDDanhMucCha == k.ID).ToList();
+            }
             ViewBag.search = keyword;
-            var model = results.ToPagedList(pageNumber, pageSizeNumber);
+            var model = results.Where(x=>x.IDDanhMucCha==0).ToPagedList(pageNumber, pageSizeNumber);
             return PartialView("CategoryTable", model);
         } 
-        public PartialViewResult Modal(long ID)
+        public JsonResult GetDanhMuc(long ID)
         {
-            TempData["listDanhMuc"] = from k in Stuff.GetAll<DanhMuc>()
-                                  orderby k.ID descending
-                                  where k.TrangThai == 1 && k.ID != ID
-                                  select new SelectListItem
-                                  {
-                                      Text = k.TenDanhMuc,
-                                      Value = k.ID.ToString(),
-                                  };
-            return PartialView("DropList");
+            var listDm = Stuff.GetList<DanhMuc>($"select * from DanhMuc Where DuongDan not like '%{ID}%'");
+            var list = new List<DanhMuc>();
+            if(ID==0){
+                list = Stuff.GetAll<DanhMuc>();
+            }
+            else
+            {
+                list = listDm;
+
+            }
+            return Json(new
+            {
+                data = from n in list
+                       orderby n.ID descending
+                       where n.TrangThai !=10 
+                       select n,
+            }, JsonRequestBehavior.AllowGet);
         }
         [HttpGet]
         public JsonResult Change(long ID, int state)
@@ -72,7 +86,12 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
         [HttpGet]
         public JsonResult Delete(long ID)
         {
-            CategoryDao.DeleteUserByID(ID, Session["UserNameNV"].ToString());
+            var listCon = Stuff.GetList<DanhMuc>($"select * from DanhMuc Where DuongDan like '%{ID}%'");
+            foreach(var dm in listCon)
+            {
+                CategoryDao.DeleteUserByID(dm.ID, Session["UserNameNV"].ToString());
+
+            }
             return Json(new
             {
                 error = false,
@@ -85,15 +104,59 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
         public JsonResult Save(DanhMuc dm)
         {
             string UserNameNV = Session["UserNameNV"].ToString();
+
             if (dm.ID == 0)
             {
-                //create new kho
-                CategoryDao.CreateStorage(dm, UserNameNV);
+                    //create new kho
+                    CategoryDao.CreateStorage(dm, UserNameNV);
+                var nextDm = Stuff.GetAll<DanhMuc>().LastOrDefault();
+                //update duong dan
+                if (nextDm.IDDanhMucCha == 0)
+                {
+                    nextDm.DuongDan = nextDm.ID.ToString();
+                    CategoryDao.UpdateStorage(nextDm, nextDm.ID, UserNameNV);
+
+                }
+                else
+                {
+                    var dmCha = Stuff.GetByID<DanhMuc>(nextDm.IDDanhMucCha);
+                    string newPath = dmCha.DuongDan + "-" + nextDm.ID.ToString();
+                    nextDm.DuongDan = newPath;
+                }
+                CategoryDao.UpdateStorage(nextDm, nextDm.ID, UserNameNV);
+
             }
             else
             {
-                //update kho
-                CategoryDao.UpdateStorage(dm, dm.ID, UserNameNV);
+                //neu no la danh muc cha
+                if (dm.IDDanhMucCha == 0)
+                {
+                    dm.DuongDan = dm.ID.ToString();
+                    CategoryDao.UpdateStorage(dm, dm.ID, UserNameNV);
+
+                }
+                else
+                {
+                    var dmCha = Stuff.GetByID<DanhMuc>(dm.IDDanhMucCha);
+                    string newPath = dmCha.DuongDan + "-" + dm.ID.ToString();
+                    dm.DuongDan = newPath;
+                    CategoryDao.UpdateStorage(dm, dm.ID, UserNameNV);
+
+                }
+
+                //xu ly truong hop path bi ngat quang
+                var listNgatQuang = Stuff.GetList<DanhMuc>($"select * from DanhMuc Where DuongDan  like '%{dm.ID}-%'");
+                foreach(var nq in listNgatQuang)
+                {
+                    var dmCha = Stuff.GetByID<DanhMuc>(nq.IDDanhMucCha);
+                    string newPath = dmCha.DuongDan + "-" + nq.ID.ToString();
+                    nq.DuongDan = newPath;
+                    CategoryDao.UpdateStorage(nq, nq.ID, UserNameNV);
+                }
+
+
+
+
             }
             return Json(new
             {
@@ -106,8 +169,14 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
         {
             foreach (var id in checkboxs)
             {
-                CategoryDao.DeleteUserByID(id, Session["UserNameNV"].ToString());
+                var listCon = Stuff.GetList<DanhMuc>($"select * from DanhMuc Where DuongDan like '%{id}%'");
+                foreach (var dm in listCon)
+                {
+                    CategoryDao.DeleteUserByID(dm.ID, Session["UserNameNV"].ToString());
+
+                }
             }
+
             return Json(new
             {
                 heading = "Thành công",
