@@ -275,6 +275,7 @@
     <Content Include="Assets\Excel\Record\Record.xlsx" />
     <Content Include="Assets\Excel\Record\RecordTemplate.xlsx" />
     <Content Include="Areas\Admin\Views\HoSoHT\HoSoHTTable.cshtml" />
+    <Content Include="Areas\Admin\Views\Category\DropListDanhMuc.cshtml" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />

@@ -46,25 +46,36 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
             var model = results.Where(x=>x.IDDanhMucCha==0).ToPagedList(pageNumber, pageSizeNumber);
             return PartialView("CategoryTable", model);
         } 
-        public JsonResult GetDanhMuc(long ID)
+        public PartialViewResult GetDanhMuc(long ID)
         {
-            var listDm = Stuff.GetList<DanhMuc>($"select * from DanhMuc Where DuongDan not like '%{ID}%'");
-            var list = new List<DanhMuc>();
-            if(ID==0){
-                list = Stuff.GetAll<DanhMuc>();
+            /*            var listDm = Stuff.GetList<DanhMuc>($"select * from DanhMuc Where DuongDan not like '%{ID}%'");
+                        var list = new List<DanhMuc>();
+                        if(ID==0){
+                            list = Stuff.GetAll<DanhMuc>();
+                        }
+                        else
+                        {
+                            list = listDm;
+                            
+                        }*/
+
+            var listDm = new List<ViewDanhMuc>();
+            if (ID == 0)
+            {
+                listDm = CategoryDao.GetAllCategory();
             }
             else
             {
-                list = listDm;
-
+                listDm = Stuff.GetList<ViewDanhMuc>($"select * from DanhMuc Where DuongDan not like '%{ID}%'");
             }
-            return Json(new
+            foreach (var k in listDm)
             {
-                data = from n in list
-                       orderby n.ID descending
-                       where n.TrangThai !=10 
-                       select n,
-            }, JsonRequestBehavior.AllowGet);
+                k.DanhMucCon = listDm.Where(x => x.IDDanhMucCha == k.ID).ToList();
+            }
+            var model = from k in listDm
+                        where k.IDDanhMucCha == 0 && k.TrangThai != 100 && k.TrangThai != 10
+                        select k;
+            return PartialView("DropListDanhMuc", model);
         }
         [HttpGet]
         public JsonResult Change(long ID, int state)

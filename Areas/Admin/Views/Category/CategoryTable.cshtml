@@ -114,7 +114,6 @@ foreach (var item in DanhMucCon)
         <td>Trống</td>
 
     }
-
     <td>@item.MoTa</td>
     <td>@item.NgayTao</td>
     <td>@item.NguoiTao</td>
@@ -156,3 +155,16 @@ foreach (var item in DanhMucCon)
         }
     }
 } 
+
+@helper DeQuySelect(List<QuanLyHoSo.ViewModel.ViewDanhMuc> DanhMucCon, string paddingLeft) { 
+        foreach(var item in DanhMucCon)
+    {
+        <option value="@item.ID">
+            @paddingLeft » @item.TenDanhMuc
+        </option>
+    if (item.DanhMucCon.Any())
+    {
+        DeQuySelect(item.DanhMucCon, paddingLeft + "&nbsp;&nbsp;");
+    }
+}
+}

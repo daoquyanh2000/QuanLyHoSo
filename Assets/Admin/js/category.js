@@ -138,6 +138,7 @@ function SearchUser() {
         }
     })
 }
+
 function ViewUser(ID, event) {
     GetData(ID, event);
     DisableForm();
@@ -208,7 +209,6 @@ function ChangeState(ID) {
     }
 }
 function GetDanhMuc(ID) {
-    let html = '<option value="0">Chọn kho cha</option>';
     $.ajax({
         url: "/admin/category/GetDanhMuc",
         data: {
@@ -216,12 +216,10 @@ function GetDanhMuc(ID) {
         },
         type: 'get',
         success: function (res) {
-            res.data.forEach((val, index) => {
-                html += `<option value="${val.ID}">${val.TenDanhMuc} </option>`;
-            })
-            $('#IDDanhMucCha').html(html);
+            $('#IDDanhMucCha').html(res);
+            console.log(res);
         }
-    })
+    }) 
 }
 
 function DeleteUser(ID, event) {
