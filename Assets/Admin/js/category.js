@@ -76,6 +76,11 @@ $(document).ready(function () {
         let deleteAll = $(this).closest('main').find('#deleteAll');
         $(deleteAll).toggleClass('disabled', checkboxChecked.length == 0);
     })
+    $('#table-body tr').each(function () {
+        let span = $(this).find('span')[0]
+        let listID = $(span).attr('data-listcount')
+        GetListCount(listID);
+    })
 })
 
 function EnableForm() {
@@ -125,6 +130,11 @@ function SearchUser() {
         success: function (res) {
             var table = $("#tableContainer");
             table.html(res);
+            $('#table-body tr').each(function () {
+                let span = $(this).find('span')[0]
+                let listID = $(span).attr('data-listcount')
+                GetListCount(listID);
+            })
         }
     })
 }
@@ -210,7 +220,6 @@ function GetDanhMuc(ID) {
                 html += `<option value="${val.ID}">${val.TenDanhMuc} </option>`;
             })
             $('#IDDanhMucCha').html(html);
-            console.log(html)
         }
     })
 }
@@ -343,7 +352,7 @@ function UpExcel() {
 
 //Thu gọn và mở rộng
 function Expand(id, item) {
-    let allChild = $(`table tbody tr[data-parent-id*="${id}-"]`)
+    let allChild = $(`table tbody tr[data-path*="${id}-"]`)
     $(item).toggleClass('trShow');
     let check = $(item).hasClass('trShow');
     if (check) {
@@ -355,5 +364,14 @@ function Expand(id, item) {
             $(this).hide();
         })
     }
-
 }
+//lấy tất cả  con
+function GetListCount(ID) {
+    let listChildLength = $(`tr[data-path*="${ID}-"]`).length
+    if (listChildLength > 0) {
+    let text = "(" + listChildLength + ")";
+    $(`span[data-listcount="${ID}"]`).html(text)
+
+    }
+}
+

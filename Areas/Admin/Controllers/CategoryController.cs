@@ -1,4 +1,6 @@
 ﻿using Dapper.Contrib.Extensions;
+using OfficeOpenXml;
+using OfficeOpenXml.Table;
 using PagedList;
 using QuanLyHoSo.Dao;
 using QuanLyHoSo.Dao.DaoAdmin;
@@ -16,9 +18,9 @@ using System.Web.Mvc;
 namespace QuanLyHoSo.Areas.Admin.Controllers
 {
     [Authorize(Roles = "DanhMuc")]
-
     public class CategoryController : Controller
     {
+
         // GET: Admin/Category
         public ActionResult Index()
         {
@@ -31,7 +33,7 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
             if (keyword == null) keyword = "";
             var results = from k in CategoryDao.GetAllCategory()
                           orderby k.ID descending
-                          where k.TrangThai != 10 && (k.TenDanhMuc.Contains(keyword)
+                          where k.TrangThai != 10 && k.TrangThai!=100&&(k.TenDanhMuc.Contains(keyword)
                           || k.MaDanhMuc.Contains(keyword)
                           || (k.TenDanhMucCha ?? "trống").Contains(keyword))
                           select k;
@@ -221,8 +223,6 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
                     MoTa = ke.MoTa
 
                 };
-                
-                account = account.ToList();
                 return PartialView(account);
             }
             catch (Exception ex)
@@ -258,25 +258,98 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
                 NgayTao = DateTime.Now.ToString(),
                 NguoiTao = Session["UserNameNV"].ToString(),
             };
-
-            account = account.ToList();
             long tk;
             int i = 0;
-            foreach (var nv in account)
+            foreach (var k in account)
             {
-                nv.TrangThai = Convert.ToByte(checkbox[i]);
+                k.TrangThai = Convert.ToByte(checkbox[i]);
                 i++;
+                if (k.IDDanhMucCha == 10139)
+                {
+                    k.IDDanhMucCha = 0;
+                }
             }
             using (var db = new SqlConnection(ConnectString.Setup()))
             {
                 tk = db.Insert(account);
             }
+            //sau khi insert tien hanh them duong dan 
+            var listFix = Stuff.GetList<DanhMuc>($"select top {tk} * from DanhMuc  order by id desc");
+            
+            foreach(var dm in listFix)
+            {
+                if (dm.IDDanhMucCha == 10139)
+                {
+
+                    Stuff.ExecuteSql("Update DanhMuc Set DuongDan =@newPath,IDDanhMucCha =0 where ID =@ID", new { newPath = dm.ID.ToString(), ID = dm.ID });
+                }
+                else
+                {
+                    //lay duong dan cha
+                    var newPath = Stuff.GetByID<DanhMuc>(dm.IDDanhMucCha).DuongDan + "-" + dm.ID.ToString();
+
+                    //luu duong dan
+                    Stuff.ExecuteSql("Update DanhMuc Set DuongDan =@newPath where ID =@ID", new { newPath = newPath, ID = dm.ID });
+                }
+            }
+
             return Json(new
             {
                 heading = "Thành công",
                 status = "success",
                 message = $"Tạo {tk} bản ghi thành công!"
             }, JsonRequestBehavior.AllowGet);
+        }
+        public ActionResult DownloadExcel()
+        {
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
+            string ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            using (var package = new ExcelPackage())
+            {
+                //A workbook must have at least on cell, so lets add one... 
+                var wsData = package.Workbook.Worksheets.Add("Data");
+                var wsThongTinBang = package.Workbook.Worksheets.Add("ThongTinBang");
+
+                //To set values in the spreadsheet use the Cells indexer.
+                var listDmAll = (Stuff.GetAll<DanhMuc>());
+                var firstDm = new DanhMuc();
+                firstDm.TenDanhMuc = "Trống";
+                firstDm.MaDanhMuc = "100";
+                firstDm.TrangThai = 1;
+                listDmAll.Insert(0,firstDm);
+                var dm = from k in listDmAll
+                         where k.TrangThai == 1
+                          select new
+                          {
+                              TenDanhMucCha = k.TenDanhMuc,
+                              MaDanhMuc = k.MaDanhMuc,
+                          };
+
+                var TrangThai = new List<State>() {
+                    new State { TrangThai = "Đóng", MaTrangThai = 0  },
+                    new State { TrangThai = "Mở", MaTrangThai = 1  },
+                };
+                var nd = new List<ViewExcelDanhMuc>();
+                wsData.Cells["A1"].LoadFromCollection(nd, true, TableStyles.Medium1);
+                wsThongTinBang.Cells["A1"].LoadFromCollection(dm, true, TableStyles.Medium1);
+                wsThongTinBang.Cells["D1"].LoadFromCollection(TrangThai, true, TableStyles.Medium1);
+
+
+                var listDm = wsData.DataValidations.AddListValidation("C2");
+                var listTrangThai = wsData.DataValidations.AddListValidation("D2");
+
+                listDm.Formula.ExcelFormula = $"ThongTinBang!$B$2:$B${dm.Count() + 1}";
+                listTrangThai.Formula.ExcelFormula = "ThongTinBang!$E$2:$E$3";
+
+
+                wsData.Cells[1, 1, wsData.Dimension.End.Row, wsData.Dimension.End.Column].AutoFitColumns();
+                wsThongTinBang.Cells[1, 1, wsThongTinBang.Dimension.End.Row, wsThongTinBang.Dimension.End.Column].AutoFitColumns();
+                //Save the new workbook. We haven't specified the filename so use the Save as method.
+                var excelData = package.GetAsByteArray();
+                var fileName = "CategoryTemplate.xlsx";
+                return File(excelData, ContentType, fileName);
+            }
         }
     }
 }

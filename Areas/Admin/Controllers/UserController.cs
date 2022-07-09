@@ -184,6 +184,7 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
             {
                 tk = db.Insert(listNhanVien);
             }
+
             return Json(new
             {
                 heading = "Thành công",
@@ -192,29 +193,7 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
             }, JsonRequestBehavior.AllowGet);
         }
 
-/*        public PartialViewResult ExcelModal()
-        {
-            string pathFile = string.Empty;
-            if (Request.Files.Count > 0)
-            {
-                HttpFileCollectionBase files = Request.Files;
-                for (int i = 0; i < files.Count; i++)
-                {
-                    HttpPostedFileBase file = files[i];
-                    string fileName = "User.xlsx";
-                    string pathFolder = "/Assets/Excel/User";
-                    //tao folder
-                    Directory.CreateDirectory(Server.MapPath(pathFolder));
-                    // tao duong dan path
-                    pathFile = Path.Combine(Server.MapPath(pathFolder), fileName);
-                    file.SaveAs(pathFile);
-                }
-            }
 
-            ViewBag.listAccount = Stuff.GetListExcel<ViewExcelNhanVien>(pathFile);
-            ViewBag.listKnd = RoleDao.GetKieuNhanViens();
-            return PartialView();
-        }*/
         public PartialViewResult ExcelModal(FormCollection fc)
         {
             

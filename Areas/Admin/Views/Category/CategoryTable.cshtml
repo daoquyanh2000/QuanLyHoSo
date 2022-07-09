@@ -24,11 +24,11 @@
             <input type="number" name="hidden" value="0" style="display:none" id="HiddenID" />
             @foreach (var item in Model)
             {
-                <tr data-id="@item.ID" data-parent-id="@item.DuongDan" class="" onclick="Expand(@item.ID,this)">
+                <tr data-id="@item.ID" data-path="@item.DuongDan" class="" onclick="Expand(@item.ID,this)">
                     <td onclick="event.stopPropagation()">
                         <input type="checkbox" class="form-check-input checkboxs" name="checkboxs" data-id="@item.ID" />
                     </td>
-                    <td>@item.TenDanhMuc <span style="color:red">(@item.DanhMucCon.Count())</span></td>
+                    <td>@item.TenDanhMuc <span style="color:red" data-listCount="@item.ID"></span></td>
                     <td>@item.MaDanhMuc</td>
                     @if (item.TenDanhMucCha != null)
                     {
@@ -99,11 +99,11 @@ PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(new AjaxOptions() { HttpMe
 
 foreach (var item in DanhMucCon)
 {
-<tr data-id="@item.ID" style="display:none" data-parent-id="@item.DuongDan" onclick="Expand(@item.ID,this)" class="trShow">
+<tr data-id="@item.ID" style="display:none" data-path="@item.DuongDan" onclick="Expand(@item.ID,this)" class="trShow">
     <td onclick="event.stopPropagation()">
         <input type="checkbox" class="form-check-input checkboxs" name="checkboxs" data-id="@item.ID" />
     </td>
-    <td style="padding-left:@{@paddingLeft} ">» @item.TenDanhMuc  <span style="color:red">( @DanhMucCon.Count() )</span></td>
+    <td style="padding-left:@{@paddingLeft} ">» @item.TenDanhMuc  <span style="color:red" data-listCount="@item.ID"></span></td>
     <td>@item.MaDanhMuc</td>
     @if (item.TenDanhMucCha != null)
     {
