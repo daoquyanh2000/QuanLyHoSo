@@ -40,7 +40,7 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
             //add danh muc con
             foreach(var k in results)
             {
-                k.DanhMucCon = results.Where(x => x.IDDanhMucCha == k.ID).ToList();
+                k.DanhMucCon = results.Where(x => x.IDDanhMucCha == k.ID).OrderByDescending(x => x.ID).ToList();
             }
             ViewBag.search = keyword;
             var model = results.Where(x=>x.IDDanhMucCha==0).ToPagedList(pageNumber, pageSizeNumber);
@@ -48,17 +48,6 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
         } 
         public PartialViewResult GetDanhMuc(long ID)
         {
-            /*            var listDm = Stuff.GetList<DanhMuc>($"select * from DanhMuc Where DuongDan not like '%{ID}%'");
-                        var list = new List<DanhMuc>();
-                        if(ID==0){
-                            list = Stuff.GetAll<DanhMuc>();
-                        }
-                        else
-                        {
-                            list = listDm;
-                            
-                        }*/
-
             var listDm = new List<ViewDanhMuc>();
             if (ID == 0)
             {
@@ -70,10 +59,11 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
             }
             foreach (var k in listDm)
             {
-                k.DanhMucCon = listDm.Where(x => x.IDDanhMucCha == k.ID).ToList();
+                k.DanhMucCon = listDm.Where(x => x.IDDanhMucCha == k.ID).OrderByDescending(x => x.ID).ToList();
             }
             var model = from k in listDm
                         where k.IDDanhMucCha == 0 && k.TrangThai != 100 && k.TrangThai != 10
+                        orderby k.ID descending
                         select k;
             return PartialView("DropListDanhMuc", model);
         }
