@@ -5,6 +5,7 @@ $(document).ready(function () {
     $('button[data-bs-toggle="modal"]').click(function () {
         EnableForm();
         $("#HiddenID").val('');
+        GetDanhMuc(0);
     })
     //
     var input = document.getElementById("searchInput");
@@ -53,9 +54,6 @@ $(document).ready(function () {
             CreateUser();
         }
     });
-    $(document).on('click', '#modal-on', function () {
-        GetDanhMuc(0);
-    })
     $(document).on('change', '#checkAll', function () {
         $(this).toggleClass('checkAll');
         let checkbox = $(this).closest('table').find('.checkboxs');
@@ -75,6 +73,17 @@ $(document).ready(function () {
 
         let deleteAll = $(this).closest('main').find('#deleteAll');
         $(deleteAll).toggleClass('disabled', checkboxChecked.length == 0);
+
+        //checkcon con
+        $(this).toggleClass('checkParent');
+        let stateParent = $(this).hasClass('checkParent');
+
+        //lấy id cha rồi tìm tất cả con rồi thêm class vào
+        let CheckParentID = $(this).data('id');
+        $(`tr[data-path*="${CheckParentID}-"] .checkboxs`).each(function () {
+            $(this).toggleClass('checkParent', stateParent);
+            $(this).prop('checked', $(this).hasClass('checkParent'))
+        })
     })
     $('#table-body tr').each(function () {
         let span = $(this).find('span')[0]
@@ -98,6 +107,20 @@ function DisableForm() {
     });
     $(`button[type="submit"]`).attr("disabled", true);
 }
+function GetDanhMuc(ID) {
+    $.ajax({
+        url: "/admin/category/GetDanhMuc",
+        data: {
+            ID: ID
+        },
+        type: 'get',
+        success: function (res) {
+            $('#IDDanhMucCha').html(res);
+            console.log(res);
+            GetData(ID, event);
+        }
+    })
+}
 function GetData(ID, event) {
     event.preventDefault();
     $.ajax({
@@ -106,6 +129,8 @@ function GetData(ID, event) {
         data: { ID: ID },
         type: "get",
         success: function (res) {
+            
+            console.log(res);
             $("#HiddenID").val(res.data.ID);
             $("#TenDanhMuc").val(res.data.TenDanhMuc);
             $("#MaDanhMuc").val(res.data.MaDanhMuc);
@@ -140,11 +165,11 @@ function SearchUser() {
 }
 
 function ViewUser(ID, event) {
-    GetData(ID, event);
+
+    GetDanhMuc(ID);
     DisableForm();
 }
 function UpdateUser(ID, event) {
-    GetData(ID, event);
     GetDanhMuc(ID);
     EnableForm();
 }
@@ -208,19 +233,7 @@ function ChangeState(ID) {
         (nextState == true) ? checkboxID.prop('checked', false) : checkboxID.prop('checked', true)
     }
 }
-function GetDanhMuc(ID) {
-    $.ajax({
-        url: "/admin/category/GetDanhMuc",
-        data: {
-            ID:ID
-        },
-        type: 'get',
-        success: function (res) {
-            $('#IDDanhMucCha').html(res);
-            console.log(res);
-        }
-    }) 
-}
+
 
 function DeleteUser(ID, event) {
     if (confirm("Bạn có chắc chắn xóa người dùng này không?")) {
@@ -350,16 +363,19 @@ function UpExcel() {
 
 //Thu gọn và mở rộng
 function Expand(id, item) {
+
     let allChild = $(`table tbody tr[data-path*="${id}-"]`)
     $(item).toggleClass('trShow');
     let check = $(item).hasClass('trShow');
     if (check) {
         $(allChild).each(function (index, value) {
             $(this).show();
+            $(this).addClass('trShow');
         })
     } else {
         $(allChild).each(function (index, value) {
             $(this).hide();
+            $(this).removeClass('trShow');
         })
     }
 }

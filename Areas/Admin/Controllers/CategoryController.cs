@@ -36,7 +36,7 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
                           where k.TrangThai != 10 && k.TrangThai!=100&&(k.TenDanhMuc.Contains(keyword)
                           || k.MaDanhMuc.Contains(keyword)
                           || (k.TenDanhMucCha ?? "trống").Contains(keyword))
-                          select k;
+                          select k; 
             //add danh muc con
             foreach(var k in results)
             {
@@ -59,7 +59,11 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
             }
             foreach (var k in listDm)
             {
-                k.DanhMucCon = listDm.Where(x => x.IDDanhMucCha == k.ID).OrderByDescending(x => x.ID).ToList();
+                /*k.DanhMucCon = listDm.Where(x => x.IDDanhMucCha == k.ID).OrderByDescending(x => x.ID).ToList();*/
+                k.DanhMucCon = (from dm in listDm
+                                orderby dm.ID descending
+                                where dm.IDDanhMucCha == k.ID && dm.TrangThai !=10 
+                                select dm).ToList();
             }
             var model = from k in listDm
                         where k.IDDanhMucCha == 0 && k.TrangThai != 100 && k.TrangThai != 10
@@ -117,7 +121,7 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
                 if (nextDm.IDDanhMucCha == 0)
                 {
                     nextDm.DuongDan = nextDm.ID.ToString();
-                    CategoryDao.UpdateStorage(nextDm, nextDm.ID, UserNameNV);
+                    CategoryDao.UpdateStorageNoChange(nextDm, nextDm.ID);
 
                 }
                 else
@@ -125,8 +129,9 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
                     var dmCha = Stuff.GetByID<DanhMuc>(nextDm.IDDanhMucCha);
                     string newPath = dmCha.DuongDan + "-" + nextDm.ID.ToString();
                     nextDm.DuongDan = newPath;
+                    CategoryDao.UpdateStorageNoChange(nextDm, nextDm.ID);
+
                 }
-                CategoryDao.UpdateStorage(nextDm, nextDm.ID, UserNameNV);
 
             }
             else
@@ -156,10 +161,6 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
                     nq.DuongDan = newPath;
                     CategoryDao.UpdateStorage(nq, nq.ID, UserNameNV);
                 }
-
-
-
-
             }
             return Json(new
             {
@@ -313,14 +314,14 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
                 var wsThongTinBang = package.Workbook.Worksheets.Add("ThongTinBang");
 
                 //To set values in the spreadsheet use the Cells indexer.
-                var listDmAll = (Stuff.GetAll<DanhMuc>());
+/*                var listDmAll = ();
                 var firstDm = new DanhMuc();
                 firstDm.TenDanhMuc = "Trống";
                 firstDm.MaDanhMuc = "100";
                 firstDm.TrangThai = 1;
-                listDmAll.Insert(0,firstDm);
-                var dm = from k in listDmAll
-                         where k.TrangThai == 1
+                listDmAll.Insert(0,firstDm);*/
+                var dm = from k in Stuff.GetAll<DanhMuc>()
+                         where k.TrangThai !=10
                           select new
                           {
                               TenDanhMucCha = k.TenDanhMuc,

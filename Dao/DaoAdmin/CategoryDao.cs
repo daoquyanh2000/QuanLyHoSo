@@ -33,7 +33,21 @@ namespace QuanLyHoSo.Dao.DaoAdmin
             };
             Stuff.ExecuteSql(query, param);
         }
-
+        public static void UpdateStorageNoChange(DanhMuc dm, long IDNV)
+        {
+            string query = "Update DanhMuc Set TenDanhMuc=@TenDanhMuc,MaDanhMuc=@MaDanhMuc,IDDanhMucCha=@IDDanhMucCha,TrangThai=@TrangThai,MoTa=@MoTa,DuongDan=@DuongDan WHERE ID =@ID";
+            object param = new
+            {
+                TenDanhMuc = dm.TenDanhMuc,
+                MaDanhMuc = dm.MaDanhMuc,
+                IDDanhMucCha = dm.IDDanhMucCha,
+                TrangThai = dm.TrangThai,
+                MoTa = dm.MoTa,
+                DuongDan = dm.DuongDan,
+                ID = IDNV
+            };
+            Stuff.ExecuteSql(query, param);
+        }
         public static void CreateStorage(DanhMuc dm, string UserNameNV)
         {
             //create new kho

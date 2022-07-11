@@ -96,10 +96,9 @@
                                 <div class="col-lg-6">
                                     <div class="form-group ">
                                         <label class="form-label " for="IDKhoCha">Kho cha (*)</label>
-                                        @{ 
-                                            Html.RenderAction("Modal", "Storage", new { ID=0 });
-                                        }
-                                       @* @Html.DropDownList("IDKhoCha", (IEnumerable<SelectListItem>)TempData["listKho"], "Chọn kho cha", new { @class = "form-select" })*@
+                                        <select class="form-select" id="IDKhoCha" name="IDKhoCha">
+
+                                        </select>
                                     </div>
                                     <div class="form-group">
                                         <label class="form-label" for="TrangThai">Trạng thái (*)</label>

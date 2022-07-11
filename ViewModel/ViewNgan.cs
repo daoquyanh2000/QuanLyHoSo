@@ -10,5 +10,7 @@ namespace QuanLyHoSo.ViewModel
     {
         public string TenKho { get; set; }
 
+        public List<ViewNgan> NganCon { get; set; }
+
     }
 }

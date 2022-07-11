@@ -1,0 +1,24 @@
+﻿@model IEnumerable<QuanLyHoSo.ViewModel.ViewKho>
+<option value="0">Chọn kho cha</option>
+@foreach (var item in Model)
+{
+    <option value="@item.ID">@item.TenKho</option>
+    if (item.KhoCon.Any())
+    {
+        @DeQuySelect(item.KhoCon, "\u00A0\u00A0\u00A0");
+    }
+}
+
+@helper DeQuySelect(List<QuanLyHoSo.ViewModel.ViewKho> KhoCon, string paddingLeft)
+{
+    foreach (var item in KhoCon)
+    {
+        <option value="@item.ID">
+            @paddingLeft » @item.TenKho
+        </option>
+        if (item.KhoCon.Any())
+        {
+            @DeQuySelect(item.KhoCon, paddingLeft + "\u00A0\u00A0\u00A0");
+        }
+    }
+}

@@ -25,11 +25,88 @@
             <input type="number" name="hidden" value="0" style="display:none" id="HiddenID" />
             @foreach (var item in Model)
             {
-        <tr data-id="@item.ID">
-            <td>
+                <tr data-id="@item.ID" data-path="@item.DuongDan" onclick="Expand(@item.ID,this)">
+                    <td onclick="event.stopPropagation()">
+                        <input type="checkbox" class="form-check-input checkboxs" name="checkboxs" data-id="@item.ID" />
+                    </td>
+                    <td>@item.TenKho <span style="color:red" data-listCount="@item.ID"></span></td>
+                    <td>@item.MaKho</td>
+                    @if (item.TenKhoCha != null)
+                    {
+                        <td>@item.TenKhoCha</td>
+                    }
+                    else
+                    {
+                        <td>Trống</td>
+
+                    }
+
+                    @if (@item.TrangThai == 1)
+                    {
+                        <td onclick="event.stopPropagation()">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="button-@item.ID" checked onchange="ChangeState(@item.ID)">
+                            </div>
+                        </td>
+                    }
+                    else
+                    {
+                        <td onclick="event.stopPropagation()">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="button-@item.ID" onchange="ChangeState(@item.ID)">
+                            </div>
+                        </td>
+                    }
+                    <td>@item.KichThuoc</td>
+                    <td>@item.MoTa</td>
+                    <td>@item.NgayTao</td>
+                    <td>@item.NguoiTao</td>
+                    <td>@item.NgaySua</td>
+                    <td>@item.NguoiSua</td>
+                    <td onclick="event.stopPropagation()">
+                        <div class="btn-group btn-group-sm" role="group" aria-label="Basic mixed styles example">
+                            <button type="button" class="btn btn-outline-secondary" onclick="ViewUser(@item.ID,event)">
+                                <span>Xem</span>
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary" onclick="UpdateUser(@item.ID,event)">
+                                <span>Sửa</span>
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary" onclick="DeleteUser(@item.ID,event)">
+                                <span>Xóa</span>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                if (item.KhoCon.Any())
+                {
+                    @DeQuyTr(item.KhoCon, 20);
+                }
+                if (item.NganCon.Any())
+                {
+                    @DeQuyNgan(item.NganCon, 20);
+                }
+            }
+        </tbody>
+    </table>
+    <!-- Thêm phân trang vào -->
+    Trang @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) / @Model.PageCount
+
+    @Html.PagedListPager(Model,
+    page => Url.Action("Search",
+    new { keyword = ViewBag.search, page = page }),
+PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(new AjaxOptions() { HttpMethod = "GET", UpdateTargetId = "tableContainer" }))
+    <!-- Kết thúc -->
+</div>
+
+@helper DeQuyTr(List<QuanLyHoSo.ViewModel.ViewKho> KhoCon, int paddingLeft)
+{
+    foreach (var item in KhoCon)
+    {
+        <tr data-id="@item.ID" style="display:none" data-path="@item.DuongDan" class="trShow" onclick="Expand(@item.ID,this)">
+            <td onclick="event.stopPropagation()">
                 <input type="checkbox" class="form-check-input checkboxs" name="checkboxs" data-id="@item.ID" />
             </td>
-            <td>@item.TenKho</td>
+            <td style="padding-left:@{@paddingLeft} ">» @item.TenKho  <span style="color:red" data-listCount="@item.ID"></span></td>
             <td>@item.MaKho</td>
             @if (item.TenKhoCha != null)
             {
@@ -43,7 +120,7 @@
 
             @if (@item.TrangThai == 1)
             {
-                <td>
+                <td onclick="event.stopPropagation()">
                     <div class="form-check form-switch">
                         <input class="form-check-input" type="checkbox" id="button-@item.ID" checked onchange="ChangeState(@item.ID)">
                     </div>
@@ -51,7 +128,7 @@
             }
             else
             {
-                <td>
+                <td onclick="event.stopPropagation()">
                     <div class="form-check form-switch">
                         <input class="form-check-input" type="checkbox" id="button-@item.ID" onchange="ChangeState(@item.ID)">
                     </div>
@@ -63,7 +140,7 @@
             <td>@item.NguoiTao</td>
             <td>@item.NgaySua</td>
             <td>@item.NguoiSua</td>
-            <td>
+            <td onclick="event.stopPropagation()">
                 <div class="btn-group btn-group-sm" role="group" aria-label="Basic mixed styles example">
                     <button type="button" class="btn btn-outline-secondary" onclick="ViewUser(@item.ID,event)">
                         <span>Xem</span>
@@ -77,16 +154,64 @@
                 </div>
             </td>
         </tr>
+        if (item.KhoCon.Any())
+        {
+            @DeQuyTr(item.KhoCon, paddingLeft + 20);
+        }
+        if (item.NganCon.Any())
+        {
+            @DeQuyNgan(item.NganCon, paddingLeft+ 20);
+        }
+    }
+}
+@helper DeQuyNgan(List<QuanLyHoSo.ViewModel.ViewNgan> NganCon, int paddingLeft)
+{
+    foreach (var item in NganCon)
+    {
+<tr data-id="@item.ID" style="display:none" data-path="@item.DuongDan" class="trShow ngan" onclick="Expand(@item.ID,this)">
+    <td>
+        <input type="checkbox" class="form-check-input checkboxs " name="checkboxs" data-id="@item.ID" />
+    </td>
+    <td style="padding-left:@{@paddingLeft} ">» @item.TenNgan  <span style="color:red" data-listCount="@item.ID"></span></td>
+    <td>@item.MaNgan</td>
+    <td>@item.TenKho</td>
+    @if (@item.TrangThai == 1)
+    {
+        <td>
+            <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="button-@item.ID" checked onchange="ChangeState(@item.ID)">
+            </div>
+        </td>
+    }
+    else
+    {
+        <td>
+            <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="button-@item.ID" onchange="ChangeState(@item.ID)">
+            </div>
+        </td>
+    }
+    <td>@item.KichThuoc</td>
 
-            }
-        </tbody>
-    </table>
-    <!-- Thêm phân trang vào -->
-    Trang @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) / @Model.PageCount
+    <td>@item.MoTa</td>
 
-    @Html.PagedListPager(Model,
-    page => Url.Action("Search",
-    new { keyword = ViewBag.search, page = page }),
-PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(new AjaxOptions() { HttpMethod = "GET", UpdateTargetId = "tableContainer" }))
-    <!-- Kết thúc -->
-</div>
+    <td>@item.NgayTao</td>
+    <td>@item.NguoiTao</td>
+    <td>@item.NgaySua</td>
+    <td>@item.NguoiSua</td>
+    <td>
+        <div class="btn-group btn-group-sm" role="group" aria-label="Basic mixed styles example">
+            <button type="button" class="btn btn-outline-secondary" onclick="ViewNgan(@item.ID,event,this)">
+                <span>Xem</span>
+            </button>
+            <button type="button" class="btn btn-outline-secondary" onclick="UpdateNgan(@item.ID,event,this)">
+                <span>Sửa</span>
+            </button>
+            <button type="button" class="btn btn-outline-secondary" onclick="DeleteNgan(@item.ID,event,this)">
+                <span>Xóa</span>
+            </button>
+        </div>
+    </td>
+</tr>
+    }
+}

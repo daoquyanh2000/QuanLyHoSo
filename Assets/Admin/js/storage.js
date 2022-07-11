@@ -54,7 +54,7 @@
         }
     });
     $(document).on('click', '#modal-on', function () {
-        RenderModal(0);
+        GetKho(0);
     })
     $(document).on('change', '#checkAll', function () {
         $(this).toggleClass('checkAll');
@@ -76,6 +76,15 @@
         let deleteAll = $(this).closest('main').find('#deleteAll');
         $(deleteAll).toggleClass('disabled', checkboxChecked.length == 0);
     })
+
+    $('#table-body tr').each(function () {
+        let span = $(this).find('span')[0]
+        let listID = $(span).attr('data-listcount')
+        GetListCount(listID);
+    })
+    $('.ngan :input').each(function (index,val) {
+        $(this).prop('disabled', true)
+    });
 })
 
 function GetData(ID, event) {
@@ -165,21 +174,11 @@ function DeleteUser(ID, event) {
         })
     }
 }
-function RenderModal(ID) {
-    $.ajax({
-        url: "/admin/storage/Modal?ID=" + ID,
-        type: "get",
-        dataType: "html",
-        success: function (res) {
-            let dropList = $("#IDKhoCha");
-            dropList.replaceWith(res);
-        }
-    })
-}
+
 
 function UpdateUser(ID, event) {
     GetData(ID, event);
-    RenderModal(ID);
+    GetKho(ID);
     EnableForm();
 }
 
@@ -302,6 +301,11 @@ function SearchUser() {
         success: function (res) {
             var table = $("#tableContainer");
             table.html(res);
+            $('#table-body tr').each(function () {
+                let span = $(this).find('span')[0]
+                let listID = $(span).attr('data-listcount')
+                GetListCount(listID);
+            })
         }
     })
 }
@@ -332,5 +336,47 @@ function GetCheckboxAll() {
                 $('#deleteAll').toggleClass('disabled');
             }
         })
+    }
+}
+
+function GetKho(ID) {
+    $.ajax({
+        url: "/admin/storage/GetKho",
+        data: {
+            ID: ID
+        },
+        type: 'get',
+        success: function (res) {
+            $('#IDKhoCha').html(res);
+            console.log(res);
+        }
+    })
+}
+
+//Thu gọn và mở rộng
+function Expand(id, item) {
+    
+    let allChild = $(`table tbody tr[data-path*="${id}-"]`)
+    $(item).toggleClass('trShow');
+    let check = $(item).hasClass('trShow');
+    if (check) {
+        $(allChild).each(function (index, value) {
+            $(this).show();
+            $(this).addClass('trShow');
+        })
+    } else {
+        $(allChild).each(function (index, value) {
+            $(this).hide();
+            $(this).removeClass('trShow');
+        })
+    }
+}
+//lấy tất cả  con
+function GetListCount(ID) {
+    let listChildLength = $(`tr[data-path*="${ID}-"]`).length
+    if (listChildLength > 0) {
+        let text = "(" + listChildLength + ")";
+        $(`span[data-listcount="${ID}"]`).html(text)
+
     }
 }

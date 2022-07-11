@@ -256,7 +256,7 @@
     <Content Include="Areas\Admin\Views\Role\_RoleTable.cshtml" />
     <Content Include="Areas\Admin\Views\User\ExcelModal.cshtml" />
     <Content Include="Areas\Admin\Views\Storage\StorageTable.cshtml" />
-    <Content Include="Areas\Admin\Views\Storage\DropList.cshtml" />
+    <Content Include="Areas\Admin\Views\Storage\DropListKho.cshtml" />
     <Content Include="Assets\Excel\User\UserTemplate.xlsx" />
     <Content Include="Areas\Admin\Views\Storage\ExcelModal.cshtml" />
     <Content Include="Areas\Admin\Views\Stack\Index.cshtml" />

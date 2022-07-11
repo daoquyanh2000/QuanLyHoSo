@@ -17,7 +17,7 @@ namespace QuanLyHoSo.Dao.DaoAdmin
         }
         public static void UpdateStorage(Kho kho, long IDNV, string UserNameNV)
         {
-            string query = "Update Kho Set TenKho=@TenKho,MaKho=@MaKho,IDKhoCha=@IDKhoCha,TrangThai=@TrangThai,KichThuoc=@KichThuoc,MoTa=@MoTa,NgaySua=GETDATE(),NguoiSua =@NguoiSua WHERE ID =@ID";
+            string query = "Update Kho Set TenKho=@TenKho,MaKho=@MaKho,IDKhoCha=@IDKhoCha,TrangThai=@TrangThai,KichThuoc=@KichThuoc,MoTa=@MoTa,NgaySua=GETDATE(),NguoiSua =@NguoiSua,DuongDan=@DuongDan WHERE ID =@ID";
             object param = new
             {
                 TenKho = kho.TenKho,
@@ -25,13 +25,29 @@ namespace QuanLyHoSo.Dao.DaoAdmin
                 IDKhoCha = kho.IDKhoCha,
                 TrangThai = kho.TrangThai,
                 KichThuoc = kho.KichThuoc,
+                DuongDan= kho.DuongDan,
                 MoTa = kho.MoTa,
                 NguoiSua = UserNameNV,
                 ID = IDNV
             };
             Stuff.ExecuteSql(query, param);
         }
-
+        public static void UpdateStorageNoChange(Kho kho, long IDNV)
+        {
+            string query = "Update Kho Set TenKho=@TenKho,MaKho=@MaKho,IDKhoCha=@IDKhoCha,TrangThai=@TrangThai,KichThuoc=@KichThuoc,MoTa=@MoTa,DuongDan=@DuongDan WHERE ID =@ID";
+            object param = new
+            {
+                TenKho = kho.TenKho,
+                MaKho = kho.MaKho,
+                IDKhoCha = kho.IDKhoCha,
+                TrangThai = kho.TrangThai,
+                KichThuoc = kho.KichThuoc,
+                DuongDan = kho.DuongDan,
+                MoTa = kho.MoTa,
+                ID = IDNV
+            };
+            Stuff.ExecuteSql(query, param);
+        }
         public static void CreateStorage(Kho kho, string UserNameNV)
         {
             //create new kho

@@ -1,4 +1,6 @@
 ﻿using Dapper.Contrib.Extensions;
+using OfficeOpenXml;
+using OfficeOpenXml.Table;
 using PagedList;
 using QuanLyHoSo.Dao;
 using QuanLyHoSo.Dao.DaoAdmin;
@@ -74,11 +76,17 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
             {
                 //create new kho
                 StackDao.CreateStorage(Ngan, UserNameNV);
+                var nextStk = Stuff.GetAll<Ngan>().LastOrDefault();
+                Ngan.DuongDan = Stuff.GetByID<Kho>(Ngan.IDKho).DuongDan+"-"+ nextStk.ID.ToString();
+                StackDao.UpdateStackNoChange(Ngan, Ngan.ID);
             }
             else
             {
                 //update kho
-                StackDao.UpdateStack(Ngan, Ngan.ID, UserNameNV);
+                var dmCha = Stuff.GetByID<Kho>(Ngan.IDKho);
+                string newPath = dmCha.DuongDan + "-" + Ngan.ID.ToString();
+                Ngan.DuongDan = newPath;
+                StackDao.UpdateStackNoChange(Ngan, Ngan.ID);
             }
             return Json(new
             {
@@ -171,6 +179,7 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
                        TenNgan = ke.TenNgan,
                        MaNgan = ke.MaNgan,
                        IDKho = k.ID,
+                       DuongDan =k.DuongDan,
                        TrangThai = ke.TrangThai,
                        KichThuoc = ke.KichThuoc,
                        MoTa = ke.MoTa,
@@ -185,9 +194,16 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
                 nv.TrangThai = Convert.ToByte(checkbox[i]);
                 i++;
             }
+
             using (var db = new SqlConnection(ConnectString.Setup()))
             {
                 tk = db.Insert(account);
+            }
+            var listFixPath = Stuff.GetList<Ngan>($"select top {tk} * from Ngan  order by id desc");
+            foreach(var n in listFixPath)
+            {
+                    var newPath = n.DuongDan + "-" + n.ID.ToString();
+                    Stuff.ExecuteSql("Update Ngan Set DuongDan =@newPath where ID =@ID", new { newPath = newPath, ID = n.ID });
             }
             return Json(new
             {
@@ -196,5 +212,52 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
                 message = $"Lưu {tk} bản ghi thành công!"
             }, JsonRequestBehavior.AllowGet);
         }
+
+        public ActionResult DownloadExcel()
+        {
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
+            string ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            using (var package = new ExcelPackage())
+            {
+                //A workbook must have at least on cell, so lets add one... 
+                var wsData = package.Workbook.Worksheets.Add("Data");
+                var wsThongTinBang = package.Workbook.Worksheets.Add("ThongTinBang");
+
+                //To set values in the spreadsheet use the Cells indexer.
+                var dm = from k in Stuff.GetAll<Kho>()
+                         where k.TrangThai !=10 && k.TrangThai!=100
+                         select new
+                         {
+                             MaKHoChua = k.TenKho,
+                             MaKhoCha = k.MaKho,
+                         };
+
+                var TrangThai = new List<State>() {
+                    new State { TrangThai = "Đóng", MaTrangThai = 0  },
+                    new State { TrangThai = "Mở", MaTrangThai = 1  },
+                };
+                var nd = new List<ViewExcelNgan>();
+                wsData.Cells["A1"].LoadFromCollection(nd, true, TableStyles.Medium1);
+                wsThongTinBang.Cells["A1"].LoadFromCollection(dm, true, TableStyles.Medium1);
+                wsThongTinBang.Cells["D1"].LoadFromCollection(TrangThai, true, TableStyles.Medium1);
+
+
+                var listDm = wsData.DataValidations.AddListValidation("C2");
+                var listTrangThai = wsData.DataValidations.AddListValidation("D2");
+
+                listDm.Formula.ExcelFormula = $"ThongTinBang!$B$2:$B${dm.Count() + 1}";
+                listTrangThai.Formula.ExcelFormula = "ThongTinBang!$E$2:$E$3";
+
+
+                wsData.Cells[1, 1, wsData.Dimension.End.Row, wsData.Dimension.End.Column].AutoFitColumns();
+                wsThongTinBang.Cells[1, 1, wsThongTinBang.Dimension.End.Row, wsThongTinBang.Dimension.End.Column].AutoFitColumns();
+                //Save the new workbook. We haven't specified the filename so use the Save as method.
+                var excelData = package.GetAsByteArray();
+                var fileName = "StackTemplate.xlsx";
+                return File(excelData, ContentType, fileName);
+            }
+        }
+
     }
 }

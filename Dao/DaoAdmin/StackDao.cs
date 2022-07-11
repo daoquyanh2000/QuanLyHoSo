@@ -18,7 +18,7 @@ namespace QuanLyHoSo.Dao.DaoAdmin
         }
         public static void UpdateStack(Ngan ngan, long IDNV, string UserNameNV)
         {
-            string query = "Update Ngan Set TenNgan=@TenNgan,MaNgan=@MaNgan,IDKho=@IDKho,TrangThai=@TrangThai,KichThuoc=@KichThuoc,MoTa=@MoTa,NgaySua=GETDATE(),NguoiSua =@NguoiSua WHERE ID =@ID";
+            string query = "Update Ngan Set TenNgan=@TenNgan,MaNgan=@MaNgan,IDKho=@IDKho,TrangThai=@TrangThai,KichThuoc=@KichThuoc,MoTa=@MoTa,NgaySua=GETDATE(),NguoiSua =@NguoiSua,DuongDan =@DuongDan WHERE ID =@ID";
             object param = new
             {
                 TenNgan = ngan.TenNgan,
@@ -26,13 +26,29 @@ namespace QuanLyHoSo.Dao.DaoAdmin
                 IDKho = ngan.IDKho,
                 TrangThai = ngan.TrangThai,
                 KichThuoc = ngan.KichThuoc,
+                DuongDan = ngan.DuongDan,
                 MoTa = ngan.MoTa,
                 NguoiSua = UserNameNV,
                 ID = IDNV
             };
             Stuff.ExecuteSql(query, param);
         }
-
+        public static void UpdateStackNoChange(Ngan ngan, long IDNV)
+        {
+            string query = "Update Ngan Set TenNgan=@TenNgan,MaNgan=@MaNgan,IDKho=@IDKho,TrangThai=@TrangThai,KichThuoc=@KichThuoc,MoTa=@MoTa,DuongDan =@DuongDan WHERE ID =@ID";
+            object param = new
+            {
+                TenNgan = ngan.TenNgan,
+                MaNgan = ngan.MaNgan,
+                IDKho = ngan.IDKho,
+                TrangThai = ngan.TrangThai,
+                KichThuoc = ngan.KichThuoc,
+                DuongDan = ngan.DuongDan,
+                MoTa = ngan.MoTa,
+                ID = IDNV
+            };
+            Stuff.ExecuteSql(query, param);
+        }
         public static void CreateStorage(Ngan ngan, string UserNameNV)
         {
             //create new kho

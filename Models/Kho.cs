@@ -12,6 +12,7 @@ namespace QuanLyHoSo.Models
         public string MaKho { get; set; }
         public long IDKhoCha { get; set; }
         public byte TrangThai { get; set; }
+        public string DuongDan { get; set; }
         public int KichThuoc { get; set; }
         public string MoTa { get; set; }
         public string NgayTao { get; set; }

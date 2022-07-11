@@ -25,17 +25,35 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
             return View();
         }
 
-        public PartialViewResult Modal(long ID)
+        public PartialViewResult GetKho(long ID)
         {
-            TempData["listKho"] = from k in Stuff.GetAll<Kho>()
-                                  orderby k.ID descending
-                                  where k.TrangThai == 1 && k.ID != ID
-                                  select new SelectListItem
-                                  {
-                                      Text = k.TenKho,
-                                      Value = k.ID.ToString(),
-                                  };
-            return PartialView("DropList");
+            var listKho = new List<ViewKho>();
+            if (ID == 0)
+            {
+                listKho = StorageDao.GetAllKho();
+            }
+            else
+            {
+                listKho = Stuff.GetList<ViewKho>($"select * from Kho Where DuongDan not like '%{ID}%'");
+            }
+            //them list kho con
+            foreach (var k in listKho)
+            {
+               
+                k.KhoCon = (from dm in listKho
+                                orderby dm.ID descending
+                                where dm.IDKhoCha == k.ID && dm.TrangThai != 10
+                                select dm).ToList();
+                //them list ngan con
+                k.NganCon = (from n in StackDao.GetAllStack()
+                             where n.IDKho == k.ID
+                             select n).ToList();
+            }
+            var model = from k in listKho
+                        where k.IDKhoCha == 0 && k.TrangThai != 100 && k.TrangThai != 10
+                        orderby k.ID descending
+                        select k;
+            return PartialView("DropListKho", model);
         }
 
         public PartialViewResult Search(string keyword, int? page)
@@ -45,12 +63,22 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
             if (keyword == null) keyword = "";
             var results = from k in StorageDao.GetAllKho()
                           orderby k.ID descending
-                          where k.TrangThai != 10 && k.TenKho.Contains(keyword)
+                          where k.TrangThai != 10 && k.TrangThai != 100 &&  (k.TenKho.Contains(keyword)
                           || k.MaKho.Contains(keyword)
-                          || (k.TenKhoCha ?? "trống Trống TRỐNG").Contains(keyword)
+                          || (k.TenKhoCha ?? "trống Trống TRỐNG").Contains(keyword))
                           select k;
             ViewBag.search = keyword;
-            var model = results.ToPagedList(pageNumber, pageSizeNumber);
+
+            var listNgan = (from n in StackDao.GetAllStack()
+                            where n.TrangThai != 10
+                            orderby n.ID descending
+                            select n).ToList();
+            foreach (var k in results)
+            {
+                k.KhoCon = results.Where(x => x.IDKhoCha == k.ID).OrderByDescending(x => x.ID).ToList();
+                k.NganCon = listNgan.Where(x => x.IDKho == k.ID).ToList();
+            }
+            var model = results.Where(x=>x.IDKhoCha==0).ToPagedList(pageNumber, pageSizeNumber);
             return PartialView("StorageTable", model);
         }
 
@@ -62,11 +90,50 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
             {
                 //create new kho
                 StorageDao.CreateStorage(kho, UserNameNV);
+                var nextKho = Stuff.GetAll<Kho>().LastOrDefault();
+                //update duong dan
+                //neu la kho goc
+                if (nextKho.IDKhoCha == 0)
+                {
+                    nextKho.DuongDan = nextKho.ID.ToString();
+                    StorageDao.UpdateStorageNoChange(nextKho, nextKho.ID);
+
+                }
+                else
+                {
+                    var khoCha = Stuff.GetByID<Kho>(nextKho.IDKhoCha);
+                    string newPath = khoCha.DuongDan + "-" + nextKho.ID.ToString();
+                    nextKho.DuongDan = newPath;
+                }
+                StorageDao.UpdateStorageNoChange(nextKho, nextKho.ID);
             }
             else
             {
-                //update kho
-                StorageDao.UpdateStorage(kho, kho.ID, UserNameNV);
+                //neu no la kho cha
+                if (kho.IDKhoCha == 0)
+                {
+                    kho.DuongDan = kho.ID.ToString();
+                    StorageDao.UpdateStorage(kho, kho.ID, UserNameNV);
+
+                }
+                else
+                {
+                    var khoCha = Stuff.GetByID<DanhMuc>(kho.IDKhoCha);
+                    string newPath = khoCha.DuongDan + "-" + kho.ID.ToString();
+                    kho.DuongDan = newPath;
+                    StorageDao.UpdateStorage(kho, kho.ID, UserNameNV);
+
+                }
+
+                //xu ly truong hop path bi ngat quang
+                var listNgatQuang = Stuff.GetList<DanhMuc>($"select * from Kho Where DuongDan  like '%{kho.ID}-%'");
+                foreach (var nq in listNgatQuang)
+                {
+                    var khoCha = Stuff.GetByID<DanhMuc>(nq.IDDanhMucCha);
+                    string newPath = khoCha.DuongDan + "-" + nq.ID.ToString();
+                    nq.DuongDan = newPath;
+                    CategoryDao.UpdateStorage(nq, nq.ID, UserNameNV);
+                }
             }
             return Json(new
             {
