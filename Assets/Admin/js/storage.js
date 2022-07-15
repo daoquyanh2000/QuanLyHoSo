@@ -75,6 +75,17 @@
 
         let deleteAll = $(this).closest('main').find('#deleteAll');
         $(deleteAll).toggleClass('disabled', checkboxChecked.length == 0);
+
+        //toggle class vào check cha 
+        $(this).toggleClass('checkParent');
+        let stateParent = $(this).hasClass('checkParent');
+
+        //lấy id cha rồi tìm tất cả con rồi thêm class vào
+        let CheckParentID = $(this).data('id');
+        $(`tr[data-path*="${CheckParentID}-"] .checkboxs`).each(function () {
+            $(this).toggleClass('checkParent', stateParent);
+            $(this).prop('checked', $(this).hasClass('checkParent'))
+        })
     })
 
     $('#table-body tr').each(function () {
@@ -82,9 +93,21 @@
         let listID = $(span).attr('data-listcount')
         GetListCount(listID);
     })
-    $('.ngan :input').each(function (index,val) {
+    $('.ngan :input').each(function (index, val) {
         $(this).prop('disabled', true)
     });
+    $(document).on('click', '.pagination li a', function () {
+        setTimeout(function () {
+            $('#table-body tr').each(function () {
+                let span = $(this).find('span')[0]
+                let listID = $(span).attr('data-listcount')
+                GetListCount(listID);
+            })
+            $('.ngan :input').each(function (index, val) {
+                $(this).prop('disabled', true)
+            });
+        }, 1000);
+    })
 })
 
 function GetData(ID, event) {
@@ -304,6 +327,7 @@ function SearchUser() {
             $('#table-body tr').each(function () {
                 let span = $(this).find('span')[0]
                 let listID = $(span).attr('data-listcount')
+                console.log(listID)
                 GetListCount(listID);
             })
         }

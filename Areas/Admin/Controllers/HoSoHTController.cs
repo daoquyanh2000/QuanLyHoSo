@@ -1,6 +1,14 @@
-﻿using PagedList;
+﻿using Dapper.Contrib.Extensions;
+using PagedList;
+using QuanLyHoSo.Dao;
 using QuanLyHoSo.Dao.DaoAdmin;
+using QuanLyHoSo.Models;
+using System;
+using System.Collections.Generic;
+using System.Data.SqlClient;
+using System.IO;
 using System.Linq;
+using System.Web;
 using System.Web.Mvc;
 
 namespace QuanLyHoSo.Areas.Admin.Controllers

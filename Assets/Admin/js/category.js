@@ -74,7 +74,7 @@ $(document).ready(function () {
         let deleteAll = $(this).closest('main').find('#deleteAll');
         $(deleteAll).toggleClass('disabled', checkboxChecked.length == 0);
 
-        //checkcon con
+        //toggle class vào check cha 
         $(this).toggleClass('checkParent');
         let stateParent = $(this).hasClass('checkParent');
 
@@ -89,6 +89,15 @@ $(document).ready(function () {
         let span = $(this).find('span')[0]
         let listID = $(span).attr('data-listcount')
         GetListCount(listID);
+    })
+    $(document).on('click', '.pagination li a', function () {
+        setTimeout(function () {
+            $('#table-body tr').each(function () {
+                let span = $(this).find('span')[0]
+                let listID = $(span).attr('data-listcount')
+                GetListCount(listID);
+            })
+        }, 1000);
     })
 })
 

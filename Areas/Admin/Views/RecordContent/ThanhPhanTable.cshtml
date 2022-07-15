@@ -1,0 +1,99 @@
+﻿@using PagedList;
+@using PagedList.Mvc;
+@model IPagedList<QuanLyHoSo.ViewModel.ViewThanhPhanHoSo>
+<!-- table start -->
+
+<div class="table-responsive container-fluid">
+    <table class="table table-striped table-light table-bordered display w-100 table-hover" id="ThanhPhan">
+        <thead>
+            <tr>
+                <th>
+                    <input type="checkbox" name="checkAll" class="form-check-input" id="checkAll" />
+                </th>
+                <th>Tiêu đề thành phần</th>
+                <th>Loại thành phần</th>
+                <th>Ký hiệu</th>
+                <th>Chú thích</th>
+                <th>Ngày tạo</th>
+                <th>Người tạo</th>
+                <th>Chức năng</th>
+            </tr>
+        </thead>
+        <tbody id="table-body">
+            <input type="number" name="hidden" value="0" style="display:none" id="HiddenID" />
+            @foreach (var item in Model)
+            {
+                <tr data-id="@item.ID">
+                    <td>
+                        <input type="checkbox" class="form-check-input checkboxs" name="checkboxs" data-id="@item.ID" />
+                    </td>
+                    <td>@item.TieuDe</td>
+                    <td>@item.TenLoaiThanhPhan</td>
+                    <td>@item.KiHieu</td>
+                    <td>@item.ChuThich</td>
+                    <td>@item.NgayTao</td>
+                    <td>@item.NguoiTao</td>
+                    <td>
+                        <div class="btn-group btn-group-sm" role="group" aria-label="Basic mixed styles example">
+                            <button type="button" class="btn btn-outline-secondary" onclick="ShowNoiDungThanhPhan(@item.ID,0)">
+                                <span>Sửa</span>
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary">
+                                <span>Xóa </span>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                @*                <tr style="display: none" id="tr_@item.ID">
+                        <td colspan="12">
+                            <div class="d-flex ">
+                                <button type="button" class="btn btn-outline-secondary mx-1" >
+                                    <span>Sửa thành phần </span>
+                                </button>
+                                <button type="button" class="btn btn-outline-secondary mx-1" >
+                                    <span>Xóa thành phần  </span>
+                                </button>
+
+                            </div>
+                        </td>
+                    </tr>*@
+
+            }
+        </tbody>
+    </table>
+    <!-- Thêm phân trang vào -->
+    Trang @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) / @Model.PageCount
+
+    @Html.PagedListPager(Model,
+    page => Url.Action("Search",
+    new { keyword = ViewBag.search, page = page }),
+PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(new AjaxOptions() { HttpMethod = "GET", UpdateTargetId = "ThanhPhanTable" }))
+    <!-- Kết thúc -->
+</div>
+
+<!--;-->
+<!-- table end -->
+<!--<table class="table">
+    <thead>
+        <tr>
+            <th>Tên File</th>
+            <th>Chức năng </th>
+        </tr>
+        
+    </thead>
+    <tbody>
+       (){
+        <tr>
+            <td>
+                 file
+            </td>
+            <td>
+                <div>
+
+                </div>
+            </td>
+        </tr>
+
+        }
+    </tbody>
+</table>-->

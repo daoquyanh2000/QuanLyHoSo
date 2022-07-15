@@ -77,15 +77,7 @@ namespace QuanLyHoSo.Dao.DaoAdmin
             Stuff.ExecuteSql(query, param);
         }
 
-        /*        public static void Update(HoSo hs, long IDNV, string UserNameNV)
-                {
-                    //create new kho
-                    using (var con = new SqlConnection(ConnectString.Setup()))
-                    {
-                        hs.NgaySua = DateTime.Now.ToString();
-                        hs.NguoiSua = UserNameNV;
-                        con.Update(hs);
-                    }
-                }*/
+
+
     }
 }

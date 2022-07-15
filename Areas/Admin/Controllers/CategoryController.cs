@@ -266,10 +266,6 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
             {
                 k.TrangThai = Convert.ToByte(checkbox[i]);
                 i++;
-                if (k.IDDanhMucCha == 10139)
-                {
-                    k.IDDanhMucCha = 0;
-                }
             }
             using (var db = new SqlConnection(ConnectString.Setup()))
             {

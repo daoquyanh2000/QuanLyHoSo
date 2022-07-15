@@ -19,13 +19,13 @@
 
                     <div class="btn-toolbar justify-content-between py-3" role="toolbar" aria-label="Toolbar with button groups">
                         <div class="btn-group" role="group" aria-label="First group">
-                            <button type="button" class="btn btn-outline-secondary disabled" onclick="GetCheckboxAll(10)" id="deleteAll">
+                            <button type="button" class="btn btn-outline-secondary disabled" onclick="SetStateAll(10)" id="deleteAll">
                                 <span>
                                     <i class="fa-solid fa-trash-can"></i>
                                 </span>
                                 <span>Xóa</span>
                             </button>
-                            <button type="button" class="btn btn-outline-secondary disabled" onclick="GetCheckboxAll(1)" id="HinhThanhAll">
+                            <button type="button" class="btn btn-outline-secondary disabled" onclick="SetStateAll(1)" id="HinhThanhAll">
                                 <span>
                                     <i class="fa-solid fa-trash-can"></i>
                                 </span>
@@ -67,7 +67,7 @@
                 </div>
             </section>
             <!-- nav button end  -->
-            <div id="tableContainer">
+            <div id="HoSoLTTable">
                 <!-- table start -->
                 @{
                     Html.RenderAction("Search", "HoSoLT", new { page = 1 });
@@ -127,12 +127,11 @@
 
 <!-- modal start -->
 <section>
-    <div class="modal fade " id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-         aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal fade" id="staticBackdrop" aria-hidden="true" aria-labelledby="staticBackdropLabel" tabindex="-1">
         <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg ">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title " id="exampleModalLabel">Thông tin kho</h5>
+                    <h5 class="modal-title " id="staticBackdropLabel">Thông tin kho</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -231,12 +230,11 @@
 <!-- modal end -->
 <!-- modal start -->
 <section>
-    <div class="modal fade " id="ExcelModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-         aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal fade" id="ExcelModal" aria-hidden="true" aria-labelledby="ExcelModalLabel" tabindex="-1">
         <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg ">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title " id="exampleModalLabel">Thông tin tài khoản hợp lệ</h5>
+                    <h5 class="modal-title " id="ExcelModalLabel">Thông tin tài khoản hợp lệ</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -253,22 +251,152 @@
 </section>
 <!-- modal end -->
 <!-- Modal thanh phan-->
-<div class="modal fade" id="ThanhPhanModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog">
+<div class="modal fade" id="ThanhPhanModal" aria-hidden="true" aria-labelledby="ThanhPhanModalLabel" tabindex="-1">
+    <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-fullscreen ">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
+                <h5 class="modal-title " id="ThanhPhanModalLabel">Chi tiết thành phần hồ sơ</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                ...
+                <div class="container-fluid">
+                    <div class="btn-toolbar justify-content-between py-3" role="toolbar" aria-label="Toolbar with button groups">
+                        <div class="btn-group" role="group" aria-label="First group">
+                            <button type="button" class="btn btn-outline-secondary disabled" id="DeleteAllThanhPhan">
+                                <span>
+                                    <i class="fa-solid fa-trash-can"></i>
+                                </span>
+                                <span>Xóa thành phần</span>
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary " id="ThemThanhPhan">
+                                <span>
+                                    <i class="fa-solid fa-trash-can"></i>
+                                </span>
+                                <span>Thêm thành phần</span>
+                            </button>
+                        </div>
+                        <div class="input-group">
+                            <input type="text" name="name" value="" class="rounded border-1" id="searchThanhPhan" />
+                            <button for="searchInput" id="searchBtnThanhPhan" class="btn btn-outline-secondary" onclick="ShowThanhPhan(event)">
+                                <span>
+                                    <i class="fa-solid fa-magnifying-glass"></i>
+                                </span>
+                                <span>Tìm kiếm</span>
+                            </button>
+                        </div>
+                    </div>
+                    <input type="number" name="HiddenThanhPhanID" id="HiddenThanhPhanID" style="display:none" />
+                    <div id="ThanhPhanTable">
+
+                    </div>
+                </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Understood</button>
+                <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-dismiss="modal">Đóng</button>
+                @*<button type="submit" form="userForm" class="btn btn-primary">Lưu</button>*@
             </div>
         </div>
     </div>
 </div>
 
+<!-- Modal noi dung thanh phan-->
+<div class="modal fade" id="NoiDungThanhPhanModal" aria-hidden="true" aria-labelledby="NoiDungThanhPhanModalLabel" tabindex="-1">
+    <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-fullscreen ">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title " id="NoiDungThanhPhanModalLabel">Nội dung thành phần hồ sơ</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <form id="NoiDungThanhPhanForm">
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <div class="row">
+                                    <div class="col-12 fw-bold fst-italic">
+                                        (*) Thông tin bắt buộc
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label for="TieuDe" class="form-label">Tiêu đề thành phần(*)</label>
+                                            <input class="form-control" id="TieuDe" name="TieuDe">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="IDLoaiThanhPhan" class="form-label">Loại thành phần(*)</label>
+                                            @Html.DropDownList("IDLoaiThanhPhan", (IEnumerable<SelectListItem>)TempData["listLoaiThanhPhan"], new { @class = "form-select" })
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="KiHieu" class="form-label">Kí hiệu</label>
+                                            <input class="form-control" id="KiHieu" name="KiHieu">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label for="MaThanhPhan" class="form-label">Mã định danh văn bản(*)</label>
+                                            <input class="form-control" id="MaThanhPhan" name="MaThanhPhan">
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="TrangThai" class="form-label">Trạng thái(*)</label>
+                                            <select class="form-select" id="TrangThai" name="TrangThai">
+                                                <option value="0">Công khai</option>
+                                                <option value="1">Hạn chế</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="ChuThich" class="form-label">Chú thích</label>
+                                            <input class="form-control" id="ChuThich" name="ChuThich">
+                                        </div>
+                                    </div>
+                                    <div class="dropdown-divider my-3">
+                                    </div>
+                                    <div class="col-12 fw-bold fst-italic">
+                                        (*) File đính kèm
+                                    </div>
+                                    <div>
+                                        <button type="button" class="btn btn-outline-secondary">
+                                            <input type="file" id="inputPDF" name="postedFiles" accept="application/pdf" multiple class="custom-file-upload" onchange="UploadPDF(this)">
+                                            <label for="inputPDF" class="custom-file-upload ">
+                                                <span>
+                                                    <i class="bi bi-paperclip"></i>
+                                                </span>
+                                                <span>Chọn tài liệu</span>
+                                            </label>
+
+
+                                        </button>
+
+                                    </div>
+                                    <table class="table" id="tablePDF">
+                                        <tr>
+                                            <th>Tên file</th>
+                                            <th>Chức năng</th>
+                                        </tr>
+                                    </table>
+                                </div>
+
+                            </div>
+                            <div class="col-lg-8">
+                                <iframe  id="IframePdf" class="border" src="~/Assets/Admin/pdf/test12.pdf" height="100%" width="100%" style="height:140vh;width:100%"></iframe>
+
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Quay lại</button>
+                <button type="submit" form="NoiDungThanhPhanForm" class="btn btn-primary">Lưu</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="~/Assets/Admin/js/recordcontent.js"></script>
 <script src="~/Assets/Admin/js/hosoLT.js"></script>
+
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.6.347/pdf.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.6.347/pdf_viewer.min.css" rel="stylesheet" type="text/css" />
+

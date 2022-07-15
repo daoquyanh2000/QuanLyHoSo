@@ -54,6 +54,12 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
                                        Text = k.TenNgan,
                                        Value = k.MaNgan,
                                    };
+            TempData["listLoaiThanhPhan"] = from k in Stuff.GetAll<LoaiThanhPhan>()
+                                            select new SelectListItem
+                                            {
+                                                Text = k.TenLoaiThanhPhan,
+                                                Value = k.ID.ToString(),
+                                            };
             return View();
         }
 

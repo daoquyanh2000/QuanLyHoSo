@@ -1,4 +1,5 @@
-﻿var danhMuc = "";
+﻿
+var danhMuc = "";
 var kho = "";
 var ngan = "";
 var kyHieu = "";
@@ -36,7 +37,8 @@ $(function () {
         $("#userImg").hide();
         $("#imgTemp").show();
     })
-    //
+
+   //
     //xu ly anh trong khi them thanh vien
     $('#userImg').hide();
     //xử lý html table giữa 2 trạng thái hồ sơ
@@ -120,6 +122,7 @@ $(function () {
         submitHandler: function () {
             CreateUser();
         }
+
     });
     jQuery.validator.addMethod("checkDate", function (value, element) {
         value = new Date(value);
@@ -137,11 +140,13 @@ $(function () {
         let HinhThanhAll = $(this).closest('main').find('#HinhThanhAll');
         let GuiDuyetAll = $(this).closest('main').find('#GuiDuyetAll');
         let HuyHinhThanhAll = $(this).closest('main').find('#HuyHinhThanhAll');
+        let DeleteAllThanhPhan = $(this).closest('#ThanhPhanModal').find('#DeleteAllThanhPhan');
 
         $(deleteAll).toggleClass('disabled', checkboxChecked.length == 0)
         $(HinhThanhAll).toggleClass('disabled', checkboxChecked.length == 0);
         $(GuiDuyetAll).toggleClass('disabled', checkboxChecked.length == 0);
         $(HuyHinhThanhAll).toggleClass('disabled', checkboxChecked.length == 0);
+        $(DeleteAllThanhPhan).toggleClass('disabled', checkboxChecked.length == 0);
     })
     //xử lý các checkbox
     $(document).on('change', '.checkboxs', function () {
@@ -156,11 +161,13 @@ $(function () {
         let HinhThanhAll = $(this).closest('main').find('#HinhThanhAll');
         let HuyHinhThanhAll = $(this).closest('main').find('#HuyHinhThanhAll');
         let GuiDuyetAll = $(this).closest('main').find('#GuiDuyetAll');
+        let DeleteAllThanhPhan = $(this).closest('#ThanhPhanModal').find('#DeleteAllThanhPhan');
 
         $(deleteAll).toggleClass('disabled', checkboxChecked.length == 0);
         $(HinhThanhAll).toggleClass('disabled', checkboxChecked.length == 0);
         $(GuiDuyetAll).toggleClass('disabled', checkboxChecked.length == 0);
         $(HuyHinhThanhAll).toggleClass('disabled', checkboxChecked.length == 0);
+        $(DeleteAllThanhPhan).toggleClass('disabled', checkboxChecked.length == 0);
     })
     $(document).on('click', '#vinhVien', function () {
         $(this).toggleClass('internal');
@@ -198,7 +205,9 @@ $(function () {
         maHoSo = danhMuc + "." + kho + "." + ngan + "." + kyHieu;
         $('#MaHoSo').val(maHoSo);
     })
+
 })
+
 function SearchUser(state) {
     let url = '';
     let keyword = $(`#searchInput_${state}`).val();
@@ -220,7 +229,7 @@ function SearchUser(state) {
         success: function (res) {
             let table = '';
             if (state == 0) {
-                table = $("#tableContainer");
+                table = $("#HoSoLTTable");
             } else {
                 table = $('#HoSoHTTable');
             }
@@ -245,7 +254,7 @@ function GetNgan(MaKho) {
                 $('#MaNgan').html(html)
             }
             else {
-                $('#MaNgan').html(html).change();
+                $('#MaNgan').html(html).change();Get
             }
             $('#KyHieu').keyup();
         }
@@ -430,8 +439,8 @@ state = 1 -> hình thành
 state = 2 -> gửi duyệt
 state =100  -> đóng băng
 */
-
-function GetCheckboxAll(state) {
+//thay đổi trạng thái của nhiều bản ghi
+function SetStateAll(state) {
     let arr = [];
     let checkboxs = $(".checkboxs:checked");
     $.each(checkboxs, function (index, value) {
@@ -461,6 +470,7 @@ function GetCheckboxAll(state) {
                 $('#HinhThanhAll').toggleClass('disabled');
                 $('#GuiDuyetAll').toggleClass('disabled');
                 $('#HuyHinhThanhAll').toggleClass('disabled');
+                $('#DeleteAllThanhPhan').toggleClass('disabled');
             }
         })
     }
