@@ -355,7 +355,7 @@
                                     </div>
                                     <div>
                                         <button type="button" class="btn btn-outline-secondary">
-                                            <input type="file" id="inputPDF" name="postedFiles" accept="application/pdf" multiple class="custom-file-upload" onchange="UploadPDF(this)">
+                                            <input type="file" id="inputPDF" name="postedFiles" accept="application/pdf" multiple class="custom-file-upload" >
                                             <label for="inputPDF" class="custom-file-upload ">
                                                 <span>
                                                     <i class="bi bi-paperclip"></i>
@@ -368,16 +368,18 @@
 
                                     </div>
                                     <table class="table" id="tablePDF">
-                                        <tr>
-                                            <th>Tên file</th>
-                                            <th>Chức năng</th>
-                                        </tr>
+                                        <thead>
+                                            <tr>
+                                                <th>Tên file</th>
+                                                <th>Chức năng</th>
+                                            </tr>
+                                        </thead>
                                     </table>
                                 </div>
 
                             </div>
-                            <div class="col-lg-8">
-                                <iframe  id="IframePdf" class="border" src="~/Assets/Admin/pdf/test12.pdf" height="100%" width="100%" style="height:140vh;width:100%"></iframe>
+                            <div class="col-lg-8 border-1" >
+                                <iframe  id="IframePdf"  src="" height="100%" width="100%" style="height:140vh;width:100%;display:none"></iframe>
 
                             </div>
                         </div>

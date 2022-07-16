@@ -78,16 +78,16 @@
             }
         })
     })*/
-/*    const dt = new DataTransfer();
-
+    //thêm file vào PDFTable 
+    const dt = new DataTransfer();
     $(document).on('change', '#inputPDF', function () {
-        // Ajout des fichiers dans l'objet DataTransfer
+        // thêm mới vào trong dom
         html = '';
         for (var i = 0; i < this.files.length; i++) {
             html += `
-            <tr data-index="${i}">
+            <tr data-date=${this.files[i].lastModified}>
                 <td >
-                    ${this.files.item(i).name}
+                    ${this.files[i].name}
                 </td>
                 <td>
                     <div class="btn-group btn-group-sm" role="group" aria-label="Basic mixed styles example">
@@ -103,21 +103,56 @@
             `
         }
         $('#tablePDF').append(html);
+
+        //thêm mới vào trong datatranfers
         for (let file of this.files) {
             dt.items.add(file);
         }
-        //ve html
-        // Mise à jour des fichiers de l'input file après ajout
+
+        // add lại vào files trong trường hợp người dùng submit luôn
         this.files = dt.files;
     })
-    $(document).on('click', '.DeletePDF', function () {
-        let index = $('.DeletePDF').closest('tr').data('index');
-        dt.items.remove(index);
-        // Mise à jour des fichiers de l'input file après suppression
-        $('#inputPDF')[0].files = dt.files;
-        $(this).closest('tr').remove();
 
-    })*/
+    //xóa PDF 
+    $(document).on('click', '.DeletePDF', function () {
+        let date = $(this).closest('tr').data('date');
+        //xóa trong datatranfers dựa vào data-date
+        for (let i = 0; i < dt.files.length; i++) {
+            if (dt.files[i].lastModified == date) {
+                console.log("da xoa");
+                dt.items.remove(i);
+                break;
+            }
+        }
+        //add lại datatranfers vào files
+        $('#inputPDF')[0].files = dt.files;
+
+        //xóa tr trong dom 
+        $(this).closest('tr').remove();
+    })
+
+    //xem PDF
+    $(document).on('click', '.ViewPDF', function () {
+        $('#IframePdf').show();
+        let url=''
+        //dựa vào date để tìm ra cái file đấy
+        let date = $(this).closest('tr').data('date');
+        for (let i = 0; i < dt.files.length; i++) {
+            if (dt.files[i].lastModified == date) {
+
+                url = URL.createObjectURL(dt.files[i]);
+                $('#IframePdf').attr('src', `/Assets/Admin/pdf.js/web/viewer.html?file= ${url}`);
+
+/*                $('#IframePdf')[0].onload = function () {
+                    URL.revokeObjectURL(url);
+                    console.log(url);
+                }*/
+                console.log(url);
+
+                break;
+            }
+        }
+    })
 })
 
 function CreateNoiDungThanhPhan() {
