@@ -45,8 +45,8 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
         {
             var TPHS = Stuff.GetList<ThanhPhanHoSo>($@"select  * from ThanhPhanHoSo tphs  where tphs.ID ='{ID}'");
             var PDFs = Stuff.GetList<PDFThanhPhanHoSo>($@"
-            select  ID,TenPDF from PDFThanhPhanHoso tphs  
-            where tphs.IDThanhPhan ='{ID}' and TrangThai =1");
+                select  ID,TenPDF from PDFThanhPhanHoso tphs  
+                where tphs.IDThanhPhan ='{ID}' and TrangThai =1");
             JsonResult jsonResult = Json(new
             {
                 TPHS = TPHS.FirstOrDefault(),
@@ -82,24 +82,29 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
                 }
                 //lưu file tài liệu
                 var newTHPS = Stuff.GetList<ThanhPhanHoSo>("select top 1 ID from ThanhPhanHoSo order by ID desc").FirstOrDefault();
-                for (int i = 0; i < FilePDF.Count; i++)
+                if (FilePDF != null)
+
                 {
-                    var PDFTPHS = new PDFThanhPhanHoSo();
-                    var newName = FilePDF[i].FileName.Split('.');
-                    string fName = newName[0] + "_" + DateTime.Now.Ticks.ToString() + "." + newName[1];
-                    string pathFolder = "/Assets/Admin/pdf";
-                    //tao folder
-                    Directory.CreateDirectory(Server.MapPath(pathFolder));
-                    // tao duong dan path
-                    string pathFile = Path.Combine(Server.MapPath(pathFolder), fName);
-                    FilePDF[i].SaveAs(pathFile);
-                    //lưu dữ liệu vào db
-                    PDFTPHS.TenPDF = FilePDF[i].FileName;
-                    PDFTPHS.PathPDF = pathFolder + "/" + fName;
-                    PDFTPHS.TrangThai = 1;
-                    PDFTPHS.IDThanhPhan = newTHPS.ID;
-                    listPDF.Add(PDFTPHS);
+                    for (int i = 0; i < FilePDF.Count; i++)
+                    {
+                        var PDFTPHS = new PDFThanhPhanHoSo();
+                        var newName = FilePDF[i].FileName.Split('.');
+                        string fName = newName[0] + "_" + DateTime.Now.Ticks.ToString() + "." + newName[1];
+                        string pathFolder = "/Assets/Admin/pdf";
+                        //tao folder
+                        Directory.CreateDirectory(Server.MapPath(pathFolder));
+                        // tao duong dan path
+                        string pathFile = Path.Combine(Server.MapPath(pathFolder), fName);
+                        FilePDF[i].SaveAs(pathFile);
+                        //lưu dữ liệu vào db
+                        PDFTPHS.TenPDF = FilePDF[i].FileName;
+                        PDFTPHS.PathPDF = pathFolder + "/" + fName;
+                        PDFTPHS.TrangThai = 1;
+                        PDFTPHS.IDThanhPhan = newTHPS.ID;
+                        listPDF.Add(PDFTPHS);
+                    }
                 }
+
             }
             //nếu sửa hồ sơ
             else
@@ -107,24 +112,28 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
                 //update lại thông tin thành phần hồ sơ
                 ThanhPhanHoSoDao.Update(TPHS, IdTPHS, Session["UserNameNV"].ToString());
                 //update lại file pDF
-                for (int i = 0; i < FilePDF.Count; i++)
+                if (FilePDF != null )
                 {
-                    var PDFTPHS = new PDFThanhPhanHoSo();
-                    var newName = FilePDF[i].FileName.Split('.');
-                    string fName = newName[0] + "_" + DateTime.Now.Ticks.ToString() + "." + newName[1];
-                    string pathFolder = "/Assets/Admin/pdf";
-                    //tao folder
-                    Directory.CreateDirectory(Server.MapPath(pathFolder));
-                    // tao duong dan path
-                    string pathFile = Path.Combine(Server.MapPath(pathFolder), fName);
-                    FilePDF[i].SaveAs(pathFile);
-                    //lưu dữ liệu vào db
-                    PDFTPHS.TenPDF = FilePDF[i].FileName;
-                    PDFTPHS.PathPDF = pathFolder + "/" + fName;
-                    PDFTPHS.TrangThai = 1;
-                    PDFTPHS.IDThanhPhan = IdTPHS;
-                    listPDF.Add(PDFTPHS);
+                    for (int i = 0; i < FilePDF.Count; i++)
+                    {
+                        var PDFTPHS = new PDFThanhPhanHoSo();
+                        var newName = FilePDF[i].FileName.Split('.');
+                        string fName = newName[0] + "_" + DateTime.Now.Ticks.ToString() + "." + newName[1];
+                        string pathFolder = "/Assets/Admin/pdf";
+                        //tao folder
+                        Directory.CreateDirectory(Server.MapPath(pathFolder));
+                        // tao duong dan path
+                        string pathFile = Path.Combine(Server.MapPath(pathFolder), fName);
+                        FilePDF[i].SaveAs(pathFile);
+                        //lưu dữ liệu vào db
+                        PDFTPHS.TenPDF = FilePDF[i].FileName;
+                        PDFTPHS.PathPDF = pathFolder + "/" + fName;
+                        PDFTPHS.TrangThai = 1;
+                        PDFTPHS.IDThanhPhan = IdTPHS;
+                        listPDF.Add(PDFTPHS);
+                    }
                 }
+
 
             }
             using (var con = new SqlConnection(ConnectString.Setup()))
@@ -141,7 +150,23 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
             return jsonResult;
         }
 
-        public ActionResult ViewPDF(long ID)
+        public ActionResult DeleteAll(List<int> checkboxs)
+        {
+            {
+                foreach (var id in checkboxs)
+                {
+                    ThanhPhanHoSoDao.DeleteByID(id, Session["UserNameNV"].ToString());
+                }
+                JsonResult jsonResult = Json(new
+                {
+                    heading = "Thành công",
+                    status = "success",
+                    message = "Lưu thành công!"
+                }, JsonRequestBehavior.AllowGet); ;
+                return jsonResult;
+            }
+        }
+            public ActionResult ViewPDF(long ID)
         {
            
             var url = Stuff.GetList<PDFThanhPhanHoSo>($@"

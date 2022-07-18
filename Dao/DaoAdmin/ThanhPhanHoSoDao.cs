@@ -2,6 +2,7 @@
 using QuanLyHoSo.ViewModel;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
 
@@ -42,6 +43,16 @@ namespace QuanLyHoSo.Dao.DaoAdmin
                 ID = ID,
             };
             Stuff.ExecuteSql(query, param);
+        }
+        public static void DeleteByID(long ID, string UserNameNV)
+        {
+            using (SqlConnection con = new SqlConnection(ConnectString.Setup()))
+            {
+                con.Open();
+                string stringQuery = $"Update ThanhPhanHoSo SET [TrangThai]=10,[NguoiSua]='{UserNameNV}',[NgaySua]=GETDATE() WHERE ID={ID}";
+                SqlCommand cmd = new SqlCommand(stringQuery, con);
+                cmd.ExecuteNonQuery();
+            }
         }
     }
 }

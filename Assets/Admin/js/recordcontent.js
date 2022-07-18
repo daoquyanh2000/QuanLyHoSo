@@ -50,31 +50,7 @@
             CreateNoiDungThanhPhan();
         }
     });
-/*    $(document).on('change', '#inputPDF', function () {
-        UploadPdf();
-    })
-    $(document).on('click', '[id*=PDFTable] .ViewPDF', function () {
-        var fileId = $(this).data("id");
-        $.ajax({
-            type: "POST",
-            url: "/admin/recordcontent/GetPDF",
-            data: "{fileId: " + fileId + "}",
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: function (res) {
-                console.log(res.data.PathPDF)
-                //check dinh dang
-                let name = res.data.PathPDF.split('.')[1]
-                if (name == "pdf") {
-                    $('#IframePdf').attr('src', `/Assets/Admin/pdf.js/web/viewer.html?file= ${res.data.PathPDF}`);
 
-                } else {
-                    $('#IframePdf').attr('src', `${res.data.PathPDF}`);
-
-                }
-            }
-        })
-    })*/
     //thêm file vào PDFTable 
     var dt = new DataTransfer();
     var firstTime = 0;
@@ -121,24 +97,32 @@
         }
         // add lại vào files trong trường hợp người dùng submit luôn
         this.files = dt.files;
+        //mở file đầu tiên lên cho người dùng xem luôn
+        $($('.ViewPDF:last')).trigger('click');
     })
 
     //xóa PDF mới
     $(document).on('click', '.DeletePDF', function () {
-        let date = $(this).closest('tr').data('date');
-        //xóa trong datatranfers dựa vào data-date
-        for (let i = 0; i < dt.files.length; i++) {
-            if (dt.files[i].lastModified == date) {
-                console.log("da xoa");
-                dt.items.remove(i);
-                break;
+        if (confirm("Bạn có muốn xóa file này không ?")) {
+            let date = $(this).closest('tr').data('date');
+            //xóa trong datatranfers dựa vào data-date
+            for (let i = 0; i < dt.files.length; i++) {
+                if (dt.files[i].lastModified == date) {
+                    console.log("da xoa");
+                    dt.items.remove(i);
+                    break;
+                }
             }
-        }
-        //add lại datatranfers vào files
-        $('#inputPDF')[0].files = dt.files;
+            //add lại datatranfers vào files
+            $('#inputPDF')[0].files = dt.files;
 
-        //xóa tr trong dom 
-        $(this).closest('tr').remove();
+            //xóa tr trong dom 
+            $(this).closest('tr').remove();
+            //ẩn hiện thị pdf
+            $('#IframePdf').attr('src', `/Assets/Admin/pdf.js/web/viewer.html?file=`);
+
+        }
+
     })
 
     //xem PDF mới
@@ -201,6 +185,8 @@ function ShowThanhPhan(ID, state) {
 function ShowNoiDungThanhPhan(ID, state) {
     $("#NoiDungThanhPhanModal").modal('toggle');
     $('#HiddenThanhPhanHoSoID').val(ID);
+    dt = new DataTransfer();
+    $('#inputPDF')[0].files = dt.files;
     //lấy nội dung thành phần từ db
     $.ajax({
         url: "/admin/RecordContent/View",
@@ -209,8 +195,7 @@ function ShowNoiDungThanhPhan(ID, state) {
         },
         type: 'get',
         success: function (res) {
-            console.log(res);
-
+            $("#NoiDungThanhPhanModal").modal('show');
             //update dữ liệu TPHS từ db
             let TPHS = res.TPHS;
             $('#ChuThich').val(TPHS.ChuThich)
@@ -240,7 +225,7 @@ function ShowNoiDungThanhPhan(ID, state) {
                         <button type="button" class="btn btn-outline-secondary " onclick="ViewPDF(${e.ID})" >
                             <span>Xem</span>
                         </button>
-                        <button type="button" class="btn btn-outline-secondary " onclick="DeletePDF(${e.ID}">
+                        <button type="button" class="btn btn-outline-secondary " onclick="DeletePDF(${e.ID},this)">
                             <span>Xóa </span>
                         </button>
                     </div>
@@ -248,7 +233,9 @@ function ShowNoiDungThanhPhan(ID, state) {
             </tr>
             `
             })
+
             $('#tablePDF').html(html);
+
             
         }
     })
@@ -290,6 +277,7 @@ function CreateNoiDungThanhPhan() {
         type: 'post',
         dataType: 'json',
         success: function (res) {
+            $('#IframePdf').hide();
             $('#NoiDungThanhPhanModal').modal('hide');
             console.log(res.data);
             ShowThanhPhan($('#HiddenHoSoID').val());
@@ -305,6 +293,34 @@ function CreateNoiDungThanhPhan() {
         }
     })
 }
+
+function DeleteAll() {
+    let arr = [];
+    let checkboxs = $(".checkboxs:checked");
+    $.each(checkboxs, function (index, value) {
+        arr.push($(this).data('id'))
+    })
+    if (confirm(`Bạn thực sự muốn xóa ${arr.length} bản ghi ?`)) {
+        $.ajax({
+            type: "get",
+            url: "/admin/RecordContent/DeleteAll",
+            data: $.param({ checkboxs: arr }, true),
+            success: function (res) {
+                $.toast({
+                    heading: res.heading,
+                    icon: res.icon,
+                    text: res.message,
+                    position: 'top-right',
+                    stack: 10,
+                    hideAfter: 7000,
+                    showHideTransition: 'slide',
+                })
+                ShowThanhPhan($('#HiddenHoSoID').val());
+                $('#DeleteAllThanhPhan').toggleClass('disabled');
+            }
+        })
+    }
+}
 function ViewPDF(ID) {
     $.ajax({
         url: "/admin/RecordContent/ViewPDF",
@@ -318,45 +334,30 @@ function ViewPDF(ID) {
         }
     })
 }
-function DeletePDF(ID) {
-    $.ajax({
-        url: "/admin/RecordContent/DeletePDF",
-        data: {
-            ID: ID
-        },
-        type: 'get',
-        success: function (res) {
-           
-        }
-    })
-}
-/*function UploadPdf() {
-    var formData = new FormData($('form#NoiDungThanhPhanForm').get(0));
-    //check xem up ảnh chưa
-    let fileUpload = $('input#inputPDF').get(0);
-    let files = fileUpload.files;
-    if (files.length == 0) {
-        alert("bạn chưa tải ảnh lên");
-        return;
+function DeletePDF(ID, e) {
+    if (confirm("Bạn thực sự muốn xóa file này ?")) {
+        $.ajax({
+            url: "/admin/RecordContent/DeletePDF",
+            data: {
+                ID: ID
+            },
+            type: 'get',
+            success: function (res) {
+                /*            ShowNoiDungThanhPhan($('#HiddenThanhPhanHoSoID').val())
+                            $("#NoiDungThanhPhanModal").modal('toggle');*/
+                $(e).closest('tr').remove();
+                $('#IframePdf').attr('src', `/Assets/Admin/pdf.js/web/viewer.html?file=`);
+                $.toast({
+                    heading: res.heading,
+                    icon: res.icon,
+                    text: res.message,
+                    position: 'top-right',
+                    stack: 10,
+                    hideAfter: 7000,
+                    showHideTransition: 'slide',
+                })
+            }
+        })
     }
-    $.ajax({
-        url: "/admin/recordcontent/SavePDF",
-        data: formData,
-        cache: false,
-        contentType: false,
-        processData: false,
-        type: 'post',
-        success: function (res) {
-            console.log(res);
 
-            $('#tablePDF').html(res);
-        },
-        error: function (err) {
-            console.log(err);
-        }
-
-    })
-}*/
-$(function () {
-
-});
+}
