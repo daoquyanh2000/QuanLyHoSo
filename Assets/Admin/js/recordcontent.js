@@ -155,6 +155,7 @@ function ResetForm() {
     $('#tablePDF').html('');
     dt = new DataTransfer();
     $('#inputPDF')[0].files = dt.files;
+    $('#IframePdf').hide();
 }
 
 /// code của thành phần
@@ -171,7 +172,6 @@ function ShowThanhPhan(ID, state) {
         },
         type: 'post',
         success: function (res) {
-            console.log(res);
             $('#DeleteAllThanhPhan').addClass('disabled', true);
             $('#ThanhPhanTable').html(res);
             $("#ThanhPhanModal").modal('show');
@@ -346,7 +346,7 @@ function DeletePDF(ID, e) {
                 /*            ShowNoiDungThanhPhan($('#HiddenThanhPhanHoSoID').val())
                             $("#NoiDungThanhPhanModal").modal('toggle');*/
                 $(e).closest('tr').remove();
-                $('#IframePdf').attr('src', `/Assets/Admin/pdf.js/web/viewer.html?file=`);
+                $('#IframePdf').hide();
                 $.toast({
                     heading: res.heading,
                     icon: res.icon,

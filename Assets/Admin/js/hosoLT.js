@@ -254,7 +254,7 @@ function GetNgan(MaKho) {
                 $('#MaNgan').html(html)
             }
             else {
-                $('#MaNgan').html(html).change();Get
+                $('#MaNgan').html(html).change();
             }
             $('#KyHieu').keyup();
         }
@@ -437,6 +437,7 @@ function DeleteUser(ID, event) {
 /*state =0 -> lưu trữ
 state = 1 -> hình thành
 state = 2 -> gửi duyệt
+state = 10 -> xóa
 state =100  -> đóng băng
 */
 //thay đổi trạng thái của nhiều bản ghi
@@ -461,9 +462,11 @@ function SetStateAll(state) {
                     hideAfter: 7000,
                     showHideTransition: 'slide',
                 })
-                if (state == 1 || state == 100) {
+                //nếu đóng băng hoặc đang hình thành
+                if (state == 1 || state == 100 || state ==10) {
                     SearchUser(0);
-                } else {
+                }
+                else {
                     SearchUser(1);
                 }
                 $('#deleteAll').toggleClass('disabled');

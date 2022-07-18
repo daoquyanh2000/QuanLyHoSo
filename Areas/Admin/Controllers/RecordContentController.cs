@@ -38,6 +38,7 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
                           orderby hs.ID descending
                           select hs;
             ViewBag.search = keyword;
+            ViewBag.IDHoSo = ID;
             var model = results.ToPagedList(pageNumber, pageSizeNumber);
             return PartialView("ThanhPhanTable", model);
         }
