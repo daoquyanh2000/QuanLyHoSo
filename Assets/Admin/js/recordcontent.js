@@ -77,17 +77,22 @@
     })*/
     //thêm file vào PDFTable 
     var dt = new DataTransfer();
+    var firstTime = 0;
     $(document).on('change', '#inputPDF', function () {
-
         // thêm mới vào trong dom
         let html = '';
-        if ($('#HiddenThanhPhanHoSoID').val() == 0) {
+        //nếu chỉnh sửa thành phần thì không cần phải thêm thead vào nữa
+        if ($('#HiddenThanhPhanHoSoID').val() != 0) {
+            firstTime = 1;
+        }
+        //thêm thead vào 1 lần duy nhất
+        if (firstTime == 0  ) {
             html = `<tr>
                 <th>Tên file</th>
                 <th>Chức năng</th>
                 </tr>`;
         }
-
+        firstTime = 1;
         for (var i = 0; i < this.files.length; i++) {
             html += `
             <tr data-date=${this.files[i].lastModified} class="newPDF">
@@ -288,6 +293,15 @@ function CreateNoiDungThanhPhan() {
             $('#NoiDungThanhPhanModal').modal('hide');
             console.log(res.data);
             ShowThanhPhan($('#HiddenHoSoID').val());
+            $.toast({
+                heading: res.heading,
+                icon: res.icon,
+                text: res.message,
+                position: 'top-right',
+                stack: 10,
+                hideAfter: 7000,
+                showHideTransition: 'slide',
+            })
         }
     })
 }
