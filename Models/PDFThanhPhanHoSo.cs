@@ -15,6 +15,7 @@ namespace QuanLyHoSo.Models
         public long IDThanhPhan { get; set; }
         public string TenPDF { get; set; }
         public string PathPDF { get; set; }   
+        public byte[] DataPDF { get; set; }
         public byte TrangThai { get; set; }
 
     }
