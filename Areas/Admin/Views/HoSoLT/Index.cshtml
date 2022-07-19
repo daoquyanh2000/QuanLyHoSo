@@ -31,21 +31,15 @@
                                 </span>
                                 <span>Hình thành</span>
                             </button>
-                            <a href="~/Assets/Excel/Record/RecordTemplate.xlsx" class="btn btn-outline-secondary" target="_blank">
+
+                            <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" id="excelModalBtn"
+                                    data-bs-target="#excelModal">
                                 <span>
-                                    <i class="bi bi-cloud-arrow-down"></i>
+                                    <i class="bi bi-plus-circle-fill"></i>
                                 </span>
-                                <span>Tập tin mẫu</span>
-                            </a>
-                            <button type="button" class="btn btn-outline-secondary">
-                                <input type="file" id="excelUpload" onchange=" ModalExcel()" name="excelUpload" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" class="custom-file-upload" />
-                                <label for="excelUpload" class="custom-file-upload ">
-                                    <span>
-                                        <i class="bi bi-paperclip"></i>
-                                    </span>
-                                    <span>Thêm từ biểu mẫu</span>
-                                </label>
+                                <span>Thêm từ excel</span>
                             </button>
+
                             <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" id="modal-on"
                                     data-bs-target="#staticBackdrop">
                                 <span>
@@ -125,7 +119,7 @@
         <!-- content end  -->
 </main>
 
-<!-- modal start -->
+<!-- modal hồ sơ  -->
 <section>
     <div class="modal fade" id="staticBackdrop" aria-hidden="true" aria-labelledby="staticBackdropLabel" tabindex="-1">
         <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg ">
@@ -228,27 +222,55 @@
     </div>
 </section>
 <!-- modal end -->
-<!-- modal start -->
-<section>
-    <div class="modal fade" id="ExcelModal" aria-hidden="true" aria-labelledby="ExcelModalLabel" tabindex="-1">
-        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg ">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title " id="ExcelModalLabel">Thông tin tài khoản hợp lệ</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="container" id="excelContainer">
+
+<!-- modal excel -->
+<div class="modal fade" id="excelModal" aria-hidden="true" aria-labelledby="excelModalLabel" tabindex="-1">
+    <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-fullscreen ">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title " id="ThanhPhanModalLabel">Thêm hồ sơ từ excel</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="btn-toolbar justify-content-between py-3" role="toolbar" aria-label="Toolbar with button groups">
+                        <div class="btn-group" role="group" aria-label="First group">
+                            <button type="button" class="btn btn-outline-secondary disabled" id="DeleteAllThanhPhan" onclick="DeleteAll()">
+                                <span>
+                                    <i class="fa-solid fa-trash-can"></i>
+                                </span>
+                                <span>Xóa thành phần</span>
+                            </button>
+                            <a href="~/Assets/Excel/Record/RecordTemplate.xlsx" class="btn btn-outline-secondary" target="_blank">
+                                <span>
+                                    <i class="bi bi-cloud-arrow-down"></i>
+                                </span>
+                                <span>Tập tin mẫu</span>
+                            </a>
+                            <button type="button" class="btn btn-outline-secondary">
+                                <input type="file" id="inputExcel"  name="inputExcel" accept=".zip,.rar,.7zip" class="custom-file-upload" />
+                                <label for="inputExcel" class="custom-file-upload ">
+                                    <span>
+                                        <i class="bi bi-paperclip"></i>
+                                    </span>
+                                    <span>Chọn File</span>
+                                </label>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="hoSoExcelTable">
+
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                    <button type="button" onclick="UpExcel()" class="btn btn-primary">Lưu người dùng</button>
-                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-dismiss="modal">Đóng</button>
+                <button type="submit" form="userForm" class="btn btn-primary">Lưu</button>
             </div>
         </div>
     </div>
-</section>
+</div>
 <!-- modal end -->
 <!-- Modal thanh phan-->
 <div class="modal fade" id="ThanhPhanModal" aria-hidden="true" aria-labelledby="ThanhPhanModalLabel" tabindex="-1">
@@ -270,14 +292,14 @@
                             </button>
                             <button type="button" class="btn btn-outline-secondary " id="ThemThanhPhan">
                                 <span>
-                                    <i class="fa-solid fa-trash-can"></i>
+                                    <i class="bi bi-plus-circle-fill"></i>
                                 </span>
                                 <span>Thêm thành phần</span>
                             </button>
                         </div>
                         <div class="input-group">
                             <input type="text" name="name" value="" class="rounded border-1" id="searchThanhPhan" />
-                            <button for="searchInput" id="searchBtnThanhPhan" class="btn btn-outline-secondary" onclick="ShowThanhPhan(event)">
+                            <button for="searchInput" id="searchBtnThanhPhan" class="btn btn-outline-secondary" onclick="SearchThanhPhan()">
                                 <span>
                                     <i class="fa-solid fa-magnifying-glass"></i>
                                 </span>
@@ -392,8 +414,5 @@
 
 <script src="~/Assets/Admin/js/recordcontent.js"></script>
 <script src="~/Assets/Admin/js/hosoLT.js"></script>
-
-
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.6.347/pdf.min.js"></script>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.6.347/pdf_viewer.min.css" rel="stylesheet" type="text/css" />
+<script src="~/Assets/Admin/js/hosoExcel.js"></script>
 

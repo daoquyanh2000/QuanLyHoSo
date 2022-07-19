@@ -21,26 +21,33 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
         {
             return View();
         }
-        public PartialViewResult Search(long ID, int? page, string keyword= "")
+        public PartialViewResult Search(long ID, int? page,int? HoSoState, string keyword = "")
         {
 
 
             int pageNumber = (page ?? 1);
             int pageSizeNumber = 3;
-            if (keyword == null) keyword = "";
+            keyword = keyword.ToLower();
 
             var results = from hs in ThanhPhanHoSoDao.GetAllContentByID(ID)
                           where (hs.TrangThai !=10)
-                          && (hs.TieuDe.Contains(keyword)
-                          || hs.TenLoaiThanhPhan.Contains(keyword)
-                          || hs.KiHieu.Contains(keyword)
-                          || hs.ChuThich.Contains(keyword))
+                          && (hs.TieuDe.ToLower().Contains(keyword)
+                          || hs.TenLoaiThanhPhan.ToLower().Contains(keyword)
+                          || hs.KiHieu.ToLower().Contains(keyword)
+                          || hs.ChuThich.ToLower().Contains(keyword))
                           orderby hs.ID descending
                           select hs;
             ViewBag.search = keyword;
             ViewBag.IDHoSo = ID;
             var model = results.ToPagedList(pageNumber, pageSizeNumber);
-            return PartialView("ThanhPhanTable", model);
+            if (HoSoState == 0) { 
+            return PartialView("ThanhPhanTable_0", model);
+            }
+            else
+            {
+                return PartialView("ThanhPhanTable_1", model);
+
+            }
         }
         public ActionResult View(long ID)
         {
@@ -167,7 +174,20 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
                 return jsonResult;
             }
         }
-            public ActionResult ViewPDF(long ID)
+        public ActionResult Delete(long ID)
+        {
+            {
+                ThanhPhanHoSoDao.DeleteByID(ID, Session["UserNameNV"].ToString());
+                JsonResult jsonResult = Json(new
+                {
+                    heading = "Thành công",
+                    status = "success",
+                    message = "Lưu thành công!"
+                }, JsonRequestBehavior.AllowGet); ;
+                return jsonResult;
+            }
+        }
+        public ActionResult ViewPDF(long ID)
         {
            
             var url = Stuff.GetList<PDFThanhPhanHoSo>($@"
@@ -251,5 +271,6 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
             }, JsonRequestBehavior.AllowGet);
             return jsonResult;
         }
+
     }
 }

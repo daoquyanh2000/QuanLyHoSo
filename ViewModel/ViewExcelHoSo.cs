@@ -7,6 +7,7 @@ namespace QuanLyHoSo.ViewModel
 {
     public class ViewExcelHoSo
     {
+        public string TenThuMuc { get; set; }
         public string TieuDe { get; set; }
         public string MaHoSo { get; set; }
         public string KyHieu { get; set; }

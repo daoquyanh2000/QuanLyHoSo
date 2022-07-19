@@ -83,6 +83,8 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Data.Linq" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Security" />
     <Reference Include="System.Threading.Tasks" />
     <Reference Include="System.Web.DynamicData" />
@@ -159,6 +161,7 @@
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
     <Compile Include="Areas\Admin\Controllers\CategoryController.cs" />
     <Compile Include="Areas\Admin\Controllers\HomeController.cs" />
+    <Compile Include="Areas\Admin\Controllers\HoSoExcelController.cs" />
     <Compile Include="Areas\Admin\Controllers\HoSoHTController.cs" />
     <Compile Include="Areas\Admin\Controllers\HoSoLTController.cs" />
     <Compile Include="Areas\Admin\Controllers\LoginController.cs" />
@@ -204,11 +207,13 @@
     <Compile Include="ViewModel\ViewExcelKho.cs" />
     <Compile Include="ViewModel\ViewNgan.cs" />
     <Compile Include="ViewModel\ViewThanhPhanHoSo.cs" />
+    <Compile Include="ViewModel\ViewThanhPhanHoSoExcel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\Admin\css\admin.css" />
     <Content Include="Assets\Admin\css\login.css" />
     <Content Include="Assets\Admin\js\category.js" />
+    <Content Include="Assets\Admin\js\hosoExcel.js" />
     <Content Include="Assets\Admin\js\recordcontent.js" />
     <Content Include="Assets\Admin\js\hosoLT.js" />
     <Content Include="Assets\Admin\js\login.js" />
@@ -644,10 +649,12 @@
     <Content Include="Assets\Admin\pdf.js\web\standard_fonts\LICENSE_FOXIT" />
     <Content Include="Assets\Admin\pdf.js\web\standard_fonts\LICENSE_LIBERATION" />
     <Content Include="Assets\Admin\pdf.js\web\viewer.js.map" />
-    <Content Include="Areas\Admin\Views\RecordContent\ThanhPhanTable.cshtml" />
+    <Content Include="Areas\Admin\Views\RecordContent\ThanhPhanTable_0.cshtml" />
     <Content Include="Assets\Admin\pdf\test12.pdf" />
     <Content Include="Assets\Admin\pdf.js\web\test12.pdf" />
-    <Content Include="Areas\Admin\Views\RecordContent\PDFTable.cshtml" />
+    <Content Include="Areas\Admin\Views\RecordContent\ThanhPhanTable_1.cshtml" />
+    <Content Include="Areas\Admin\Views\HoSoExcel\HoSoExcelTable.cshtml" />
+    <Content Include="Areas\Admin\Views\HoSoExcel\ThanhPhanHoSoExcelTable.cshtml" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />
@@ -763,6 +770,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Areas\Admin\Data\" />
+    <Folder Include="Assets\Admin\zip\" />
     <Folder Include="Assets\Excel\Storage\" />
     <Folder Include="Assets\Home\css\" />
     <Folder Include="Assets\Home\js\" />

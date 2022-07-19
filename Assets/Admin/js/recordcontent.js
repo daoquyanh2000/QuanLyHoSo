@@ -5,10 +5,26 @@
         //clear form 
         ResetForm();
     })
+    // Execute a function when the user presses a key on the keyboard
+    let input = $('#searchThanhPhan').get(0);
+    input.addEventListener("keypress", function (event) {
+        // If the user presses the "Enter" key on the keyboard
+        if (event.key === "Enter") {
+            // Cancel the default action, if needed
+            event.preventDefault();
+            // Trigger the button element with a click
+            $('#searchBtnThanhPhan').click();
+        }
+    });
     // form validation
     $("#NoiDungThanhPhanForm").validate({
         rules: {
-            "TenNgan": {
+            "TieuDeThanhPhan": {
+                required: true,
+                maxlength: 20,
+                minlength: 3,
+            },
+            "MaThanhPhan": {
                 required: true,
                 maxlength: 20,
                 minlength: 3,
@@ -16,34 +32,39 @@
             "TrangThai": {
                 required: true,
             },
-            "IDKho": {
+            "IDLoaiThanhPhan": {
                 required: true,
             },
-            "KichThuoc": {
-                required: true,
+            "ChuThich": {
+                maxlength: 20,
             },
-            "MaNgan": {
-                required: true,
+            "KiHieu": {
                 maxlength: 20,
             },
         },
         messages: {
-            "TenNgan": {
-                required: "Bắt buộc nhập tên ngăn",
+            "TieuDeThanhPhan": {
+                required: "Bắt buộc nhập tiêu đề",
+                maxlength: "Hãy nhập tối đa 20 ký tự",
+                minlength: "Hãy nhập ít nhất 3 ký tự"
+            },
+            "MaThanhPhan": {
+                required: "Bắt buộc nhập mã thành phần",
                 maxlength: "Hãy nhập tối đa 20 ký tự",
                 minlength: "Hãy nhập ít nhất 3 ký tự"
             },
             "TrangThai": {
                 required: "Bắt buộc nhập trạng thái",
-            }, "MaNgan": {
-                required: "Bắt buộc nhập mã ngăn",
+            },
+            "IDLoaiThanhPhan": {
+                required: "Bắt buộc nhập loại thành phần",
+            },
+            "ChuThich": {
                 maxlength: "Hãy nhập tối đa 20 ký tự",
+
             },
-            "IDKho": {
-                required: "Bắt buộc nhập kho chứa ngăn",
-            },
-            "KichThuoc": {
-                required: "Bắt buộc nhập kích thước",
+            "KiHieu": {
+                maxlength: "Hãy nhập tối đa 20 ký tự",
             },
         },
         submitHandler: function () {
@@ -51,7 +72,7 @@
         }
     });
 
-    //thêm file vào PDFTable 
+    //add sự kiện thêm file PDF trong thành phần hồ sơ
     var dt = new DataTransfer();
     var firstTime = 0;
     $(document).on('change', '#inputPDF', function () {
@@ -146,7 +167,6 @@
             }
         }
     })
-
 })
 function ResetForm() {
     $('#NoiDungThanhPhanModal form :input').val('');
@@ -160,29 +180,56 @@ function ResetForm() {
 
 /// code của thành phần
 //bấm vào thì hiện thành phần của hồ sơ đấy
-function ShowThanhPhan(ID, state) {
+function ShowThanhPhan(ID) {
     //set ID của hồ sơ để về sau còn lưu thành phần
     $('#HiddenHoSoID').val(ID);
-
+    //lấy thông tin trong ô tìm kiếm
+    let page = $('#ThanhPhanModal').find('.active').text()
+    let keyword =$('#searchThanhPhan').val();
     $('.checkboxs').prop('checked', false);
     $.ajax({
         url: "/admin/RecordContent/Search",
         data: {
-            ID: ID
+            ID: $('#HiddenHoSoID').val(),
+            keyword: keyword,
+            page: page,
+            HoSoState: HoSoState,
         },
         type: 'post',
         success: function (res) {
             $('#DeleteAllThanhPhan').addClass('disabled', true);
             $('#ThanhPhanTable').html(res);
             $("#ThanhPhanModal").modal('show');
+            if (HoSoState == 1) {
+                $('#ThemThanhPhan').prop('disabled', true)
+            } else {
+                $('#ThemThanhPhan').prop('disabled', false);
+                $('#NoiDungThanhPhanForm :input').prop('disabled', false);
 
+
+            }
         }
     })
 }
-
+function SearchThanhPhan() {
+    let page = $('#ThanhPhanModal').find('.active').text()
+    let keyword = $('#searchThanhPhan').val();
+    $.ajax({
+        url: "/admin/RecordContent/Search",
+        data: {
+            ID: $('#HiddenHoSoID').val(),
+            keyword: keyword,
+            page:page,
+        },
+        type: 'post',
+        success: function (res) {
+            $('#ThanhPhanTable').html(res);
+        }
+    })
+}
 /// code của nội dung thành phần
 //bấm vào show nội dung thành phần
-function ShowNoiDungThanhPhan(ID, state) {
+function ShowNoiDungThanhPhan(ID, HoSoState) {
     $("#NoiDungThanhPhanModal").modal('toggle');
     $('#HiddenThanhPhanHoSoID').val(ID);
     dt = new DataTransfer();
@@ -222,7 +269,7 @@ function ShowNoiDungThanhPhan(ID, state) {
                 </td>
                 <td>
                     <div class="btn-group btn-group-sm" role="group" aria-label="Basic mixed styles example">
-                        <button type="button" class="btn btn-outline-secondary " onclick="ViewPDF(${e.ID})" >
+                        <button type="button" class="btn btn-outline-secondary oldPDF-Button" onclick="ViewPDF(${e.ID})" >
                             <span>Xem</span>
                         </button>
                         <button type="button" class="btn btn-outline-secondary " onclick="DeletePDF(${e.ID},this)">
@@ -235,8 +282,16 @@ function ShowNoiDungThanhPhan(ID, state) {
             })
 
             $('#tablePDF').html(html);
-
-            
+            $('#IframePdf').hide();
+            //nếu state ==1 thì đóng băng lại chỉ cho xem thôi
+            if (HoSoState == 1) {
+                $('#NoiDungThanhPhanForm :input').prop('disabled', true);
+                $('.oldPDF ').find('button:first').prop('disabled', false);
+                $('#NoiDungThanhPhanModal button[type="submit"]').prop('disabled', true);
+            } else {
+                $('#NoiDungThanhPhanForm :input').prop('disabled', false);
+            }
+           
         }
     })
 }
@@ -293,7 +348,29 @@ function CreateNoiDungThanhPhan() {
         }
     })
 }
-
+function DeleteNoiDungThanhPhan(ID) {
+    if (confirm("Bạn có chắc chắn xóa người dùng này không?")) {
+        event.preventDefault();
+        $.ajax({
+            url: "/admin/RecordContent/delete",
+            data: { ID: ID },
+            type: 'get',
+            dataType: 'json',
+            success: function (res) {
+                $.toast({
+                    heading: res.heading,
+                    icon: res.icon,
+                    text: res.message,
+                    position: 'top-right',
+                    stack: 10,
+                    hideAfter: 7000,
+                    showHideTransition: 'slide',
+                })
+                ShowThanhPhan($('#HiddenHoSoID').val());
+            }
+        })
+    }
+}
 function DeleteAll() {
     let arr = [];
     let checkboxs = $(".checkboxs:checked");

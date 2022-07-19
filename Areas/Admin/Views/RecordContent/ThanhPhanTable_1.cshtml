@@ -36,12 +36,10 @@
                     <td>@item.NguoiTao</td>
                     <td>
                         <div class="btn-group btn-group-sm" role="group" aria-label="Basic mixed styles example">
-                            <button type="button" class="btn btn-outline-secondary" onclick="ShowNoiDungThanhPhan(@item.ID,0)">
-                                <span>Sửa</span>
+                            <button type="button" class="btn btn-outline-secondary" onclick="ShowNoiDungThanhPhan(@item.ID,1)">
+                                <span>Xem</span>
                             </button>
-                            <button type="button" class="btn btn-outline-secondary">
-                                <span>Xóa </span>
-                            </button>
+
                         </div>
                     </td>
                 </tr>
@@ -67,7 +65,7 @@
 
     @Html.PagedListPager(Model,
     page => Url.Action("Search",
-    new { keyword = ViewBag.search, page = page ,ID=ViewBag.IDHoSo }),
+    new { keyword = ViewBag.search, page = page, ID = ViewBag.IDHoSo }),
 PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(new AjaxOptions() { HttpMethod = "GET", UpdateTargetId = "ThanhPhanTable" }))
     <!-- Kết thúc -->
 </div>

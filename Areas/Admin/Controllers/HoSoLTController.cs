@@ -192,67 +192,72 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
         {
             try
             {
-                string pathFile = string.Empty;
-                string fileName = "Record.xlsx";
-                string pathFolder = "/Assets/Excel/Record";
-                if (Request.Files.Count > 0)
+                //test
                 {
-                    HttpFileCollectionBase files = Request.Files;
-                    for (int i = 0; i < files.Count; i++)
+                    string pathFile = string.Empty;
+                    string fileName = "Record.xlsx";
+                    string pathFolder = "/Assets/Excel/Record";
+                    if (Request.Files.Count > 0)
                     {
-                        HttpPostedFileBase file = files[i];
-                        //tao folder
-                        Directory.CreateDirectory(Server.MapPath(pathFolder));
-                        // tao duong dan path
-                        pathFile = Path.Combine(Server.MapPath(pathFolder), fileName);
-                        file.SaveAs(pathFile);
+                        HttpFileCollectionBase files = Request.Files;
+                        for (int i = 0; i < files.Count; i++)
+                        {
+                            HttpPostedFileBase file = files[i];
+                            //tao folder
+                            Directory.CreateDirectory(Server.MapPath(pathFolder));
+                            // tao duong dan path
+                            pathFile = Path.Combine(Server.MapPath(pathFolder), fileName);
+                            file.SaveAs(pathFile);
+                        }
                     }
-                }
-                Session["pathFile"] = pathFile;
-                var listeExcelKho = Stuff.GetListExcel<ViewExcelHoSo>(pathFile);
-                var listDm = Stuff.GetAll<DanhMuc>().Where(x => x.TrangThai == 1);
-                var lisNgan = Stuff.GetAll<Ngan>().Where(x => x.TrangThai == 1);
-                var listKho = Stuff.GetAll<Kho>().Where(x => x.TrangThai == 1);
-                var listType = Stuff.GetAll<LoaiHoSo>().Where(x => x.TrangThai == 1);
+                    Session["pathFile"] = pathFile;
+                    var listeExcelKho = Stuff.GetListExcel<ViewExcelHoSo>(pathFile);
+                    var listDm = Stuff.GetAll<DanhMuc>().Where(x => x.TrangThai == 1);
+                    var lisNgan = Stuff.GetAll<Ngan>().Where(x => x.TrangThai == 1);
+                    var listKho = Stuff.GetAll<Kho>().Where(x => x.TrangThai == 1);
+                    var listType = Stuff.GetAll<LoaiHoSo>().Where(x => x.TrangThai == 1);
 
-                var model = from hs in listeExcelKho
-                            where hs.TieuDe != null &&
-                                    hs.MaHoSo != null &&
-                                    hs.KyHieu != null &&
-                                    hs.MaDanhMuc != null &&
-                                    hs.MaKho != null &&
-                                    hs.MaNgan != null &&
-                                    hs.MaLoaiHoSo != null &&
-                                    hs.ThoiGianLuuTru != null &&
-                                    hs.ThoiHanBaoQuan != null
-                            join k in listKho
-                            on hs.MaKho equals k.MaKho
-                            join n in lisNgan
-                            on hs.MaNgan equals n.MaNgan
-                            join dm in listDm
-                            on hs.MaDanhMuc equals dm.MaDanhMuc
-                            join t in listType
-                            on hs.MaLoaiHoSo equals t.MaLoaiHoSo
-                            select new ViewHoSo
-                            {
-                                TieuDe = hs.TieuDe,
-                                MaHoSo = hs.MaHoSo,
-                                KyHieu = hs.KyHieu,
-                                MaDanhMuc = hs.MaDanhMuc,
-                                MaNgan = hs.MaNgan,
-                                MaKho = hs.MaKho,
-                                MaLoaiHoSo = hs.MaLoaiHoSo,
-                                MoTa = hs.MoTa,
-                                ThoiGianLuuTru = hs.ThoiGianLuuTru,
-                                ThoiHanBaoQuan = hs.ThoiHanBaoQuan,
-                                TenDanhMuc = dm.TenDanhMuc,
-                                TenKho = k.TenKho,
-                                TenNgan = n.TenNgan,
-                                TenLoaiHoSo = t.TenLoaiHoSo
-                            };
-                model = model.ToList();
-                TempData["listExcelHoSo"] = model;
-                return PartialView(model);
+                    var model = from hs in listeExcelKho
+                                where hs.TieuDe != null &&
+                                        hs.MaHoSo != null &&
+                                        hs.KyHieu != null &&
+                                        hs.MaDanhMuc != null &&
+                                        hs.MaKho != null &&
+                                        hs.MaNgan != null &&
+                                        hs.MaLoaiHoSo != null &&
+                                        hs.ThoiGianLuuTru != null &&
+                                        hs.ThoiHanBaoQuan != null
+                                join k in listKho
+                                on hs.MaKho equals k.MaKho
+                                join n in lisNgan
+                                on hs.MaNgan equals n.MaNgan
+                                join dm in listDm
+                                on hs.MaDanhMuc equals dm.MaDanhMuc
+                                join t in listType
+                                on hs.MaLoaiHoSo equals t.MaLoaiHoSo
+                                select new ViewHoSo
+                                {
+                                    TieuDe = hs.TieuDe,
+                                    MaHoSo = hs.MaHoSo,
+                                    KyHieu = hs.KyHieu,
+                                    MaDanhMuc = hs.MaDanhMuc,
+                                    MaNgan = hs.MaNgan,
+                                    MaKho = hs.MaKho,
+                                    MaLoaiHoSo = hs.MaLoaiHoSo,
+                                    MoTa = hs.MoTa,
+                                    ThoiGianLuuTru = hs.ThoiGianLuuTru,
+                                    ThoiHanBaoQuan = hs.ThoiHanBaoQuan,
+                                    TenDanhMuc = dm.TenDanhMuc,
+                                    TenKho = k.TenKho,
+                                    TenNgan = n.TenNgan,
+                                    TenLoaiHoSo = t.TenLoaiHoSo
+                                };
+                    model = model.ToList();
+                    TempData["listExcelHoSo"] = model;
+                    return PartialView(model);
+                }
+
+
             }
             catch (Exception ex)
             {
@@ -293,7 +298,6 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
                 message = $"Lưu {tk} bản ghi thành công!"
             }, JsonRequestBehavior.AllowGet);
         }
-
         //đóng băng hồ sơ
         public JsonResult Change(int ID, int state)
         {
@@ -309,5 +313,7 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
                 message = "Lưu thành công!"
             }, JsonRequestBehavior.AllowGet);
         }
+
+        
     }
 }

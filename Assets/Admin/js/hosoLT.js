@@ -4,6 +4,7 @@ var kho = "";
 var ngan = "";
 var kyHieu = "";
 var maHoSo = "";
+var HoSoState=0;
 $(function () {
     // tìm kiếm khi bấm enter
     $(document).on('keypress', '#searchInput_0', function (e) {
@@ -214,9 +215,11 @@ function SearchUser(state) {
     let page = $('.pagination').find('a').html();
     if (state == 0) {
         url = "/admin/HoSoLT/search/"
+        HoSoState = 0;
     }
     else {
         url = "/admin/HoSoHT/search/"
+        HoSoState = 1;
     }
 
     $.ajax({
