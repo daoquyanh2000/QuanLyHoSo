@@ -223,12 +223,13 @@
 </section>
 <!-- modal end -->
 
-<!-- modal excel -->
+
+<!-- modal excel hồ sơ-->
 <div class="modal fade" id="excelModal" aria-hidden="true" aria-labelledby="excelModalLabel" tabindex="-1">
     <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-fullscreen ">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title " id="ThanhPhanModalLabel">Thêm hồ sơ từ excel</h5>
+                <h5 class="modal-title " id="excelModalLabel">Thêm hồ sơ từ excel</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -248,7 +249,7 @@
                                 <span>Tập tin mẫu</span>
                             </a>
                             <button type="button" class="btn btn-outline-secondary">
-                                <input type="file" id="inputExcel"  name="inputExcel" accept=".zip,.rar,.7zip" class="custom-file-upload" />
+                                <input type="file" id="inputExcel" name="inputExcel" accept=".zip,.rar,.7zip" class="custom-file-upload" />
                                 <label for="inputExcel" class="custom-file-upload ">
                                     <span>
                                         <i class="bi bi-paperclip"></i>
@@ -259,19 +260,125 @@
                         </div>
                     </div>
 
-                    <div id="hoSoExcelTable">
+                    <div id="HoSoExcelTable">
 
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-dismiss="modal">Đóng</button>
-                <button type="submit" form="userForm" class="btn btn-primary">Lưu</button>
+                <button type="button" class="btn btn-primary" onclick="SaveExcel()">Lưu</button>
             </div>
         </div>
     </div>
 </div>
 <!-- modal end -->
+
+
+<!-- modal excel thành phần hồ sơ-->
+<div class="modal fade" id="excelContentModal" aria-hidden="true" aria-labelledby="excelContentModalLabel" tabindex="-1">
+    <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-fullscreen ">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title " id="excelContentModalLabel">Xem trước thành phần hồ sơ</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    @*                    <div class="btn-toolbar justify-content-between py-3" role="toolbar" aria-label="Toolbar with button groups">
+                            <div class="btn-group" role="group" aria-label="First group">
+                                <button type="button" class="btn btn-outline-secondary disabled" id="DeleteAllThanhPhan" onclick="DeleteAll()">
+                                    <span>
+                                        <i class="fa-solid fa-trash-can"></i>
+                                    </span>
+                                    <span>Xóa thành phần</span>
+                                </button>
+                                <a href="~/Assets/Excel/Record/RecordTemplate.xlsx" class="btn btn-outline-secondary" target="_blank">
+                                    <span>
+                                        <i class="bi bi-cloud-arrow-down"></i>
+                                    </span>
+                                    <span>Tập tin mẫu</span>
+                                </a>
+                                <button type="button" class="btn btn-outline-secondary">
+                                    <input type="file" id="inputExcel" name="inputExcel" accept=".zip,.rar,.7zip" class="custom-file-upload" />
+                                    <label for="inputExcel" class="custom-file-upload ">
+                                        <span>
+                                            <i class="bi bi-paperclip"></i>
+                                        </span>
+                                        <span>Chọn File</span>
+                                    </label>
+                                </button>
+                            </div>
+                        </div>*@
+
+                    <div id="ThanhPhanHoSoExcelTable">
+
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#excelModal">Quay lại</button>
+                <button type="button"  class="btn btn-primary" onclick="SaveExcel()">Lưu</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- modal end -->
+
+
+<!-- modal excel PDF hồ sơ-->
+<div class="modal fade" id="excelPDFModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="excelPDFModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-fullscreen ">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title " id="excelPDFModalLabel">Xem trước nội dung thành phần hồ sơ</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    @*                    <div class="btn-toolbar justify-content-between py-3" role="toolbar" aria-label="Toolbar with button groups">
+                            <div class="btn-group" role="group" aria-label="First group">
+                                <button type="button" class="btn btn-outline-secondary disabled" id="DeleteAllThanhPhan" onclick="DeleteAll()">
+                                    <span>
+                                        <i class="fa-solid fa-trash-can"></i>
+                                    </span>
+                                    <span>Xóa thành phần</span>
+                                </button>
+                                <a href="~/Assets/Excel/Record/RecordTemplate.xlsx" class="btn btn-outline-secondary" target="_blank">
+                                    <span>
+                                        <i class="bi bi-cloud-arrow-down"></i>
+                                    </span>
+                                    <span>Tập tin mẫu</span>
+                                </a>
+                                <button type="button" class="btn btn-outline-secondary">
+                                    <input type="file" id="inputExcel" name="inputExcel" accept=".zip,.rar,.7zip" class="custom-file-upload" />
+                                    <label for="inputExcel" class="custom-file-upload ">
+                                        <span>
+                                            <i class="bi bi-paperclip"></i>
+                                        </span>
+                                        <span>Chọn File</span>
+                                    </label>
+                                </button>
+                            </div>
+                        </div>*@
+
+                    <div id="PDFExcelTable">
+
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-target="#excelContentModal" data-bs-dismiss="modal" data-bs-toggle="modal">Quay lại</button>
+                <button type="button" class="btn btn-primary" onclick="SaveExcel()">Lưu</button>
+
+            </div>
+        </div>
+    </div>
+</div>
+<!-- modal end -->
+
+
+
 <!-- Modal thanh phan-->
 <div class="modal fade" id="ThanhPhanModal" aria-hidden="true" aria-labelledby="ThanhPhanModalLabel" tabindex="-1">
     <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-fullscreen ">
@@ -378,7 +485,7 @@
                                     </div>
                                     <div>
                                         <button type="button" class="btn btn-outline-secondary">
-                                            <input type="file" id="inputPDF" name="postedFiles" accept="application/pdf" multiple class="custom-file-upload" >
+                                            <input type="file" id="inputPDF" name="postedFiles" accept="application/pdf" multiple class="custom-file-upload">
                                             <label for="inputPDF" class="custom-file-upload ">
                                                 <span>
                                                     <i class="bi bi-paperclip"></i>
@@ -395,8 +502,8 @@
                                 </div>
 
                             </div>
-                            <div class="col-lg-8 border-1" >
-                                <iframe  id="IframePdf"  src="" height="100%" width="100%" style="height:140vh;width:100%;display:none"></iframe>
+                            <div class="col-lg-8 border-1">
+                                <iframe id="IframePdf" src="" height="100%" width="100%" style="height:140vh;width:100%;display:none"></iframe>
 
                             </div>
                         </div>

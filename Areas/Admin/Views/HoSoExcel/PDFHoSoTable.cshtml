@@ -1,0 +1,36 @@
+﻿@model IEnumerable<QuanLyHoSo.Models.PDFThanhPhanHoSo>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-4">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Tên file</th>
+                        <th>Chức năng</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach(var item in Model)
+                {
+                        <tr>
+                            <td>
+                                @item.TenPDF
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-outline-secondary " onclick="PerviewPDF(@("'" + item.PathPDF +"'"))">
+                                    <span>
+                                        <i class="fa-solid fa-eye"></i>
+                                    </span>
+                                    <span>Xem trước</span>
+                                </button>
+                            </td>
+                        </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+        <div class="col-lg-8">
+            <iframe id="IframePdfExcel" src="" height="100%" width="100%" style="height:140vh;width:100%;display:none"></iframe>
+        </div>
+    </div>
+</div>

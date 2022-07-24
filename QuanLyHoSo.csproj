@@ -655,6 +655,7 @@
     <Content Include="Areas\Admin\Views\RecordContent\ThanhPhanTable_1.cshtml" />
     <Content Include="Areas\Admin\Views\HoSoExcel\HoSoExcelTable.cshtml" />
     <Content Include="Areas\Admin\Views\HoSoExcel\ThanhPhanHoSoExcelTable.cshtml" />
+    <Content Include="Areas\Admin\Views\HoSoExcel\PDFHoSoTable.cshtml" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />

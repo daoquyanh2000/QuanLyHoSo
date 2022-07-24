@@ -3,11 +3,10 @@
     <tr>
         <th>Tên thư mục</th>
         <th>Tiêu đề thành phần</th>
+        <th>Mã thành phần</th>
         <th>Loại thành phần</th>
         <th>Ký hiệu</th>
         <th>Chú thích</th>
-        <th>Ngày tạo</th>
-        <th>Người tạo</th>
         <th>Chức năng</th>
     </tr>
     @foreach (var item in Model)
@@ -15,14 +14,13 @@
     <tr>
         <td>@item.TenThuMuc</td>
         <td>@item.TieuDe</td>
+        <td>@item.MaThanhPhan</td>
         <td>@item.TenLoaiThanhPhan</td>
         <td>@item.KiHieu</td>
         <td>@item.ChuThich</td>
-        <td>@item.NgayTao</td>
-        <td>@item.NguoiTao</td>
         <td>
             <div class="btn-group btn-group-sm" role="group" aria-label="Basic mixed styles example">
-                <button type="button" class="btn btn-outline-secondary" onclick="ViewThanhPhanExcel(@("'" + item.TenThuMuc +"'"))">
+                <button type="button" class="btn btn-outline-secondary" onclick="ViewPDFExcel(@("'" + item.TenThuMuc +"'"))">
                     <span>Xem nội dung thành phần</span>
                 </button>
             </div>

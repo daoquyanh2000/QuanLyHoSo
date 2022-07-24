@@ -219,7 +219,8 @@ function SearchThanhPhan() {
         data: {
             ID: $('#HiddenHoSoID').val(),
             keyword: keyword,
-            page:page,
+            page: page,
+            HoSoState: HoSoState
         },
         type: 'post',
         success: function (res) {

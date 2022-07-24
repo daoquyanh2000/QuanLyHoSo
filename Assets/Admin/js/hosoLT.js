@@ -269,7 +269,10 @@ function ChangeState(ID, state) {
     if (confirm("Bạn có muốn thay đổi trạng thái hồ sơ không?")) {
         $.ajax({
             url: "/admin/hosolt/Change",
-            data: { ID: ID, state: state },
+            data: {
+                ID: ID,
+                state: state
+            },
             type: "get",
             dataType: "json",
             success: function (res) {
