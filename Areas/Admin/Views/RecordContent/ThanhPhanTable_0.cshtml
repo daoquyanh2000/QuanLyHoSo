@@ -13,6 +13,7 @@
                 </th>
                 <th>Tiêu đề thành phần</th>
                 <th>Loại thành phần</th>
+                <th>Mã định danh</th>
                 <th>Ký hiệu</th>
                 <th>Chú thích</th>
                 <th>Ngày tạo</th>
@@ -24,27 +25,28 @@
             <input type="number" name="hidden" value="0" style="display:none" id="HiddenID" />
             @foreach (var item in Model)
             {
-                <tr data-id="@item.ID">
-                    <td>
-                        <input type="checkbox" class="form-check-input checkboxs" name="checkboxs" data-id="@item.ID" />
-                    </td>
-                    <td>@item.TieuDe</td>
-                    <td>@item.TenLoaiThanhPhan</td>
-                    <td>@item.KiHieu</td>
-                    <td>@item.ChuThich</td>
-                    <td>@item.NgayTao</td>
-                    <td>@item.NguoiTao</td>
-                    <td>
-                        <div class="btn-group btn-group-sm" role="group" aria-label="Basic mixed styles example">
-                            <button type="button" class="btn btn-outline-secondary" onclick="ShowNoiDungThanhPhan(@item.ID,0)">
-                                <span>Sửa</span>
-                            </button>
-                            <button type="button" class="btn btn-outline-secondary" onclick="DeleteNoiDungThanhPhan(@item.ID)">
-                                <span>Xóa </span>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
+        <tr data-id="@item.ID">
+            <td>
+                <input type="checkbox" class="form-check-input checkboxs" name="checkboxs" data-id="@item.ID" />
+            </td>
+            <td>@item.TieuDe</td>
+            <td>@item.TenLoaiThanhPhan</td>
+            <td>@item.MaThanhPhan</td>
+            <td>@item.KiHieu</td>
+            <td>@item.ChuThich</td>
+            <td>@item.NgayTao</td>
+            <td>@item.NguoiTao</td>
+            <td>
+                <div class="btn-group btn-group-sm" role="group" aria-label="Basic mixed styles example">
+                    <button type="button" class="btn btn-outline-secondary" onclick="ShowNoiDungThanhPhan(@item.ID,0)">
+                        <span>Sửa</span>
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary" onclick="DeleteNoiDungThanhPhan(@item.ID)">
+                        <span>Xóa </span>
+                    </button>
+                </div>
+            </td>
+        </tr>
                 @*                <tr style="display: none" id="tr_@item.ID">
                         <td colspan="12">
                             <div class="d-flex ">

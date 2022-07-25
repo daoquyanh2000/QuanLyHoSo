@@ -71,9 +71,18 @@
     <td>
         @item.ThoiGianLuuTru
     </td>
-    <td>
-        @item.ThoiHanBaoQuan
-    </td>
+    @if (item.ThoiHanBaoQuan == "0")
+    {
+        <td>
+            Vĩnh viễn
+        </td>
+    }
+    else
+    {
+        <td>
+            @item.ThoiHanBaoQuan
+        </td>
+    }
     <td>
         <div class="btn-group btn-group-sm" role="group" aria-label="Basic mixed styles example">
             <button type="button" class="btn btn-outline-secondary" onclick="ViewThanhPhanExcel(@("'" + item.TenThuMuc +"'"))">

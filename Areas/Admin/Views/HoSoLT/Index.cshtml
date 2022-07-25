@@ -222,8 +222,6 @@
     </div>
 </section>
 <!-- modal end -->
-
-
 <!-- modal excel hồ sơ-->
 <div class="modal fade" id="excelModal" aria-hidden="true" aria-labelledby="excelModalLabel" tabindex="-1">
     <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-fullscreen ">
@@ -236,17 +234,11 @@
                 <div class="container-fluid">
                     <div class="btn-toolbar justify-content-between py-3" role="toolbar" aria-label="Toolbar with button groups">
                         <div class="btn-group" role="group" aria-label="First group">
-                            <button type="button" class="btn btn-outline-secondary disabled" id="DeleteAllThanhPhan" onclick="DeleteAll()">
-                                <span>
-                                    <i class="fa-solid fa-trash-can"></i>
-                                </span>
-                                <span>Xóa thành phần</span>
-                            </button>
-                            <a href="~/Assets/Excel/Record/RecordTemplate.xlsx" class="btn btn-outline-secondary" target="_blank">
+                            <a id="linkExcel" href="/admin/hosoexcel/downloadzip" class="btn btn-outline-secondary">
                                 <span>
                                     <i class="bi bi-cloud-arrow-down"></i>
                                 </span>
-                                <span>Tập tin mẫu</span>
+                                <span>Tải file excel</span>
                             </a>
                             <button type="button" class="btn btn-outline-secondary">
                                 <input type="file" id="inputExcel" name="inputExcel" accept=".zip,.rar,.7zip" class="custom-file-upload" />
@@ -273,8 +265,6 @@
     </div>
 </div>
 <!-- modal end -->
-
-
 <!-- modal excel thành phần hồ sơ-->
 <div class="modal fade" id="excelContentModal" aria-hidden="true" aria-labelledby="excelContentModalLabel" tabindex="-1">
     <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-fullscreen ">
@@ -318,14 +308,12 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#excelModal">Quay lại</button>
-                <button type="button"  class="btn btn-primary" onclick="SaveExcel()">Lưu</button>
+                <button type="button" class="btn btn-primary" onclick="SaveExcel()">Lưu</button>
             </div>
         </div>
     </div>
 </div>
 <!-- modal end -->
-
-
 <!-- modal excel PDF hồ sơ-->
 <div class="modal fade" id="excelPDFModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="excelPDFModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-fullscreen ">
@@ -376,9 +364,6 @@
     </div>
 </div>
 <!-- modal end -->
-
-
-
 <!-- Modal thanh phan-->
 <div class="modal fade" id="ThanhPhanModal" aria-hidden="true" aria-labelledby="ThanhPhanModalLabel" tabindex="-1">
     <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-fullscreen ">
@@ -518,7 +503,46 @@
     </div>
 </div>
 
+<!-- Tập tin mẫu modal -->
+<!--<div class="modal fade" id="UpExcelModal" tabindex="-1" aria-labelledby="UpExcelModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Tải file Excel</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <button type="button" class="btn btn-outline-secondary">
+                        <input type="file" id="MultiImage" name="MultiImage" accept="image/*" multiple class="custom-file-upload">
+                        <label for="MultiImage" class="custom-file-upload ">
+                            <span>
+                                <i class="bi bi-paperclip"></i>
+                            </span>
+                            <span>Chọn ảnh bìa cho hồ sơ</span>
+                        </label>
+                    </button>
+                    <table class="table table-borderless" id="tableImage">
+                    </table>
+                    <button type="button" class="btn btn-outline-secondary" id="GetAnhDaiDienBtn" onclick="GetAnhDaiDien()">
+                        Tải ảnh vào file excel
+                    </button>
+                </div>
 
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-dismiss="modal">Đóng</button>
+                <a id="linkExcel" href="/admin/user/downloadexcel?state=0" class="btn btn-primary">
+                    <span>
+                        <i class="bi bi-cloud-arrow-down"></i>
+                    </span>
+                    <span>Tải file excel</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>-->
 <script src="~/Assets/Admin/js/recordcontent.js"></script>
 <script src="~/Assets/Admin/js/hosoLT.js"></script>
 <script src="~/Assets/Admin/js/hosoExcel.js"></script>
