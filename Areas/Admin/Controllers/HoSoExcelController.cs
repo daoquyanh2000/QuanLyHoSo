@@ -107,13 +107,12 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
             }
             return PartialView("HoSoExcelTable",model);
         }
-/*        public ActionResult GetThanhPhanHoSoExcel()
+        public ActionResult GetThanhPhanHoSoExcel()
         {
             IEnumerable<string> result = new string[] { };
-
+            var listExcel = new List<ViewThanhPhanHoSoExcel>();
             try
             {
-                var listExcelTPHS = new List<ViewThanhPhanHoSoExcel>();
 
                 var files = Request.Files;
                 var folderName = Request["folderName"];
@@ -121,25 +120,20 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
                 Session["duongDanExcel"] = folderName;
                 string pathFolder = "/Assets/Admin/zip";
                 var pathZip = Path.Combine(Server.MapPath(pathFolder), files[0].FileName);
-                //lấy ra tên file từ trong file zip
-                using (ZipArchive za = ZipFile.OpenRead(pathZip))
+                //đọc tên file excel thành phần hồ sơ
+                using (var za = ZipFile.Read(files[0].InputStream))
                 {
-                     result = from item in za.Entries
-                                 where item.FullName.Contains(folderName)
-                                 where item.FullName.EndsWith(".xlsx")
-                                 select item.FullName;
-                    if (!result.Any())
-                    {
-                        Exception myexception = new Exception("Không tìm thấy thành phần của hồ sơ này!");
-                        throw myexception;
-                    }
-                    var pathFile = Path.Combine(Server.MapPath(pathFolder), result.FirstOrDefault());
+                    var pathExcelHoSo = (from item in za.Entries
+                                         where item.FileName.Contains(folderName+ "/ThanhPhanTemplate.xlsx")
+                                         select item)
+                                         .FirstOrDefault().FileName;
 
-                    listExcelTPHS = Stuff.GetListExcel<ViewThanhPhanHoSoExcel>(pathFile);
-
+                    pathExcelHoSo = Path.Combine(Server.MapPath(pathFolder), pathExcelHoSo);
+                    //đọc file excel hs và lấy thông tin tất cả hs -> đẩy ra view
+                    listExcel = Stuff.GetListExcel<ViewThanhPhanHoSoExcel>(pathExcelHoSo);
                 }
                 //đọc file excel từ pathExcel
-                var model = from tp in listExcelTPHS
+                var model = from tp in listExcel
                                 //where tp.TenThuMuc != null &&
                             where
                                     tp.TieuDe != null &&
@@ -170,7 +164,7 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
                     icon = "error",
                     heading = "Có lỗi",
                     message = e.Message,
-                }, JsonRequestBehavior.AllowGet); 
+                }, JsonRequestBehavior.AllowGet);
             }
 
         }
@@ -178,26 +172,25 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
         {
             var files = Request.Files;
             var folderName = Request["folderName"];
-             
-            var pathFile = Session["duongDanExcel"].ToString()+"/"+  folderName;
+
+            var pathFile = Session["duongDanExcel"].ToString() + "/" + folderName;
             string pathFolder = "/Assets/Admin/zip";
-            var pathZip = Path.Combine(Server.MapPath(pathFolder), files[0].FileName);
+
             //lấy ra tên file từ trong file zip
-            using (ZipArchive za = ZipFile.OpenRead(pathZip))
+            using (var za = ZipFile.Read(files[0].InputStream))
             {
 
                 var result = from item in za.Entries
-                             where item.FullName.Contains(pathFile)
-                             where item.FullName.EndsWith(".pdf")
+                             where item.FileName.Contains(pathFile)
+                             where item.FileName.EndsWith(".pdf")
                              select new PDFThanhPhanHoSo
                              {
-                                 PathPDF = pathFolder+ "/"+ item.FullName,
-                                 TenPDF = item.Name,
+                                 PathPDF = pathFolder + "/" + item.FileName,
+                                 TenPDF = item.FileName.Split('/').Last(),
                              };
-            return PartialView("PDFHoSoTable", result);
+                return PartialView("PDFHoSoTable", result);
             }
-
-        }*/
+        }
 /*        public ActionResult Save()
         {
             var files = Request.Files;
@@ -238,9 +231,9 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
                 using (ZipArchive za = ZipFile.OpenRead(pathZip))
                 {
                     var excelPathFile = from item in za.Entries
-                             where item.FullName.Contains(itemHS.TenThuMuc)
-                             where item.FullName.EndsWith(".xlsx")
-                             select item.FullName;
+                                        where item.FullName.Contains(itemHS.TenThuMuc)
+                                        where item.FullName.EndsWith(".xlsx")
+                                        select item.FullName;
                     using (IDbConnection db = new SqlConnection(ConnectString.Setup()))
                     {
                         //kiểm tra xem hồ sơ đấy có thành phần không
@@ -273,39 +266,39 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
                                         };
                             //duyệt qua từng thành phần hồ sơ trong excel và map lại thành tphs có trong db
 
-                                //lưu hồ sơ vào để tý lấy ra ID  gán cho thành phần
-                                db.Insert(hs);
+                            //lưu hồ sơ vào để tý lấy ra ID  gán cho thành phần
+                            db.Insert(hs);
 
-                                foreach (var itemTPHS in model)
+                            foreach (var itemTPHS in model)
+                            {
+                                ThanhPhanHoSo tphs = mapper.Map<ThanhPhanHoSo>(itemTPHS);
+                                tphs.IDHoSo = Stuff.GetList<HoSo>("select  top 1 ID from HoSo order by ID desc").FirstOrDefault().ID;
+                                //lưu vào db
+                                db.Insert(tphs);
+                                var listPDF = new List<PDFThanhPhanHoSo>();
+                                //lại mở file zip ra để đọc lấy cái file pdf của thành phần
+
+                                foreach (var item in za.Entries)
                                 {
-                                    ThanhPhanHoSo tphs = mapper.Map<ThanhPhanHoSo>(itemTPHS);
-                                    tphs.IDHoSo = Stuff.GetList<HoSo>("select  top 1 ID from HoSo order by ID desc").FirstOrDefault().ID;
-                                    //lưu vào db
-                                    db.Insert(tphs);
-                                    var listPDF = new List<PDFThanhPhanHoSo>();
-                                    //lại mở file zip ra để đọc lấy cái file pdf của thành phần
-
-                                    foreach (var item in za.Entries)
+                                    if (item.FullName.Contains(itemHS.TenThuMuc + "/" + itemTPHS.TenThuMuc) && item.FullName.EndsWith(".pdf"))
                                     {
-                                        if (item.FullName.Contains(itemHS.TenThuMuc + "/" + itemTPHS.TenThuMuc) && item.FullName.EndsWith(".pdf"))
-                                        {
-                                            //lưu file
-                                            string fixedName = item.Name.Split('.')[0] + "_" + DateTime.Now.Ticks.ToString() + "." + item.Name.Split('.')[1];
-                                            string pathSave = Path.Combine(Server.MapPath(pathFolderPDF), fixedName);
-                                            item.ExtractToFile(pathSave);
+                                        //lưu file
+                                        string fixedName = item.Name.Split('.')[0] + "_" + DateTime.Now.Ticks.ToString() + "." + item.Name.Split('.')[1];
+                                        string pathSave = Path.Combine(Server.MapPath(pathFolderPDF), fixedName);
+                                        item.ExtractToFile(pathSave);
 
-                                            //lưu từng pdf
-                                            var itemPDF = new PDFThanhPhanHoSo();
-                                            itemPDF.PathPDF = pathFolderPDF + "/" + fixedName;
-                                            itemPDF.TenPDF = item.Name;
-                                            itemPDF.TrangThai = 1;
-                                            itemPDF.IDThanhPhan = Stuff.GetList<ThanhPhanHoSo>("select top 1 ID from ThanhPhanHoSo order by ID desc").FirstOrDefault().ID;
-                                            listPDF.Add(itemPDF);
-                                        }
+                                        //lưu từng pdf
+                                        var itemPDF = new PDFThanhPhanHoSo();
+                                        itemPDF.PathPDF = pathFolderPDF + "/" + fixedName;
+                                        itemPDF.TenPDF = item.Name;
+                                        itemPDF.TrangThai = 1;
+                                        itemPDF.IDThanhPhan = Stuff.GetList<ThanhPhanHoSo>("select top 1 ID from ThanhPhanHoSo order by ID desc").FirstOrDefault().ID;
+                                        listPDF.Add(itemPDF);
                                     }
-                                    //lưu path pdf vào db
-                                    db.Insert(listPDF);
                                 }
+                                //lưu path pdf vào db
+                                db.Insert(listPDF);
+                            }
                         }
                         else
                         {
@@ -324,7 +317,7 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
         }*/
 
         public ActionResult DownloadZip()
-        
+
         {
 
             //tạo folder
@@ -409,7 +402,7 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
 
                         //add date validation
                         wsData.Cells["J2:J2"].Style.Numberformat.Format = "m/d/yyyy";
-                        wsData.Cells["H2:H2"].Formula = "=CONCATENATE(D2"  +@","".""," + "E2" + @","".""," + "F2" + @","".""," +"G2"+")";
+                        wsData.Cells["H2:H2"].Formula = "=CONCATENATE(D2" + @","".""," + "E2" + @","".""," + "F2" + @","".""," + "G2" + ")";
                         wsData.Cells["H2:H2"].Calculate();
                         foreach (var ws in package.Workbook.Worksheets)
                         {
@@ -438,12 +431,12 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
                                              IDLoaiThanhPhan = item.ID,
                                          };
                         var listTrangThai = new List<TrangThaiThanhPhan>();
-                        for(int i = 0; i <= 1; i++)
+                        for (int i = 0; i <= 1; i++)
                         {
                             var TrangThai = new TrangThaiThanhPhan();
                             if (i == 0)
                             {
-                                 TrangThai = new TrangThaiThanhPhan
+                                TrangThai = new TrangThaiThanhPhan
                                 {
                                     TenTrangThai = "Công khai",
                                     IDTrangThai = i,
@@ -489,7 +482,7 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
 
                     //thêm file pdf mẫu vào 
                     var filePDF = Server.MapPath("/Assets/Admin/zip/TaiLieuMau.pdf");
-                    zip.AddFile(filePDF, "HoSoTemplate/HoSo1/ThanhPhan1") ;
+                    zip.AddFile(filePDF, "HoSoTemplate/HoSo1/ThanhPhan1");
                     zip.Save(stream);
                     return File(
                         stream.ToArray(),
@@ -499,6 +492,6 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
                 }
             }
 
-        }
-    }
+        }/*
+*/    }
 }
