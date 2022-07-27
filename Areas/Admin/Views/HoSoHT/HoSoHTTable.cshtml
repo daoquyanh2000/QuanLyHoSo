@@ -22,8 +22,8 @@
             </tr>
         </thead>
         <tbody id="table-body">
-            <input type="number" name="hidden" value="0" style="display:none" id="HiddenID" />
-            <input type="number" name="hidden" value="0" style="display:none" id="HiddenState" />
+
+
             @foreach (var item in Model)
             {
             <tr data-id="@item.ID" onmouseenter="ShowTr(@item.ID,'users')">
@@ -48,7 +48,7 @@
                         <button type="button" class="btn btn-outline-secondary mx-1" onclick="ChangeState(@item.ID,2)">
                             <span>Gửi duyệt </span>
                         </button>
-                        <button type="button" class="btn btn-outline-secondary mx-1" onclick="ShowThanhPhan(@item.ID)">
+                        <button type="button" class="btn btn-outline-secondary mx-1" onclick="ShowThanhPhan(@item.ID,1)">
                             <span>Thành phần </span>
                         </button>
                         <button type="button" class="btn btn-outline-secondary mx-1" onclick="ChangeState(@item.ID,0)">
@@ -68,5 +68,4 @@
     page => Url.Action("Search",
     new { keyword = ViewBag.search, page = page }),
 PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(new AjaxOptions() { HttpMethod = "GET", UpdateTargetId = "HoSoHTTable" }))
-    Kết thúc
 </div>

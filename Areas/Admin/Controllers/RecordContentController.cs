@@ -34,18 +34,19 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
                           && (hs.TieuDe.ToLower().Contains(keyword)
                           || hs.TenLoaiThanhPhan.ToLower().Contains(keyword)
                           || hs.KiHieu.ToLower().Contains(keyword)
-                          || hs.ChuThich.ToLower().Contains(keyword))
+                          || hs.ChuThich.ToLower().Contains(keyword)
+                          || hs.MaThanhPhan.ToLower().Contains(keyword))
                           orderby hs.ID descending
                           select hs;
             ViewBag.search = keyword;
             ViewBag.IDHoSo = ID;
             var model = results.ToPagedList(pageNumber, pageSizeNumber);
             if (HoSoState == 0) { 
-            return PartialView("ThanhPhanTable_0", model);
+            return PartialView("ThanhPhanTable_LT", model);
             }
             else
             {
-                return PartialView("ThanhPhanTable_1", model);
+                return PartialView("ThanhPhanTable_HT", model);
 
             }
         }

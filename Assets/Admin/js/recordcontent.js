@@ -76,6 +76,13 @@
     var dt = new DataTransfer();
     var firstTime = 0;
     $(document).on('change', '#inputPDF', function () {
+        //nếu người dùng tạo mới hoặc sửa thì phải reset cái dt
+        if ($('#HiddenHandleDt').val() == 0) {
+            dt = new DataTransfer();
+        }
+        //0:trạng thái vừa mới chỉnh sửa hoặc đang tạo mới
+        //1: trạng thái đang chỉnh sửa hoặc đang tạo mới
+        $('#HiddenHandleDt').val(1);
         // thêm mới vào trong dom
         let html = '';
         //nếu chỉnh sửa thành phần thì không cần phải thêm thead vào nữa
@@ -173,14 +180,13 @@ function ResetForm() {
     $('#NoiDungThanhPhanModal').modal('toggle');
     $('#HiddenThanhPhanHoSoID').val(0);
     $('#tablePDF').html('');
-    dt = new DataTransfer();
-    $('#inputPDF')[0].files = dt.files;
     $('#IframePdf').hide();
+    $('#HiddenHandleDt').val(0);
 }
 
 /// code của thành phần
 //bấm vào thì hiện thành phần của hồ sơ đấy
-function ShowThanhPhan(ID) {
+function ShowThanhPhan(ID,HoSoState) {
     //set ID của hồ sơ để về sau còn lưu thành phần
     $('#HiddenHoSoID').val(ID);
     //lấy thông tin trong ô tìm kiếm
@@ -201,10 +207,12 @@ function ShowThanhPhan(ID) {
             $('#ThanhPhanTable').html(res);
             $("#ThanhPhanModal").modal('show');
             if (HoSoState == 1) {
-                $('#ThemThanhPhan').prop('disabled', true)
+                $('#DeleteAllThanhPhan').hide();
+                $('#ThemThanhPhan').hide();
             } else {
-                $('#ThemThanhPhan').prop('disabled', false);
                 $('#NoiDungThanhPhanForm :input').prop('disabled', false);
+                $('#DeleteAllThanhPhan').show();
+                $('#ThemThanhPhan').show();
 
 
             }
@@ -233,8 +241,7 @@ function SearchThanhPhan() {
 function ShowNoiDungThanhPhan(ID, HoSoState) {
     $("#NoiDungThanhPhanModal").modal('toggle');
     $('#HiddenThanhPhanHoSoID').val(ID);
-    dt = new DataTransfer();
-    $('#inputPDF')[0].files = dt.files;
+    $('#HiddenHandleDt').val(0);
     //lấy nội dung thành phần từ db
     $.ajax({
         url: "/admin/RecordContent/View",
@@ -291,6 +298,8 @@ function ShowNoiDungThanhPhan(ID, HoSoState) {
                 $('#NoiDungThanhPhanModal button[type="submit"]').prop('disabled', true);
             } else {
                 $('#NoiDungThanhPhanForm :input').prop('disabled', false);
+                $('#NoiDungThanhPhanModal button[type="submit"]').prop('disabled', false);
+
             }
            
         }
@@ -336,7 +345,7 @@ function CreateNoiDungThanhPhan() {
             $('#IframePdf').hide();
             $('#NoiDungThanhPhanModal').modal('hide');
             console.log(res.data);
-            ShowThanhPhan($('#HiddenHoSoID').val());
+            ShowThanhPhan($('#HiddenHoSoID').val(),0);
             $.toast({
                 heading: res.heading,
                 icon: res.icon,
@@ -346,9 +355,11 @@ function CreateNoiDungThanhPhan() {
                 hideAfter: 7000,
                 showHideTransition: 'slide',
             })
+            $('#HiddenHandleDt').val(0);
         }
     })
 }
+
 function DeleteNoiDungThanhPhan(ID) {
     if (confirm("Bạn có chắc chắn xóa người dùng này không?")) {
         event.preventDefault();
@@ -367,7 +378,7 @@ function DeleteNoiDungThanhPhan(ID) {
                     hideAfter: 7000,
                     showHideTransition: 'slide',
                 })
-                ShowThanhPhan($('#HiddenHoSoID').val());
+                ShowThanhPhan($('#HiddenHoSoID').val(),0);
             }
         })
     }
@@ -393,7 +404,7 @@ function DeleteAll() {
                     hideAfter: 7000,
                     showHideTransition: 'slide',
                 })
-                ShowThanhPhan($('#HiddenHoSoID').val());
+                ShowThanhPhan($('#HiddenHoSoID').val(),0);
                 $('#DeleteAllThanhPhan').toggleClass('disabled');
             }
         })

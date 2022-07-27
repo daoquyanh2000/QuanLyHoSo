@@ -652,10 +652,10 @@
     <Content Include="Assets\Admin\pdf.js\web\standard_fonts\LICENSE_FOXIT" />
     <Content Include="Assets\Admin\pdf.js\web\standard_fonts\LICENSE_LIBERATION" />
     <Content Include="Assets\Admin\pdf.js\web\viewer.js.map" />
-    <Content Include="Areas\Admin\Views\RecordContent\ThanhPhanTable_0.cshtml" />
+    <Content Include="Areas\Admin\Views\RecordContent\ThanhPhanTable_LT.cshtml" />
     <Content Include="Assets\Admin\pdf\test12.pdf" />
     <Content Include="Assets\Admin\pdf.js\web\test12.pdf" />
-    <Content Include="Areas\Admin\Views\RecordContent\ThanhPhanTable_1.cshtml" />
+    <Content Include="Areas\Admin\Views\RecordContent\ThanhPhanTable_HT.cshtml" />
     <Content Include="Areas\Admin\Views\HoSoExcel\HoSoExcelTable.cshtml" />
     <Content Include="Areas\Admin\Views\HoSoExcel\ThanhPhanHoSoExcelTable.cshtml" />
     <Content Include="Areas\Admin\Views\HoSoExcel\PDFHoSoTable.cshtml" />

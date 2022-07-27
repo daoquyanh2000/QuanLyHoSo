@@ -10,7 +10,7 @@
                 </th>
                 <th>Tên danh mục</th>
                 <th>Mã mã danh mục</th>
-                <th>Tên danh mục cha</th>
+                @*<th>Tên danh mục cha</th>*@
                 <th>Mô tả</th>
                 <th>Ngày tạo</th>
                 <th>Người tạo</th>
@@ -105,7 +105,7 @@ foreach (var item in DanhMucCon)
     </td>
     <td style="padding-left:@{@paddingLeft} ">» @item.TenDanhMuc  <span style="color:red" data-listCount="@item.ID"></span></td>
     <td>@item.MaDanhMuc</td>
-    @if (item.TenDanhMucCha != null)
+@*    @if (item.TenDanhMucCha != null)
     {
         <td>@item.TenDanhMucCha</td>
     }
@@ -113,7 +113,7 @@ foreach (var item in DanhMucCon)
     {
         <td>Trống</td>
 
-    }
+    }*@
     <td>@item.MoTa</td>
     <td>@item.NgayTao</td>
     <td>@item.NguoiTao</td>

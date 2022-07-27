@@ -29,83 +29,101 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
 
         public ActionResult UnZipFile()
         {
-            var files = Request.Files;
-            string pathZip = string.Empty;
-            string pathFolder = "/Assets/Admin/zip";
-            var listExcel = new List<ViewExcelHoSo>();
-            //save file zip 
-            if (files != null)
+            try
             {
-                for (int i = 0; i < files.Count; i++)
+                var files = Request.Files;
+                string pathZip = string.Empty;
+                string pathFolder = "/Assets/Admin/zip/Template" ;
+                if (Directory.Exists(Server.MapPath(pathFolder)))
                 {
-                    //tao folder
-                    Directory.CreateDirectory(Server.MapPath(pathFolder));
-                    // tao duong dan path
-                    pathZip = Path.Combine(Server.MapPath(pathFolder), files[i].FileName);
-                    if (System.IO.File.Exists(pathZip))
-                    {
-                        System.IO.File.Delete(pathZip);
-                    }
-                    files[i].SaveAs(pathZip);
+                    Directory.Delete(Server.MapPath(pathFolder),true);
                 }
-            }
-            //giải nén ra và lấy file excel hồ sơ
-            using (var za = ZipFile.Read(files[0].InputStream))
-            {
-                za.ExtractAll(Server.MapPath(pathFolder), ExtractExistingFileAction.DoNotOverwrite);
-                var pathExcelHoSo =za.Entries.FirstOrDefault(x => x.FileName.Contains("HoSoTemplate.xlsx")).FileName;
-                pathExcelHoSo = Path.Combine(Server.MapPath(pathFolder), pathExcelHoSo);
-                //đọc file excel hs và lấy thông tin tất cả hs -> đẩy ra view
-                listExcel = Stuff.GetListExcel<ViewExcelHoSo>(pathExcelHoSo);
-            }
-
-            var listDm = Stuff.GetAll<DanhMuc>().Where(x => x.TrangThai == 1);
-            var lisNgan = Stuff.GetAll<Ngan>().Where(x => x.TrangThai == 1);
-            var listKho = Stuff.GetAll<Kho>().Where(x => x.TrangThai == 1);
-            var listType = Stuff.GetAll<LoaiHoSo>().Where(x => x.TrangThai == 1);
-
-            var model = from hs in listExcel
-                        where hs.TieuDe != null &&
-                                hs.MaHoSo != null &&
-                                hs.KyHieu != null &&
-                                hs.MaDanhMuc != null &&
-                                hs.MaKho != null &&
-                                hs.MaNgan != null &&
-                                hs.MaLoaiHoSo != null &&
-                                hs.ThoiGianLuuTru != null &&
-                                hs.ThoiHanBaoQuan != null
-                        join k in listKho
-                        on hs.MaKho equals k.MaKho
-                        join n in lisNgan
-                        on hs.MaNgan equals n.MaNgan
-                        join dm in listDm
-                        on hs.MaDanhMuc equals dm.MaDanhMuc
-                        join t in listType
-                        on hs.MaLoaiHoSo equals t.MaLoaiHoSo
-                        select new ViewHoSo
+                var listExcel = new List<ViewExcelHoSo>();
+                //save file zip 
+                if (files != null)
+                {
+                    for (int i = 0; i < files.Count; i++)
+                    {
+                        //tao folder
+                        Directory.CreateDirectory(Server.MapPath(pathFolder));
+                        // tao duong dan path
+                        pathZip = Path.Combine(Server.MapPath(pathFolder), files[i].FileName);
+                        if (System.IO.File.Exists(pathZip))
                         {
-                            TenThuMuc =hs.TenThuMuc,
-                            TieuDe = hs.TieuDe,
-                            MaHoSo = hs.MaHoSo,
-                            KyHieu = hs.KyHieu,
-                            MaDanhMuc = hs.MaDanhMuc,
-                            MaNgan = hs.MaNgan,
-                            MaKho = hs.MaKho,
-                            MaLoaiHoSo = hs.MaLoaiHoSo,
-                            MoTa = hs.MoTa,
-                            ThoiGianLuuTru = hs.ThoiGianLuuTru,
-                            ThoiHanBaoQuan = hs.ThoiHanBaoQuan,
-                            TenDanhMuc = dm.TenDanhMuc,
-                            TenKho = k.TenKho,
-                            TenNgan = n.TenNgan,
-                            TenLoaiHoSo = t.TenLoaiHoSo
-                        };
-            model = model.ToList();
-            if (files.Count > 0)
-            {
-                Session["danhSachHoSo"] = model;
+                            System.IO.File.Delete(pathZip);
+                        }
+                        files[i].SaveAs(pathZip);
+                    }
+                }
+                //giải nén ra và lấy file excel hồ sơ
+                using (var za = ZipFile.Read(files[0].InputStream))
+                {
+                    za.ExtractAll(Server.MapPath(pathFolder), ExtractExistingFileAction.DoNotOverwrite);
+                    var pathExcelHoSo = za.Entries.FirstOrDefault(x => x.FileName.Contains("HoSoTemplate.xlsx")).FileName;
+                    pathExcelHoSo = Path.Combine(Server.MapPath(pathFolder), pathExcelHoSo);
+                    //đọc file excel hs và lấy thông tin tất cả hs -> đẩy ra view
+                    listExcel = Stuff.GetListExcel<ViewExcelHoSo>(pathExcelHoSo);
+                }
+
+                var listDm = Stuff.GetAll<DanhMuc>().Where(x => x.TrangThai == 1);
+                var lisNgan = Stuff.GetAll<Ngan>().Where(x => x.TrangThai == 1);
+                var listKho = Stuff.GetAll<Kho>().Where(x => x.TrangThai == 1);
+                var listType = Stuff.GetAll<LoaiHoSo>().Where(x => x.TrangThai == 1);
+
+                var model = from hs in listExcel
+                            where hs.TieuDe != null &&
+                                    hs.MaHoSo != null &&
+                                    hs.KyHieu != null &&
+                                    hs.MaDanhMuc != null &&
+                                    hs.MaKho != null &&
+                                    hs.MaNgan != null &&
+                                    hs.MaLoaiHoSo != null &&
+                                    hs.ThoiGianLuuTru != null &&
+                                    hs.ThoiHanBaoQuan != null
+                            join k in listKho
+                            on hs.MaKho equals k.MaKho
+                            join n in lisNgan
+                            on hs.MaNgan equals n.MaNgan
+                            join dm in listDm
+                            on hs.MaDanhMuc equals dm.MaDanhMuc
+                            join t in listType
+                            on hs.MaLoaiHoSo equals t.MaLoaiHoSo
+                            select new ViewHoSo
+                            {
+                                TenThuMuc = hs.TenThuMuc,
+                                TieuDe = hs.TieuDe,
+                                MaHoSo = hs.MaHoSo,
+                                KyHieu = hs.KyHieu,
+                                MaDanhMuc = hs.MaDanhMuc,
+                                MaNgan = hs.MaNgan,
+                                MaKho = hs.MaKho,
+                                MaLoaiHoSo = hs.MaLoaiHoSo,
+                                MoTa = hs.MoTa,
+                                ThoiGianLuuTru = hs.ThoiGianLuuTru,
+                                ThoiHanBaoQuan = hs.ThoiHanBaoQuan,
+                                TenDanhMuc = dm.TenDanhMuc,
+                                TenKho = k.TenKho,
+                                TenNgan = n.TenNgan,
+                                TenLoaiHoSo = t.TenLoaiHoSo
+                            };
+                model = model.ToList();
+                if (files.Count > 0)
+                {
+                    Session["danhSachHoSo"] = model;
+                }
+                return PartialView("HoSoExcelTable", model);
             }
-            return PartialView("HoSoExcelTable",model);
+            // bắt ngoại lệ
+            catch (Exception e)
+            {
+                return Json(new
+                {
+                    state = false,
+                    icon = "error",
+                    heading = "Có lỗi",
+                    message = "File Excel rỗng hoặc sai cú pháp xin hay thử lại!",
+                }, JsonRequestBehavior.AllowGet);
+            }
         }
         public ActionResult GetThanhPhanHoSoExcel()
         {
@@ -118,17 +136,22 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
                 var folderName = Request["folderName"];
 
                 Session["duongDanExcel"] = folderName;
-                string pathFolder = "/Assets/Admin/zip";
+                string pathFolder = "/Assets/Admin/zip/Template";
                 var pathZip = Path.Combine(Server.MapPath(pathFolder), files[0].FileName);
                 //đọc tên file excel thành phần hồ sơ
                 using (var za = ZipFile.Read(files[0].InputStream))
                 {
-                    var pathExcelHoSo = (from item in za.Entries
-                                         where item.FileName.Contains(folderName+ "/ThanhPhanTemplate.xlsx")
-                                         select item)
-                                         .FirstOrDefault().FileName;
+                    var ExcelName = (from item in za.Entries.ToList()
+                                   where item.FileName.Contains(folderName + "/ThanhPhanTemplate.xlsx")
+                                   select item.FileName);
 
-                    pathExcelHoSo = Path.Combine(Server.MapPath(pathFolder), pathExcelHoSo);
+
+                    if (!ExcelName.Any())
+                    {
+                        Exception exception = new Exception("Không tìm thấy file Excel ThanhPhanTemplate!");
+                        throw exception;
+                    }
+                    var pathExcelHoSo = Path.Combine(Server.MapPath(pathFolder), ExcelName.FirstOrDefault());
                     //đọc file excel hs và lấy thông tin tất cả hs -> đẩy ra view
                     listExcel = Stuff.GetListExcel<ViewThanhPhanHoSoExcel>(pathExcelHoSo);
                 }
@@ -174,7 +197,7 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
             var folderName = Request["folderName"];
 
             var pathFile = Session["duongDanExcel"].ToString() + "/" + folderName;
-            string pathFolder = "/Assets/Admin/zip";
+            string pathFolder = "/Assets/Admin/zip/Template";
 
             //lấy ra tên file từ trong file zip
             using (var za = ZipFile.Read(files[0].InputStream))
@@ -191,10 +214,10 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
                 return PartialView("PDFHoSoTable", result);
             }
         }
-/*        public ActionResult Save()
+        public ActionResult Save()
         {
             var files = Request.Files;
-            string pathFolder = "/Assets/Admin/zip";
+            string pathFolder = "/Assets/Admin/zip/Template";
             string pathFolderPDF = "/Assets/Admin/pdf";
 
             var pathZip = Path.Combine(Server.MapPath(pathFolder), files[0].FileName);
@@ -228,12 +251,12 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
 
                 var listExcelTPHS = new List<ViewThanhPhanHoSoExcel>();
                 //mở file zip ra để đọc tên file
-                using (ZipArchive za = ZipFile.OpenRead(pathZip))
+                using (var za = ZipFile.Read(pathZip))
                 {
                     var excelPathFile = from item in za.Entries
-                                        where item.FullName.Contains(itemHS.TenThuMuc)
-                                        where item.FullName.EndsWith(".xlsx")
-                                        select item.FullName;
+                                        where item.FileName.Contains(itemHS.TenThuMuc)
+                                        where item.FileName.EndsWith("ThanhPhanTemplate.xlsx")
+                                        select item.FileName;
                     using (IDbConnection db = new SqlConnection(ConnectString.Setup()))
                     {
                         //kiểm tra xem hồ sơ đấy có thành phần không
@@ -278,22 +301,25 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
                                 var listPDF = new List<PDFThanhPhanHoSo>();
                                 //lại mở file zip ra để đọc lấy cái file pdf của thành phần
 
-                                foreach (var item in za.Entries)
+                                foreach (var item in za.Entries.ToList())
                                 {
-                                    if (item.FullName.Contains(itemHS.TenThuMuc + "/" + itemTPHS.TenThuMuc) && item.FullName.EndsWith(".pdf"))
+                                    if (item.FileName.Contains(itemHS.TenThuMuc + "/" + itemTPHS.TenThuMuc) && item.FileName.EndsWith(".pdf"))
                                     {
-                                        //lưu file
-                                        string fixedName = item.Name.Split('.')[0] + "_" + DateTime.Now.Ticks.ToString() + "." + item.Name.Split('.')[1];
-                                        string pathSave = Path.Combine(Server.MapPath(pathFolderPDF), fixedName);
-                                        item.ExtractToFile(pathSave);
 
-                                        //lưu từng pdf
+                                        string fixedName = item.FileName.Split('/').Last();
+                                        fixedName = fixedName.Split('.')[0] + "_" + DateTime.Now.Ticks.ToString() + "." + fixedName.Split('.')[1];
+
+                                        //lưu từng pdf vào db
                                         var itemPDF = new PDFThanhPhanHoSo();
                                         itemPDF.PathPDF = pathFolderPDF + "/" + fixedName;
-                                        itemPDF.TenPDF = item.Name;
+                                        itemPDF.TenPDF = item.FileName.Split('/').Last();
                                         itemPDF.TrangThai = 1;
                                         itemPDF.IDThanhPhan = Stuff.GetList<ThanhPhanHoSo>("select top 1 ID from ThanhPhanHoSo order by ID desc").FirstOrDefault().ID;
                                         listPDF.Add(itemPDF);
+
+                                        //lưu file
+                                        item.FileName = fixedName;
+                                        item.Extract(Server.MapPath(pathFolderPDF));
                                     }
                                 }
                                 //lưu path pdf vào db
@@ -310,11 +336,11 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
             }
             return Json(new
             {
-                icon = "sucess",
+                icon = "success",
                 heading = "Thành công",
                 message = "Lưu thành công"
             }, JsonRequestBehavior.AllowGet);
-        }*/
+        }
 
         public ActionResult DownloadZip()
 
@@ -401,7 +427,7 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
                         dvThoiHan.Formula.ExcelFormula = $"ThoiHan!$B$2:$B${listThoiHan.Count() + 1}";
 
                         //add date validation
-                        wsData.Cells["J2:J2"].Style.Numberformat.Format = "m/d/yyyy";
+                        wsData.Cells["J:J"].Style.Numberformat.Format = "m/d/yyyy";
                         wsData.Cells["H2:H2"].Formula = "=CONCATENATE(D2" + @","".""," + "E2" + @","".""," + "F2" + @","".""," + "G2" + ")";
                         wsData.Cells["H2:H2"].Calculate();
                         foreach (var ws in package.Workbook.Worksheets)
@@ -431,28 +457,11 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
                                              IDLoaiThanhPhan = item.ID,
                                          };
                         var listTrangThai = new List<TrangThaiThanhPhan>();
-                        for (int i = 0; i <= 1; i++)
-                        {
-                            var TrangThai = new TrangThaiThanhPhan();
-                            if (i == 0)
-                            {
-                                TrangThai = new TrangThaiThanhPhan
-                                {
-                                    TenTrangThai = "Công khai",
-                                    IDTrangThai = i,
-                                };
-                            }
-                            else
-                            {
-                                TrangThai = new TrangThaiThanhPhan
-                                {
-                                    TenTrangThai = "Công khai",
-                                    IDTrangThai = i,
-                                };
-                            }
-                            listTrangThai.Add(TrangThai);
-
-                        }
+                        var data = new[]{
+                             new TrangThaiThanhPhan{ IDTrangThai=0,TenTrangThai="Công khai"},
+                              new TrangThaiThanhPhan{ IDTrangThai=1,TenTrangThai="Hạn chế"},
+                         };
+                        listTrangThai = data.ToList();
 
                         //tạo ra mấy cái thành phần hồ sơ dummy
                         var listTPHS = new List<ViewThanhPhanHoSoExcel>();

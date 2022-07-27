@@ -210,6 +210,7 @@ $(function () {
 })
 
 function SearchUser(state) {
+    $("#HoSoState").val(state);
     let url = '';
     let keyword = $(`#searchInput_${state}`).val();
     let page = $('.pagination').find('a').html();

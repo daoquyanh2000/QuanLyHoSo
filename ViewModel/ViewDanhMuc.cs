@@ -9,6 +9,7 @@ namespace QuanLyHoSo.ViewModel
     public class ViewDanhMuc : DanhMuc
     {
         public  string TenDanhMucCha { get; set; }
+        public  string MaDanhMucCha { get; set; }
         public List<ViewDanhMuc> DanhMucCon { get; set; }
 
     }

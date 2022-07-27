@@ -195,16 +195,16 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
                 string pathFile = string.Empty;
                 string fileName = "Category.xlsx";
                 string pathFolder = "/Assets/Excel/Category";
+                //tao folder
+                Directory.CreateDirectory(Server.MapPath(pathFolder));
+                // tao duong dan path
+                pathFile = Path.Combine(Server.MapPath(pathFolder), fileName);
                 if (Request.Files.Count > 0)
                 {
                     HttpFileCollectionBase files = Request.Files;
                     for (int i = 0; i < files.Count; i++)
                     {
                         HttpPostedFileBase file = files[i];
-                        //tao folder
-                        Directory.CreateDirectory(Server.MapPath(pathFolder));
-                        // tao duong dan path
-                        pathFile = Path.Combine(Server.MapPath(pathFolder), fileName);
                         file.SaveAs(pathFile);
                     }
                 }
@@ -213,17 +213,14 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
                 from ke in Stuff.GetListExcel<ViewExcelDanhMuc>(pathFile)
                 where ke.TenDanhMuc != null &&
                       ke.MaDanhMuc != null &&
-                      ke.MaDanhMucCha != null 
-                join k in Stuff.GetAll<DanhMuc>()
-                on ke.MaDanhMucCha equals k.MaDanhMuc
+                      ke.MaDanhMucCha != null
                 select new ViewDanhMuc
                 {
                     TenDanhMuc = ke.TenDanhMuc,
                     MaDanhMuc = ke.MaDanhMuc,
-                    TenDanhMucCha = k.TenDanhMuc,
+                    MaDanhMucCha = ke.MaDanhMucCha,
                     TrangThai = ke.TrangThai,
                     MoTa = ke.MoTa
-
                 };
                 return PartialView(account);
             }
@@ -247,14 +244,13 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
             from ke in Stuff.GetListExcel<ViewExcelDanhMuc>(Session["pathFile"].ToString())
             where ke.TenDanhMuc != null &&
                   ke.MaDanhMuc != null &&
-                  ke.MaDanhMucCha != null 
-            join k in Stuff.GetAll<DanhMuc>()
-            on ke.MaDanhMucCha equals k.MaDanhMuc
+                  ke.MaDanhMucCha != null
+                  let IDcha =( ke.MaDanhMucCha =="NONE")?1:2
             select new DanhMuc
             {
                 TenDanhMuc = ke.TenDanhMuc,
                 MaDanhMuc = ke.MaDanhMuc,
-                IDDanhMucCha = k.ID,
+                IDDanhMucCha = ,
                 TrangThai = ke.TrangThai,
                 MoTa = ke.MoTa,
                 NgayTao = DateTime.Now.ToString(),
@@ -308,39 +304,31 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
                 //A workbook must have at least on cell, so lets add one... 
                 var wsData = package.Workbook.Worksheets.Add("Data");
                 var wsThongTinBang = package.Workbook.Worksheets.Add("ThongTinBang");
-
-                //To set values in the spreadsheet use the Cells indexer.
-/*                var listDmAll = ();
-                var firstDm = new DanhMuc();
-                firstDm.TenDanhMuc = "Trống";
-                firstDm.MaDanhMuc = "100";
-                firstDm.TrangThai = 1;
-                listDmAll.Insert(0,firstDm);*/
+                List<SheetDanhMucCha> sheetDmCha = new List<SheetDanhMucCha>();
+                sheetDmCha.Add(new SheetDanhMucCha { TenDanhMucCha = "Trống", MaDanhMucCha = "NONE" });
                 var dm = from k in Stuff.GetAll<DanhMuc>()
-                         where k.TrangThai !=10
-                          select new
+                         where k.TrangThai !=10 
+                          select new SheetDanhMucCha
                           {
                               TenDanhMucCha = k.TenDanhMuc,
-                              MaDanhMuc = k.MaDanhMuc,
+                              MaDanhMucCha = k.MaDanhMuc,
                           };
-
+                foreach (var item in dm)
+                {
+                    sheetDmCha.Add(item);
+                }
                 var TrangThai = new List<State>() {
                     new State { TrangThai = "Đóng", MaTrangThai = 0  },
                     new State { TrangThai = "Mở", MaTrangThai = 1  },
                 };
                 var nd = new List<ViewExcelDanhMuc>();
-                wsData.Cells["A1"].LoadFromCollection(nd, true, TableStyles.Medium1);
-                wsThongTinBang.Cells["A1"].LoadFromCollection(dm, true, TableStyles.Medium1);
-                wsThongTinBang.Cells["D1"].LoadFromCollection(TrangThai, true, TableStyles.Medium1);
-
-
+                wsData.Cells["A1"].LoadFromCollection(nd,true,TableStyles.Medium2);
+                wsThongTinBang.Cells["A1"].LoadFromCollection(sheetDmCha, true, TableStyles.Medium2);
+                wsThongTinBang.Cells["D1"].LoadFromCollection(TrangThai, true, TableStyles.Medium2);
                 var listDm = wsData.DataValidations.AddListValidation("C2");
                 var listTrangThai = wsData.DataValidations.AddListValidation("D2");
-
-                listDm.Formula.ExcelFormula = $"ThongTinBang!$B$2:$B${dm.Count() + 1}";
-                listTrangThai.Formula.ExcelFormula = "ThongTinBang!$E$2:$E$3";
-
-
+                listDm.Formula.ExcelFormula = $"ThongTinBang!$B$2:$B${sheetDmCha.Count() + 1}";
+                listTrangThai.Formula.ExcelFormula = $"ThongTinBang!$E$2:$E${TrangThai.Count() + 1}";
                 wsData.Cells[1, 1, wsData.Dimension.End.Row, wsData.Dimension.End.Column].AutoFitColumns();
                 wsThongTinBang.Cells[1, 1, wsThongTinBang.Dimension.End.Row, wsThongTinBang.Dimension.End.Column].AutoFitColumns();
                 //Save the new workbook. We haven't specified the filename so use the Save as method.

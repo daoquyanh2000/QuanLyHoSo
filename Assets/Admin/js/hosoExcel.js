@@ -1,4 +1,6 @@
-﻿//add sự kiện đẩy file excel trong hồ sơ
+﻿
+
+//add sự kiện đẩy file excel trong hồ sơ
 $(document).on('change', '#inputExcel', function () {
     let formData = new FormData();
     if (this.files.length > 0) {
@@ -11,11 +13,20 @@ $(document).on('change', '#inputExcel', function () {
         contentType: false,
         processData: false,
         success: function (res) {
-            //reset lại inputExcel 
-            let dt = new DataTransfer();
-            this.files = dt.files;
-            console.log(res);
+            if (res.state == false) {
+                $.toast({
+                    heading: res.heading,
+                    icon: res.icon,
+                    text: res.message,
+                    position: 'top-right',
+                    stack: 10,
+                    hideAfter: 7000,
+                    showHideTransition: 'slide',
+                })
+            } else {
+
             $('#HoSoExcelTable').html(res);
+            }
         },
         error: function (err) {
             console.log(err);
@@ -98,9 +109,10 @@ function SaveExcel() {
                 stack: 10,
                 hideAfter: 7000,
                 showHideTransition: 'slide',
-
             })
             $('.modal').modal('hide');
+            $('#inputExcel').val("");
+            SearchUser(0);
         },
 
     })

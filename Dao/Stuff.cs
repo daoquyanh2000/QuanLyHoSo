@@ -16,9 +16,10 @@ namespace QuanLyHoSo.Dao
         public static List<T> GetListExcel<T>(string PathExcel)
         {
             List<T> account = new List<T>();
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
             using (ExcelPackage package = new ExcelPackage(new FileInfo(PathExcel)))
             {
-                ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
                 var sheet = package.Workbook.Worksheets["data"];
                 //first row is for knowing the properties of object
                 var columnInfo = Enumerable.Range(1, sheet.Dimension.Columns).ToList().Select(n =>
