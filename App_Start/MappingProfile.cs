@@ -11,6 +11,8 @@ namespace QuanLyHoSo.App_Start
             CreateMap<ViewExcelNhanVien, NhanVien>();
             CreateMap<ViewHoSo, HoSo>();
             CreateMap<ViewThanhPhanHoSo, ThanhPhanHoSo>();
+            CreateMap<ViewDanhMuc, DanhMuc>();
+
 
         }
     }

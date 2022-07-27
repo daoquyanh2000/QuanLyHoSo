@@ -1,7 +1,9 @@
-﻿using Dapper.Contrib.Extensions;
+﻿using AutoMapper;
+using Dapper.Contrib.Extensions;
 using OfficeOpenXml;
 using OfficeOpenXml.Table;
 using PagedList;
+using QuanLyHoSo.App_Start;
 using QuanLyHoSo.Dao;
 using QuanLyHoSo.Dao.DaoAdmin;
 using QuanLyHoSo.Models;
@@ -208,7 +210,7 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
                         file.SaveAs(pathFile);
                     }
                 }
-                Session["pathFile"] = pathFile;
+
                 var account =
                 from ke in Stuff.GetListExcel<ViewExcelDanhMuc>(pathFile)
                 where ke.TenDanhMuc != null &&
@@ -222,6 +224,7 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
                     TrangThai = ke.TrangThai,
                     MoTa = ke.MoTa
                 };
+                Session["listExcelDanhMuc"] = Stuff.GetListExcel<ViewExcelDanhMuc>(pathFile)
                 return PartialView(account);
             }
             catch (Exception ex)
@@ -231,7 +234,7 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
                     error = true,
                     heading = "Thất bại",
                     icon = "error",
-                    message = $"{ex}"
+                    message = "Sai định dạng excel vui lòng thử lại!"
                 }, JsonRequestBehavior.AllowGet);
             }
 
@@ -239,30 +242,95 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
         }
         public JsonResult Excel(FormCollection fc)
         {
-            var checkbox = (fc["checkbox"]).Split(',');
-            var account =
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile(new MappingProfile());
+            });
+            var mapper = config.CreateMapper();
+            long tk;
+            //lưu hết tất cả thằng NONE trước
+            //sau đó tìm tất cả thằng danh mục cha là NONE ->> lưu vào db
+            //lặp lại đến khi không tìm thấy thằng danh mục cha
+            var listExcelDanhMuc = (List<ViewExcelDanhMuc>)Session["listExcelDanhMuc"];
+            //lấy ra list NONE
+            var data = from item in listExcelDanhMuc
+                       where item.MaDanhMucCha == "NONE"
+                       select new DanhMuc
+                       {
+                           TenDanhMuc = item.TenDanhMuc,
+                           MaDanhMuc = item.MaDanhMuc,
+                           IDDanhMucCha = 0,
+                           TrangThai = item.TrangThai,
+                           MoTa = item.MoTa,
+                           NgayTao = DateTime.Now.ToString(),
+                           NguoiTao = Session["UserNameNV"].ToString(),
+                       };
+            //save vào db
+            using (var db = new SqlConnection(ConnectString.Setup()))
+            {
+                tk = db.Insert(data);
+            }
+            //fix lại đường dẫn 
+            var listFix = Stuff.GetList<DanhMuc>($"select top {tk} * from DanhMuc  order by id desc");
+            foreach (var dm in listFix)
+            {
+
+                    Stuff.ExecuteSql("Update DanhMuc Set DuongDan =@newPath,IDDanhMucCha =0 where ID =@ID", new { newPath = dm.ID.ToString(), ID = dm.ID });
+            }
+            ///////////////////////////
+            data = from item in listExcelDanhMuc
+                   let itemCha = Stuff.GetList<DanhMuc>($"select * from DanhMuc where MaDanhMuc={item.MaDanhMucCha} and TrangThai =1").FirstOrDefault()
+                   where item.MaDanhMucCha==itemCha.MaDanhMuc
+                   select new DanhMuc
+                       {
+                           TenDanhMuc = item.TenDanhMuc,
+                           MaDanhMuc = item.MaDanhMuc,
+                           IDDanhMucCha = itemCha.ID,
+                           TrangThai = item.TrangThai,
+                           MoTa = item.MoTa,
+                           NgayTao = DateTime.Now.ToString(),
+                           NguoiTao = Session["UserNameNV"].ToString(),
+                       };
+            //save vào db
+            using (var db = new SqlConnection(ConnectString.Setup()))
+            {
+                tk = db.Insert(data);
+            }
+            //fix lại đường dẫn 
+            listFix = Stuff.GetList<DanhMuc>($"select top {tk} * from DanhMuc  order by id desc");
+            foreach (var dm in listFix)
+            {
+                    //lay duong dan cha
+                    var newPath = Stuff.GetByID<DanhMuc>(dm.IDDanhMucCha).DuongDan + "-" + dm.ID.ToString();
+                    //luu duong dan
+                    Stuff.ExecuteSql("Update DanhMuc Set DuongDan =@newPath where ID =@ID", new { newPath = newPath, ID = dm.ID });
+            }
+            /////////////////////////////////////
+
+
+
+
+
+
+
+
+/*            var account =
             from ke in Stuff.GetListExcel<ViewExcelDanhMuc>(Session["pathFile"].ToString())
             where ke.TenDanhMuc != null &&
                   ke.MaDanhMuc != null &&
                   ke.MaDanhMucCha != null
-                  let IDcha =( ke.MaDanhMucCha =="NONE")?1:2
+            let IDcha = (ke.MaDanhMucCha == "NONE") ? 0 : Stuff.GetList<DanhMuc>($"select * from DanhMuc where MaDanhMuc ='{ke.MaDanhMucCha}'and TrangThai =10").FirstOrDefault().ID
             select new DanhMuc
             {
                 TenDanhMuc = ke.TenDanhMuc,
                 MaDanhMuc = ke.MaDanhMuc,
-                IDDanhMucCha = ,
+                IDDanhMucCha = IDcha,
                 TrangThai = ke.TrangThai,
                 MoTa = ke.MoTa,
                 NgayTao = DateTime.Now.ToString(),
                 NguoiTao = Session["UserNameNV"].ToString(),
             };
-            long tk;
-            int i = 0;
-            foreach (var k in account)
-            {
-                k.TrangThai = Convert.ToByte(checkbox[i]);
-                i++;
-            }
+
             using (var db = new SqlConnection(ConnectString.Setup()))
             {
                 tk = db.Insert(account);
@@ -272,20 +340,18 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
             
             foreach(var dm in listFix)
             {
-                if (dm.IDDanhMucCha == 10139)
+                if (dm.IDDanhMucCha == 0)
                 {
-
                     Stuff.ExecuteSql("Update DanhMuc Set DuongDan =@newPath,IDDanhMucCha =0 where ID =@ID", new { newPath = dm.ID.ToString(), ID = dm.ID });
                 }
                 else
                 {
                     //lay duong dan cha
                     var newPath = Stuff.GetByID<DanhMuc>(dm.IDDanhMucCha).DuongDan + "-" + dm.ID.ToString();
-
                     //luu duong dan
                     Stuff.ExecuteSql("Update DanhMuc Set DuongDan =@newPath where ID =@ID", new { newPath = newPath, ID = dm.ID });
                 }
-            }
+            }*/
 
             return Json(new
             {
@@ -338,4 +404,43 @@ namespace QuanLyHoSo.Areas.Admin.Controllers
             }
         }
     }
+    class DeQuyInsert
+    {
+        public static string DeQuyInsertDanhMuc(List<ViewExcelDanhMuc> listExcelDanhMuc,string NguoiTao,string DanhMucCha)
+        {
+            long tk;
+
+            var data = from item in listExcelDanhMuc
+                   //lấy ra thằng danh mục cha
+                   let itemCha = Stuff.GetList<DanhMuc>($"select * from DanhMuc where MaDanhMuc={item.MaDanhMucCha} and TrangThai =1").FirstOrDefault()
+                   where item.MaDanhMucCha == itemCha.MaDanhMuc
+                   select new DanhMuc
+                   {
+                       TenDanhMuc = item.TenDanhMuc,
+                       MaDanhMuc = item.MaDanhMuc,
+                       IDDanhMucCha = itemCha.ID,
+                       TrangThai = item.TrangThai,
+                       MoTa = item.MoTa,
+                       NgayTao = DateTime.Now.ToString(),
+                       NguoiTao = NguoiTao
+                   };
+            //save vào db
+            using (var db = new SqlConnection(ConnectString.Setup()))
+            {
+                tk = db.Insert(data);
+            }
+            //fix lại đường dẫn 
+            var listFix = Stuff.GetList<DanhMuc>($"select top {tk} * from DanhMuc  order by id desc");
+            foreach (var dm in listFix)
+            {
+                //lay duong dan cha
+                var newPath = Stuff.GetByID<DanhMuc>(dm.IDDanhMucCha).DuongDan + "-" + dm.ID.ToString();
+                //luu duong dan
+                Stuff.ExecuteSql("Update DanhMuc Set DuongDan =@newPath where ID =@ID", new { newPath = newPath, ID = dm.ID });
+            }
+            return data.FirstOrDefault().MaDanhMuc;
+        }
+    }
 }
+
+    
